@@ -1,0 +1,356 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Proveedores - FitZone Store
+{% endblock %}
+
+
+{% block content %}
+
+
+<section class="modulo">
+
+    <div class="container">
+
+
+        <!-- ==============================================
+             ENCABEZADO DEL MÓDULO
+             ============================================== -->
+
+        <div class="encabezado-modulo">
+
+            <h1>
+                Gestión de Proveedores
+            </h1>
+
+            <p>
+                En este módulo se presenta información
+                demostrativa de los proveedores asociados
+                a FitZone Store. En esta etapa del proyecto
+                los datos son estáticos y no se encuentran
+                almacenados en una base de datos.
+            </p>
+
+        </div>
+
+
+        <!-- ==============================================
+             RESUMEN DEL MÓDULO
+             ============================================== -->
+
+        <div class="row g-4 mb-5">
+
+
+            <!-- TOTAL DE PROVEEDORES -->
+
+            <div class="col-md-4">
+
+                <div class="tarjeta-modulo text-center">
+
+                    <h3 class="text-primary">
+                        4
+                    </h3>
+
+                    <p class="mb-0">
+                        Proveedores registrados
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- PROVEEDORES ACTIVOS -->
+
+            <div class="col-md-4">
+
+                <div class="tarjeta-modulo text-center">
+
+                    <h3 class="text-success">
+                        3
+                    </h3>
+
+                    <p class="mb-0">
+                        Proveedores activos
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- PROVEEDORES INACTIVOS -->
+
+            <div class="col-md-4">
+
+                <div class="tarjeta-modulo text-center">
+
+                    <h3 class="text-danger">
+                        1
+                    </h3>
+
+                    <p class="mb-0">
+                        Proveedor inactivo
+                    </p>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- ==============================================
+             TABLA DE PROVEEDORES
+             ============================================== -->
+
+        <div class="contenedor-tabla">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                #
+                            </th>
+
+                            <th>
+                                Proveedor
+                            </th>
+
+                            <th>
+                                Productos suministrados
+                            </th>
+
+                            <th>
+                                Contacto
+                            </th>
+
+                            <th>
+                                Ciudad
+                            </th>
+
+                            <th>
+                                Estado
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+
+                        <!-- PROVEEDOR 1 -->
+
+                        <tr>
+
+                            <td>
+                                1
+                            </td>
+
+                            <td>
+                                <strong>
+                                    SportFit Ecuador
+                                </strong>
+                            </td>
+
+                            <td>
+                                Mancuernas y accesorios de fuerza
+                            </td>
+
+                            <td>
+                                098 234 5678
+                            </td>
+
+                            <td>
+                                Quito
+                            </td>
+
+                            <td>
+
+                                <span class="estado-activo">
+                                    Activo
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+
+                        <!-- PROVEEDOR 2 -->
+
+                        <tr>
+
+                            <td>
+                                2
+                            </td>
+
+                            <td>
+                                <strong>
+                                    ActiveGear
+                                </strong>
+                            </td>
+
+                            <td>
+                                Ropa deportiva y guantes
+                            </td>
+
+                            <td>
+                                099 876 5432
+                            </td>
+
+                            <td>
+                                Guayaquil
+                            </td>
+
+                            <td>
+
+                                <span class="estado-activo">
+                                    Activo
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+
+                        <!-- PROVEEDOR 3 -->
+
+                        <tr>
+
+                            <td>
+                                3
+                            </td>
+
+                            <td>
+                                <strong>
+                                    Fitness Supply
+                                </strong>
+                            </td>
+
+                            <td>
+                                Bandas elásticas y colchonetas
+                            </td>
+
+                            <td>
+                                097 345 6789
+                            </td>
+
+                            <td>
+                                Cuenca
+                            </td>
+
+                            <td>
+
+                                <span class="estado-activo">
+                                    Activo
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+
+                        <!-- PROVEEDOR 4 -->
+
+                        <tr>
+
+                            <td>
+                                4
+                            </td>
+
+                            <td>
+                                <strong>
+                                    Hydration Sport
+                                </strong>
+                            </td>
+
+                            <td>
+                                Botellas deportivas
+                            </td>
+
+                            <td>
+                                096 567 4321
+                            </td>
+
+                            <td>
+                                Ambato
+                            </td>
+
+                            <td>
+
+                                <span class="estado-inactivo">
+                                    Inactivo
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==============================================
+             INFORMACIÓN ADICIONAL
+             ============================================== -->
+
+        <div class="row mt-5">
+
+            <div class="col-lg-8 mx-auto">
+
+                <div class="alert alert-info text-center">
+
+                    <strong>
+                        Información:
+                    </strong>
+
+                    Los proveedores mostrados corresponden
+                    a datos demostrativos utilizados para
+                    representar visualmente este módulo.
+                    En esta semana todavía no se utiliza
+                    una base de datos.
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==============================================
+             BOTÓN PARA VOLVER AL INICIO
+             ============================================== -->
+
+        <div class="text-center mt-4">
+
+            <a
+                href="{{ url_for('inicio') }}"
+                class="btn btn-outline-primary"
+            >
+                Volver al inicio
+            </a>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+{% endblock %}

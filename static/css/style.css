@@ -1,0 +1,1047 @@
+/* ==================================================
+   STYLE.CSS - SEMANA 9
+   FITZONE STORE
+   Flask + Bootstrap + Diseño responsivo
+   ================================================== */
+
+
+/* ==================================================
+   ESTILOS GENERALES
+   ================================================== */
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f4f6f8;
+    color: #333333;
+    line-height: 1.6;
+}
+
+main {
+    overflow: hidden;
+}
+
+section {
+    padding: 60px 0;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+
+/* ==================================================
+   ENCABEZADO PRINCIPAL
+   ================================================== */
+
+header {
+    min-height: 500px;
+    padding: 120px 20px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+    color: white;
+
+    background:
+        linear-gradient(
+            rgba(0, 0, 0, 0.68),
+            rgba(0, 0, 0, 0.68)
+        ),
+        url("../img/entrenamiento.png");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+header h1 {
+    margin-bottom: 15px;
+    font-size: 52px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+header p {
+    max-width: 750px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 20px;
+    font-size: 21px;
+}
+
+header .btn {
+    min-width: 150px;
+    margin: 5px;
+    border-radius: 25px;
+}
+
+
+/* ==================================================
+   MENÚ DE NAVEGACIÓN
+   ================================================== */
+
+.navbar {
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+}
+
+.navbar-brand {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.nav-link {
+    margin: 0 4px;
+    border-radius: 6px;
+
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease;
+}
+
+.nav-link:hover,
+.nav-link:focus {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: white;
+}
+
+
+/* ==================================================
+   TÍTULOS DE LAS SECCIONES
+   ================================================== */
+
+.titulo-seccion {
+    position: relative;
+    margin-bottom: 35px;
+    padding-bottom: 12px;
+
+    color: #0d6efd;
+
+    font-size: 34px;
+    font-weight: bold;
+}
+
+.titulo-seccion::after {
+    content: "";
+
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+
+    width: 70px;
+    height: 4px;
+
+    border-radius: 10px;
+
+    background-color: #198754;
+
+    transform: translateX(-50%);
+}
+
+
+/* ==================================================
+   SECCIÓN QUIÉNES SOMOS
+   ================================================== */
+
+#quienes-somos p {
+    text-align: justify;
+}
+
+#quienes-somos img {
+    border-radius: 15px;
+
+    transition:
+        transform 0.3s ease;
+}
+
+#quienes-somos img:hover {
+    transform: scale(1.02);
+}
+
+
+/* ==================================================
+   IMÁGENES DE LOS INTEGRANTES
+   ================================================== */
+
+#quienes-somos .card-img-top {
+    width: 100%;
+    height: 300px;
+
+    object-fit: cover;
+    object-position: center;
+
+    border-radius: 16px 16px 0 0;
+}
+
+
+/* ==================================================
+   TARJETAS
+   ================================================== */
+
+.card {
+    height: 100%;
+
+    overflow: hidden;
+
+    border: none;
+    border-radius: 16px;
+
+    background-color: white;
+
+    box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.12);
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-7px);
+
+    box-shadow:
+        0 10px 22px rgba(0, 0, 0, 0.18);
+}
+
+
+/* ==================================================
+   IMÁGENES DE PRODUCTOS
+   ================================================== */
+
+.imagen-producto {
+    width: 100%;
+    height: 230px;
+
+    object-fit: cover;
+
+    background-color: #f8f9fa;
+
+    border-bottom:
+        1px solid #eeeeee;
+
+    transition:
+        transform 0.3s ease;
+}
+
+.card:hover .imagen-producto {
+    transform: scale(1.02);
+}
+
+
+/* ==================================================
+   CONTENIDO DE LAS TARJETAS
+   ================================================== */
+
+.card-body {
+    padding: 24px;
+}
+
+.card-title {
+    margin-bottom: 15px;
+
+    color: #0d6efd;
+
+    font-size: 23px;
+    font-weight: bold;
+}
+
+.card-text {
+    color: #555555;
+    font-size: 16px;
+}
+
+.card .badge {
+    display: block;
+
+    width: fit-content;
+    min-width: 110px;
+
+    margin-right: auto;
+    margin-left: auto;
+
+    padding: 8px 12px;
+
+    font-size: 14px;
+}
+
+
+/* ==================================================
+   BOTONES DE TARJETAS
+   ================================================== */
+
+.card .btn-detalles,
+.card .btn-eliminar {
+    border-radius: 20px;
+    font-weight: 600;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.card .btn-detalles:hover,
+.card .btn-eliminar:hover {
+    transform: translateY(-2px);
+}
+
+
+/* ==================================================
+   CONTENEDOR DE PRODUCTOS
+   ================================================== */
+
+#contenedorProductos {
+    margin-top: 20px;
+}
+
+#contenedorProductos .alert {
+    margin: 0;
+
+    border: none;
+    border-radius: 12px;
+
+    box-shadow:
+        0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+
+/* ==================================================
+   FORMULARIO DE REGISTRO
+   ================================================== */
+
+.registro-contenedor {
+    height: 100%;
+
+    padding: 28px;
+
+    border-radius: 16px;
+
+    background-color: white;
+
+    box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.10);
+}
+
+.registro-contenedor h3 {
+    color: #212529;
+    font-weight: bold;
+}
+
+.form-label {
+    color: #333333;
+    font-weight: 600;
+}
+
+.form-control,
+.form-select {
+    min-height: 45px;
+
+    border:
+        1px solid #ced4da;
+
+    border-radius: 10px;
+
+    transition:
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+textarea.form-control {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #0d6efd;
+
+    box-shadow:
+        0 0 0 4px rgba(13, 110, 253, 0.15);
+}
+
+
+/* ==================================================
+   VALIDACIONES DEL FORMULARIO
+   ================================================== */
+
+.form-control.is-valid,
+.form-select.is-valid {
+    border-color: #198754;
+}
+
+.form-control.is-invalid,
+.form-select.is-invalid {
+    border-color: #dc3545;
+}
+
+
+/* ==================================================
+   MENSAJES DE VALIDACIÓN
+   ================================================== */
+
+.valid-feedback,
+.invalid-feedback {
+    margin-top: 5px;
+
+    font-size: 14px;
+    font-weight: 500;
+}
+
+#mensajeValidacion {
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+#mensajeValidacion:empty {
+    display: none;
+}
+
+
+/* ==================================================
+   ALERTAS BOOTSTRAP
+   ================================================== */
+
+.alert {
+    border: none;
+    border-radius: 12px;
+
+    box-shadow:
+        0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+
+/* ==================================================
+   SPINNER DE CARGA
+   ================================================== */
+
+#spinnerCarga {
+    padding: 15px 0;
+    text-align: center;
+}
+
+#spinnerCarga .spinner-border {
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+#spinnerCarga p {
+    margin-top: 10px;
+    margin-bottom: 0;
+
+    color: #0d6efd;
+
+    font-weight: 600;
+}
+
+
+/* ==================================================
+   BOTONES GENERALES
+   ================================================== */
+
+.btn {
+    font-weight: 600;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-success {
+    min-height: 45px;
+    border-radius: 25px;
+}
+
+.btn-personalizado {
+    display: inline-block;
+
+    padding: 11px 28px;
+
+    border: none;
+    border-radius: 25px;
+
+    background-color: #198754;
+    color: white;
+
+    font-weight: 600;
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.3s ease,
+        transform 0.2s ease;
+}
+
+.btn-personalizado:hover {
+    background-color: #146c43;
+    color: white;
+
+    transform: translateY(-2px);
+}
+
+
+/* ==================================================
+   CONTADOR DE PRODUCTOS
+   ================================================== */
+
+#totalRegistros {
+    padding: 7px 11px;
+    font-size: 15px;
+}
+
+
+/* ==================================================
+   MODAL BOOTSTRAP
+   ================================================== */
+
+.modal-content {
+    overflow: hidden;
+
+    border: none;
+    border-radius: 18px;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.modal-header {
+    background-color: #0d6efd;
+    color: white;
+
+    border-bottom: none;
+}
+
+.modal-header .btn-close {
+    filter:
+        brightness(0)
+        invert(1);
+}
+
+.modal-title {
+    font-weight: bold;
+}
+
+.modal-body {
+    padding: 25px;
+}
+
+#modalImagen {
+    display: block;
+
+    width: 100%;
+    max-height: 320px;
+
+    margin: 0 auto 20px;
+
+    object-fit: contain;
+
+    border-radius: 12px;
+
+    background-color: #f8f9fa;
+}
+
+#modalDescripcion {
+    color: #555555;
+    line-height: 1.7;
+}
+
+#modalCategoria,
+#modalEstado {
+    display: inline-block;
+}
+
+.modal-footer {
+    border-top:
+        1px solid #eeeeee;
+}
+
+
+/* ==================================================
+   VIDEO
+   ================================================== */
+
+.ratio {
+    overflow: hidden;
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 5px 16px rgba(0, 0, 0, 0.15);
+}
+
+
+/* ==================================================
+   INFORMACIÓN ADICIONAL
+   ================================================== */
+
+aside {
+    padding: 25px;
+
+    border-left:
+        6px solid #0d6efd;
+
+    border-radius: 12px;
+
+    background-color: #e9f3ff;
+
+    box-shadow:
+        0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+aside h3 {
+    color: #0d6efd;
+    font-weight: bold;
+}
+
+
+/* ==================================================
+   SECCIÓN DE CONTACTO
+   ================================================== */
+
+#contacto {
+    padding-bottom: 70px;
+}
+
+#contacto h3 {
+    margin-bottom: 20px;
+
+    color: #212529;
+
+    font-weight: bold;
+}
+
+#contacto form {
+    padding: 25px;
+
+    border-radius: 15px;
+
+    background-color: white;
+
+    box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.10);
+}
+
+#contacto .btn {
+    margin-bottom: 6px;
+}
+
+
+/* ==================================================
+   PÁGINAS INTERNAS DE FLASK
+   Productos - Clientes - Proveedores - Facturación
+   ================================================== */
+
+.modulo {
+    min-height: 70vh;
+    padding: 70px 0;
+}
+
+
+/* ==================================================
+   ENCABEZADO DE MÓDULOS
+   ================================================== */
+
+.encabezado-modulo {
+    margin-bottom: 45px;
+    text-align: center;
+}
+
+.encabezado-modulo h1 {
+    margin-bottom: 15px;
+
+    color: #0d6efd;
+
+    font-size: 38px;
+    font-weight: bold;
+}
+
+.encabezado-modulo p {
+    max-width: 750px;
+
+    margin-right: auto;
+    margin-left: auto;
+
+    color: #666666;
+
+    font-size: 18px;
+}
+
+
+/* ==================================================
+   TARJETAS DE INFORMACIÓN DE MÓDULOS
+   ================================================== */
+
+.tarjeta-modulo {
+    padding: 25px;
+
+    border-radius: 16px;
+
+    background-color: white;
+
+    box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.10);
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.tarjeta-modulo:hover {
+    transform: translateY(-5px);
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+
+/* ==================================================
+   TABLAS DE LOS MÓDULOS
+   ================================================== */
+
+.contenedor-tabla {
+    overflow-x: auto;
+
+    padding: 20px;
+
+    border-radius: 16px;
+
+    background-color: white;
+
+    box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.10);
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    padding: 15px;
+
+    background-color: #212529;
+    color: white;
+
+    vertical-align: middle;
+}
+
+.table tbody td {
+    padding: 14px;
+    vertical-align: middle;
+}
+
+.table tbody tr {
+    transition:
+        background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: #f2f7ff;
+}
+
+
+/* ==================================================
+   FACTURACIÓN
+   ================================================== */
+
+.factura {
+    max-width: 850px;
+
+    margin: 0 auto;
+
+    padding: 35px;
+
+    border-radius: 18px;
+
+    background-color: white;
+
+    box-shadow:
+        0 5px 18px rgba(0, 0, 0, 0.12);
+}
+
+.factura-encabezado {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+
+    border-bottom:
+        2px solid #eeeeee;
+}
+
+.factura-encabezado h2 {
+    color: #0d6efd;
+    font-weight: bold;
+}
+
+.factura-total {
+    margin-top: 20px;
+
+    font-size: 20px;
+    font-weight: bold;
+
+    text-align: right;
+}
+
+
+/* ==================================================
+   ETIQUETAS DE ESTADO
+   ================================================== */
+
+.estado-activo {
+    display: inline-block;
+
+    padding: 6px 12px;
+
+    border-radius: 20px;
+
+    background-color: #198754;
+    color: white;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.estado-inactivo {
+    display: inline-block;
+
+    padding: 6px 12px;
+
+    border-radius: 20px;
+
+    background-color: #dc3545;
+    color: white;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
+/* ==================================================
+   PIE DE PÁGINA
+   ================================================== */
+
+footer {
+    padding: 30px 20px;
+
+    background-color: #212529;
+    color: white;
+
+    text-align: center;
+}
+
+footer p {
+    margin: 5px 0;
+}
+
+
+/* ==================================================
+   DISEÑO RESPONSIVO PARA TABLET
+   ================================================== */
+
+@media (max-width: 991px) {
+
+    header {
+        min-height: 430px;
+        padding: 95px 20px;
+    }
+
+    header h1 {
+        font-size: 44px;
+    }
+
+    header p {
+        font-size: 19px;
+    }
+
+    .navbar-nav {
+        padding-top: 12px;
+    }
+
+    .nav-link {
+        padding: 10px;
+    }
+
+    .titulo-seccion {
+        font-size: 30px;
+        text-align: center;
+    }
+
+    #quienes-somos p {
+        text-align: left;
+    }
+
+    .registro-contenedor {
+        padding: 24px;
+    }
+
+    .imagen-producto {
+        height: 220px;
+    }
+
+    #quienes-somos .card-img-top {
+        height: 270px;
+    }
+
+}
+
+
+/* ==================================================
+   DISEÑO RESPONSIVO PARA CELULAR
+   ================================================== */
+
+@media (max-width: 768px) {
+
+    section {
+        padding: 45px 0;
+    }
+
+    header {
+        min-height: 390px;
+        padding: 75px 15px;
+    }
+
+    header h1 {
+        font-size: 36px;
+    }
+
+    header p {
+        font-size: 17px;
+    }
+
+    header .btn {
+        display: block;
+
+        width: 100%;
+        max-width: 260px;
+
+        margin: 8px auto;
+    }
+
+    .titulo-seccion {
+        font-size: 28px;
+    }
+
+    .card-title {
+        font-size: 21px;
+    }
+
+    .registro-contenedor {
+        padding: 20px;
+    }
+
+    .imagen-producto {
+        height: 250px;
+    }
+
+    #quienes-somos .card-img-top {
+        height: 320px;
+    }
+
+    #contacto form {
+        margin-top: 25px;
+        padding: 20px;
+    }
+
+    aside {
+        margin: 0;
+        padding: 20px;
+    }
+
+    .modal-body {
+        padding: 20px;
+    }
+
+    #modalImagen {
+        max-height: 260px;
+    }
+
+    .encabezado-modulo h1 {
+        font-size: 31px;
+    }
+
+    .encabezado-modulo p {
+        font-size: 16px;
+    }
+
+    .factura {
+        padding: 25px;
+    }
+
+}
+
+
+/* ==================================================
+   CELULARES PEQUEÑOS
+   ================================================== */
+
+@media (max-width: 480px) {
+
+    header {
+        min-height: 350px;
+        padding: 60px 12px;
+    }
+
+    header h1 {
+        font-size: 30px;
+    }
+
+    header p {
+        font-size: 16px;
+    }
+
+    .navbar-brand {
+        font-size: 19px;
+    }
+
+    .titulo-seccion {
+        font-size: 25px;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .imagen-producto {
+        height: 220px;
+    }
+
+    #quienes-somos .card-img-top {
+        height: 280px;
+    }
+
+    .registro-contenedor {
+        padding: 17px;
+    }
+
+    .btn-personalizado {
+        width: 100%;
+    }
+
+    .card .btn-detalles,
+    .card .btn-eliminar {
+        font-size: 13px;
+    }
+
+    #modalImagen {
+        max-height: 220px;
+    }
+
+    .factura {
+        padding: 18px;
+    }
+
+    footer {
+        padding: 25px 15px;
+        font-size: 14px;
+    }
+
+}

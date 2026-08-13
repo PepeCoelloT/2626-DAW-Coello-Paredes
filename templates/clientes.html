@@ -1,0 +1,392 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Clientes - FitZone Store
+{% endblock %}
+
+
+{% block content %}
+
+
+<section class="modulo">
+
+    <div class="container">
+
+
+        <!-- ==============================================
+             ENCABEZADO DEL MÓDULO
+             ============================================== -->
+
+        <div class="encabezado-modulo">
+
+            <h1>
+                Gestión de Clientes
+            </h1>
+
+            <p>
+                En este módulo se presenta información
+                demostrativa de los clientes registrados
+                en FitZone Store. En esta etapa del proyecto
+                los datos no se encuentran almacenados
+                en una base de datos.
+            </p>
+
+        </div>
+
+
+        <!-- ==============================================
+             RESUMEN DEL MÓDULO
+             ============================================== -->
+
+        <div class="row g-4 mb-5">
+
+
+            <!-- TOTAL DE CLIENTES -->
+
+            <div class="col-md-4">
+
+                <div class="tarjeta-modulo text-center">
+
+                    <h3 class="text-primary">
+                        5
+                    </h3>
+
+                    <p class="mb-0">
+                        Clientes registrados
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- CLIENTES ACTIVOS -->
+
+            <div class="col-md-4">
+
+                <div class="tarjeta-modulo text-center">
+
+                    <h3 class="text-success">
+                        4
+                    </h3>
+
+                    <p class="mb-0">
+                        Clientes activos
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- CLIENTES INACTIVOS -->
+
+            <div class="col-md-4">
+
+                <div class="tarjeta-modulo text-center">
+
+                    <h3 class="text-danger">
+                        1
+                    </h3>
+
+                    <p class="mb-0">
+                        Cliente inactivo
+                    </p>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- ==============================================
+             TABLA DE CLIENTES
+             ============================================== -->
+
+        <div class="contenedor-tabla">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                #
+                            </th>
+
+                            <th>
+                                Nombre
+                            </th>
+
+                            <th>
+                                Correo electrónico
+                            </th>
+
+                            <th>
+                                Teléfono
+                            </th>
+
+                            <th>
+                                Ciudad
+                            </th>
+
+                            <th>
+                                Estado
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+
+                        <!-- CLIENTE 1 -->
+
+                        <tr>
+
+                            <td>
+                                1
+                            </td>
+
+                            <td>
+                                <strong>
+                                    María López
+                                </strong>
+                            </td>
+
+                            <td>
+                                maria.lopez@email.com
+                            </td>
+
+                            <td>
+                                098 456 7821
+                            </td>
+
+                            <td>
+                                Puyo
+                            </td>
+
+                            <td>
+
+                                <span class="estado-activo">
+                                    Activo
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+
+                        <!-- CLIENTE 2 -->
+
+                        <tr>
+
+                            <td>
+                                2
+                            </td>
+
+                            <td>
+                                <strong>
+                                    Carlos Pérez
+                                </strong>
+                            </td>
+
+                            <td>
+                                carlos.perez@email.com
+                            </td>
+
+                            <td>
+                                099 785 4123
+                            </td>
+
+                            <td>
+                                Quito
+                            </td>
+
+                            <td>
+
+                                <span class="estado-activo">
+                                    Activo
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+
+                        <!-- CLIENTE 3 -->
+
+                        <tr>
+
+                            <td>
+                                3
+                            </td>
+
+                            <td>
+                                <strong>
+                                    Andrea Torres
+                                </strong>
+                            </td>
+
+                            <td>
+                                andrea.torres@email.com
+                            </td>
+
+                            <td>
+                                097 654 3218
+                            </td>
+
+                            <td>
+                                Ambato
+                            </td>
+
+                            <td>
+
+                                <span class="estado-activo">
+                                    Activo
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+
+                        <!-- CLIENTE 4 -->
+
+                        <tr>
+
+                            <td>
+                                4
+                            </td>
+
+                            <td>
+                                <strong>
+                                    Diego Sánchez
+                                </strong>
+                            </td>
+
+                            <td>
+                                diego.sanchez@email.com
+                            </td>
+
+                            <td>
+                                096 421 7852
+                            </td>
+
+                            <td>
+                                Guayaquil
+                            </td>
+
+                            <td>
+
+                                <span class="estado-inactivo">
+                                    Inactivo
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+
+                        <!-- CLIENTE 5 -->
+
+                        <tr>
+
+                            <td>
+                                5
+                            </td>
+
+                            <td>
+                                <strong>
+                                    Sofía Ramírez
+                                </strong>
+                            </td>
+
+                            <td>
+                                sofia.ramirez@email.com
+                            </td>
+
+                            <td>
+                                095 874 6321
+                            </td>
+
+                            <td>
+                                Cuenca
+                            </td>
+
+                            <td>
+
+                                <span class="estado-activo">
+                                    Activo
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==============================================
+             INFORMACIÓN ADICIONAL
+             ============================================== -->
+
+        <div class="row mt-5">
+
+            <div class="col-lg-8 mx-auto">
+
+                <div class="alert alert-info text-center">
+
+                    <strong>
+                        Información:
+                    </strong>
+
+                    Los clientes presentados en este módulo
+                    corresponden a datos de ejemplo utilizados
+                    únicamente para demostrar el funcionamiento
+                    visual de la aplicación Flask.
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==============================================
+             BOTÓN PARA VOLVER AL INICIO
+             ============================================== -->
+
+        <div class="text-center mt-4">
+
+            <a
+                href="{{ url_for('inicio') }}"
+                class="btn btn-outline-primary"
+            >
+                Volver al inicio
+            </a>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+{% endblock %}

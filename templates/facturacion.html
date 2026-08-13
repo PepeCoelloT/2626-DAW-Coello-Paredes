@@ -1,0 +1,492 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Facturación - FitZone Store
+{% endblock %}
+
+
+{% block content %}
+
+
+<section class="modulo">
+
+    <div class="container">
+
+
+        <!-- ==============================================
+             ENCABEZADO DEL MÓDULO
+             ============================================== -->
+
+        <div class="encabezado-modulo">
+
+            <h1>
+                Gestión de Facturación
+            </h1>
+
+            <p>
+                En este módulo se presenta una factura
+                demostrativa correspondiente a una compra
+                realizada en FitZone Store. En esta etapa
+                del proyecto la información es estática
+                y no se almacena en una base de datos.
+            </p>
+
+        </div>
+
+
+        <!-- ==============================================
+             RESUMEN DEL MÓDULO
+             ============================================== -->
+
+        <div class="row g-4 mb-5">
+
+
+            <!-- FACTURAS -->
+
+            <div class="col-md-4">
+
+                <div class="tarjeta-modulo text-center">
+
+                    <h3 class="text-primary">
+                        3
+                    </h3>
+
+                    <p class="mb-0">
+                        Facturas registradas
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- PRODUCTOS VENDIDOS -->
+
+            <div class="col-md-4">
+
+                <div class="tarjeta-modulo text-center">
+
+                    <h3 class="text-success">
+                        4
+                    </h3>
+
+                    <p class="mb-0">
+                        Productos vendidos
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- TOTAL DEMOSTRATIVO -->
+
+            <div class="col-md-4">
+
+                <div class="tarjeta-modulo text-center">
+
+                    <h3 class="text-primary">
+                        $100.05
+                    </h3>
+
+                    <p class="mb-0">
+                        Total de factura actual
+                    </p>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- ==============================================
+             FACTURA DEMOSTRATIVA
+             ============================================== -->
+
+        <div class="factura">
+
+
+            <!-- ENCABEZADO DE LA FACTURA -->
+
+            <div class="factura-encabezado">
+
+                <div class="row align-items-center">
+
+
+                    <div class="col-md-7">
+
+                        <h2>
+                            FitZone Store
+                        </h2>
+
+                        <p class="mb-1">
+                            Artículos deportivos y accesorios
+                        </p>
+
+                        <p class="mb-1">
+                            Puyo, Ecuador
+                        </p>
+
+                        <p class="mb-0">
+                            fitzonestore@gmail.com
+                        </p>
+
+                    </div>
+
+
+                    <div class="col-md-5 text-md-end mt-4 mt-md-0">
+
+                        <h4>
+                            FACTURA
+                        </h4>
+
+                        <p class="mb-1">
+
+                            <strong>
+                                N.º:
+                            </strong>
+
+                            FZ-001-0003
+
+                        </p>
+
+                        <p class="mb-0">
+
+                            <strong>
+                                Fecha:
+                            </strong>
+
+                            13/08/2026
+
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- ==============================================
+                 DATOS DEL CLIENTE
+                 ============================================== -->
+
+            <div class="row mb-4">
+
+                <div class="col-md-6">
+
+                    <h5 class="text-primary">
+                        Datos del cliente
+                    </h5>
+
+                    <p class="mb-1">
+
+                        <strong>
+                            Cliente:
+                        </strong>
+
+                        María López
+
+                    </p>
+
+                    <p class="mb-1">
+
+                        <strong>
+                            Correo:
+                        </strong>
+
+                        maria.lopez@email.com
+
+                    </p>
+
+                    <p class="mb-0">
+
+                        <strong>
+                            Teléfono:
+                        </strong>
+
+                        098 456 7821
+
+                    </p>
+
+                </div>
+
+
+                <div class="col-md-6 mt-4 mt-md-0">
+
+                    <h5 class="text-primary">
+                        Información de compra
+                    </h5>
+
+                    <p class="mb-1">
+
+                        <strong>
+                            Forma de pago:
+                        </strong>
+
+                        Tarjeta
+
+                    </p>
+
+                    <p class="mb-1">
+
+                        <strong>
+                            Estado:
+                        </strong>
+
+                        <span class="estado-activo">
+                            Pagada
+                        </span>
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- ==============================================
+                 DETALLE DE PRODUCTOS
+                 ============================================== -->
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered align-middle">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Producto
+                            </th>
+
+                            <th class="text-center">
+                                Cantidad
+                            </th>
+
+                            <th class="text-end">
+                                Precio unitario
+                            </th>
+
+                            <th class="text-end">
+                                Total
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+
+                        <!-- PRODUCTO 1 -->
+
+                        <tr>
+
+                            <td>
+                                Mancuernas
+                            </td>
+
+                            <td class="text-center">
+                                1
+                            </td>
+
+                            <td class="text-end">
+                                $35.00
+                            </td>
+
+                            <td class="text-end">
+                                $35.00
+                            </td>
+
+                        </tr>
+
+
+                        <!-- PRODUCTO 2 -->
+
+                        <tr>
+
+                            <td>
+                                Bandas elásticas
+                            </td>
+
+                            <td class="text-center">
+                                2
+                            </td>
+
+                            <td class="text-end">
+                                $20.00
+                            </td>
+
+                            <td class="text-end">
+                                $40.00
+                            </td>
+
+                        </tr>
+
+
+                        <!-- PRODUCTO 3 -->
+
+                        <tr>
+
+                            <td>
+                                Botella deportiva
+                            </td>
+
+                            <td class="text-center">
+                                1
+                            </td>
+
+                            <td class="text-end">
+                                $12.00
+                            </td>
+
+                            <td class="text-end">
+                                $12.00
+                            </td>
+
+                        </tr>
+
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- ==============================================
+                 TOTALES
+                 ============================================== -->
+
+            <div class="row justify-content-end mt-4">
+
+                <div class="col-md-5">
+
+                    <table class="table">
+
+                        <tbody>
+
+                            <tr>
+
+                                <th>
+                                    Subtotal
+                                </th>
+
+                                <td class="text-end">
+                                    $87.00
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <th>
+                                    IVA
+                                </th>
+
+                                <td class="text-end">
+                                    $13.05
+                                </td>
+
+                            </tr>
+
+
+                            <tr class="table-primary">
+
+                                <th>
+                                    Total
+                                </th>
+
+                                <td class="text-end">
+
+                                    <strong>
+                                        $100.05
+                                    </strong>
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <!-- ==============================================
+                 MENSAJE FINAL
+                 ============================================== -->
+
+            <div class="alert alert-success text-center mt-4">
+
+                <strong>
+                    Compra procesada correctamente.
+                </strong>
+
+                Gracias por confiar en FitZone Store.
+
+            </div>
+
+
+        </div>
+
+
+        <!-- ==============================================
+             NOTA
+             ============================================== -->
+
+        <div class="row mt-5">
+
+            <div class="col-lg-8 mx-auto">
+
+                <div class="alert alert-info text-center">
+
+                    <strong>
+                        Información:
+                    </strong>
+
+                    Esta factura contiene datos demostrativos.
+                    En esta semana del proyecto todavía no
+                    se realiza almacenamiento de información
+                    ni procesamiento real de pagos.
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==============================================
+             BOTÓN PARA VOLVER AL INICIO
+             ============================================== -->
+
+        <div class="text-center mt-4">
+
+            <a
+                href="{{ url_for('inicio') }}"
+                class="btn btn-outline-primary"
+            >
+                Volver al inicio
+            </a>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+{% endblock %}
