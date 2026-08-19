@@ -14,14 +14,10 @@ Productos - FitZone Store
     <div class="container">
 
 
-        <!-- ==============================================
-             ENCABEZADO DEL MÓDULO
-             ============================================== -->
-
         <div class="encabezado-modulo">
 
             <h1>
-                Gestión de Productos
+                {{ titulo|upper }}
             </h1>
 
             <p>
@@ -34,10 +30,6 @@ Productos - FitZone Store
         </div>
 
 
-        <!-- ==============================================
-             RESUMEN DEL MÓDULO
-             ============================================== -->
-
         <div class="row g-4 mb-5">
 
 
@@ -46,7 +38,7 @@ Productos - FitZone Store
                 <div class="tarjeta-modulo text-center">
 
                     <h3 class="text-primary">
-                        6
+                        {{ productos|length }}
                     </h3>
 
                     <p class="mb-0">
@@ -63,7 +55,7 @@ Productos - FitZone Store
                 <div class="tarjeta-modulo text-center">
 
                     <h3 class="text-success">
-                        4
+                        {{ disponibles }}
                     </h3>
 
                     <p class="mb-0">
@@ -80,7 +72,7 @@ Productos - FitZone Store
                 <div class="tarjeta-modulo text-center">
 
                     <h3 class="text-danger">
-                        2
+                        {{ agotados }}
                     </h3>
 
                     <p class="mb-0">
@@ -95,10 +87,6 @@ Productos - FitZone Store
         </div>
 
 
-        <!-- ==============================================
-             TABLA DE PRODUCTOS
-             ============================================== -->
-
         <div class="contenedor-tabla">
 
             <div class="table-responsive">
@@ -109,25 +97,11 @@ Productos - FitZone Store
 
                         <tr>
 
-                            <th>
-                                #
-                            </th>
-
-                            <th>
-                                Producto
-                            </th>
-
-                            <th>
-                                Categoría
-                            </th>
-
-                            <th>
-                                Descripción
-                            </th>
-
-                            <th>
-                                Estado
-                            </th>
+                            <th>#</th>
+                            <th>Producto</th>
+                            <th>Categoría</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
 
                         </tr>
 
@@ -136,210 +110,49 @@ Productos - FitZone Store
 
                     <tbody>
 
-
-                        <!-- PRODUCTO 1 -->
+                        {% for producto in productos %}
 
                         <tr>
 
                             <td>
-                                1
+                                {{ loop.index }}
                             </td>
 
                             <td>
                                 <strong>
-                                    Bandas elásticas
+                                    {{ producto.nombre }}
                                 </strong>
                             </td>
 
                             <td>
-                                Fuerza
+                                {{ producto.categoria }}
                             </td>
 
                             <td>
-                                Ideales para ejercicios de fuerza,
-                                movilidad y entrenamiento funcional.
+                                {{ producto.descripcion }}
                             </td>
 
                             <td>
 
-                                <span class="estado-activo">
-                                    Disponible
-                                </span>
+                                {% if producto.stock > 0 %}
+
+                                    <span class="estado-activo">
+                                        Disponible
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="estado-inactivo">
+                                        Agotado
+                                    </span>
+
+                                {% endif %}
 
                             </td>
 
                         </tr>
 
-
-                        <!-- PRODUCTO 2 -->
-
-                        <tr>
-
-                            <td>
-                                2
-                            </td>
-
-                            <td>
-                                <strong>
-                                    Mancuernas
-                                </strong>
-                            </td>
-
-                            <td>
-                                Fuerza
-                            </td>
-
-                            <td>
-                                Accesorios para entrenar brazos,
-                                hombros, espalda y piernas.
-                            </td>
-
-                            <td>
-
-                                <span class="estado-activo">
-                                    Disponible
-                                </span>
-
-                            </td>
-
-                        </tr>
-
-
-                        <!-- PRODUCTO 3 -->
-
-                        <tr>
-
-                            <td>
-                                3
-                            </td>
-
-                            <td>
-                                <strong>
-                                    Colchonetas
-                                </strong>
-                            </td>
-
-                            <td>
-                                Movilidad
-                            </td>
-
-                            <td>
-                                Recomendadas para yoga,
-                                abdominales y estiramientos.
-                            </td>
-
-                            <td>
-
-                                <span class="estado-inactivo">
-                                    Agotado
-                                </span>
-
-                            </td>
-
-                        </tr>
-
-
-                        <!-- PRODUCTO 4 -->
-
-                        <tr>
-
-                            <td>
-                                4
-                            </td>
-
-                            <td>
-                                <strong>
-                                    Botellas deportivas
-                                </strong>
-                            </td>
-
-                            <td>
-                                Accesorios
-                            </td>
-
-                            <td>
-                                Útiles para mantener una correcta
-                                hidratación durante el entrenamiento.
-                            </td>
-
-                            <td>
-
-                                <span class="estado-activo">
-                                    Disponible
-                                </span>
-
-                            </td>
-
-                        </tr>
-
-
-                        <!-- PRODUCTO 5 -->
-
-                        <tr>
-
-                            <td>
-                                5
-                            </td>
-
-                            <td>
-                                <strong>
-                                    Guantes de gimnasio
-                                </strong>
-                            </td>
-
-                            <td>
-                                Accesorios
-                            </td>
-
-                            <td>
-                                Brindan comodidad y protección
-                                durante ejercicios con peso.
-                            </td>
-
-                            <td>
-
-                                <span class="estado-activo">
-                                    Disponible
-                                </span>
-
-                            </td>
-
-                        </tr>
-
-
-                        <!-- PRODUCTO 6 -->
-
-                        <tr>
-
-                            <td>
-                                6
-                            </td>
-
-                            <td>
-                                <strong>
-                                    Ropa deportiva
-                                </strong>
-                            </td>
-
-                            <td>
-                                Ropa deportiva
-                            </td>
-
-                            <td>
-                                Prendas cómodas para entrenamientos
-                                en casa, gimnasio o al aire libre.
-                            </td>
-
-                            <td>
-
-                                <span class="estado-inactivo">
-                                    Agotado
-                                </span>
-
-                            </td>
-
-                        </tr>
-
+                        {% endfor %}
 
                     </tbody>
 
@@ -349,10 +162,6 @@ Productos - FitZone Store
 
         </div>
 
-
-        <!-- ==============================================
-             INFORMACIÓN ADICIONAL
-             ============================================== -->
 
         <div class="row mt-5">
 
@@ -364,9 +173,8 @@ Productos - FitZone Store
                         Información:
                     </strong>
 
-                    En esta etapa del proyecto los productos
-                    son datos de ejemplo. La aplicación todavía
-                    no utiliza una base de datos.
+                    Los productos son datos de ejemplo.
+                    La aplicación todavía no utiliza una base de datos.
 
                 </div>
 
@@ -374,10 +182,6 @@ Productos - FitZone Store
 
         </div>
 
-
-        <!-- ==============================================
-             BOTÓN PARA VOLVER AL INICIO
-             ============================================== -->
 
         <div class="text-center mt-4">
 

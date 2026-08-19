@@ -14,14 +14,10 @@ Clientes - FitZone Store
     <div class="container">
 
 
-        <!-- ==============================================
-             ENCABEZADO DEL MÓDULO
-             ============================================== -->
-
         <div class="encabezado-modulo">
 
             <h1>
-                Gestión de Clientes
+                {{ titulo }}
             </h1>
 
             <p>
@@ -35,21 +31,15 @@ Clientes - FitZone Store
         </div>
 
 
-        <!-- ==============================================
-             RESUMEN DEL MÓDULO
-             ============================================== -->
-
         <div class="row g-4 mb-5">
 
-
-            <!-- TOTAL DE CLIENTES -->
 
             <div class="col-md-4">
 
                 <div class="tarjeta-modulo text-center">
 
                     <h3 class="text-primary">
-                        5
+                        {{ clientes|length }}
                     </h3>
 
                     <p class="mb-0">
@@ -61,14 +51,12 @@ Clientes - FitZone Store
             </div>
 
 
-            <!-- CLIENTES ACTIVOS -->
-
             <div class="col-md-4">
 
                 <div class="tarjeta-modulo text-center">
 
                     <h3 class="text-success">
-                        4
+                        {{ activos }}
                     </h3>
 
                     <p class="mb-0">
@@ -80,18 +68,16 @@ Clientes - FitZone Store
             </div>
 
 
-            <!-- CLIENTES INACTIVOS -->
-
             <div class="col-md-4">
 
                 <div class="tarjeta-modulo text-center">
 
                     <h3 class="text-danger">
-                        1
+                        {{ inactivos }}
                     </h3>
 
                     <p class="mb-0">
-                        Cliente inactivo
+                        Clientes inactivos
                     </p>
 
                 </div>
@@ -101,10 +87,6 @@ Clientes - FitZone Store
 
         </div>
 
-
-        <!-- ==============================================
-             TABLA DE CLIENTES
-             ============================================== -->
 
         <div class="contenedor-tabla">
 
@@ -116,29 +98,12 @@ Clientes - FitZone Store
 
                         <tr>
 
-                            <th>
-                                #
-                            </th>
-
-                            <th>
-                                Nombre
-                            </th>
-
-                            <th>
-                                Correo electrónico
-                            </th>
-
-                            <th>
-                                Teléfono
-                            </th>
-
-                            <th>
-                                Ciudad
-                            </th>
-
-                            <th>
-                                Estado
-                            </th>
+                            <th>#</th>
+                            <th>Nombre</th>
+                            <th>Correo electrónico</th>
+                            <th>Teléfono</th>
+                            <th>Ciudad</th>
+                            <th>Estado</th>
 
                         </tr>
 
@@ -147,191 +112,53 @@ Clientes - FitZone Store
 
                     <tbody>
 
-
-                        <!-- CLIENTE 1 -->
+                        {% for cliente in clientes %}
 
                         <tr>
 
                             <td>
-                                1
+                                {{ loop.index }}
                             </td>
 
                             <td>
                                 <strong>
-                                    María López
+                                    {{ cliente.nombre }}
                                 </strong>
                             </td>
 
                             <td>
-                                maria.lopez@email.com
+                                {{ cliente.correo }}
                             </td>
 
                             <td>
-                                098 456 7821
+                                {{ cliente.telefono }}
                             </td>
 
                             <td>
-                                Puyo
+                                {{ cliente.ciudad }}
                             </td>
 
                             <td>
 
-                                <span class="estado-activo">
-                                    Activo
-                                </span>
+                                {% if cliente.activo %}
+
+                                    <span class="estado-activo">
+                                        Activo
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="estado-inactivo">
+                                        Inactivo
+                                    </span>
+
+                                {% endif %}
 
                             </td>
 
                         </tr>
 
-
-                        <!-- CLIENTE 2 -->
-
-                        <tr>
-
-                            <td>
-                                2
-                            </td>
-
-                            <td>
-                                <strong>
-                                    Carlos Pérez
-                                </strong>
-                            </td>
-
-                            <td>
-                                carlos.perez@email.com
-                            </td>
-
-                            <td>
-                                099 785 4123
-                            </td>
-
-                            <td>
-                                Quito
-                            </td>
-
-                            <td>
-
-                                <span class="estado-activo">
-                                    Activo
-                                </span>
-
-                            </td>
-
-                        </tr>
-
-
-                        <!-- CLIENTE 3 -->
-
-                        <tr>
-
-                            <td>
-                                3
-                            </td>
-
-                            <td>
-                                <strong>
-                                    Andrea Torres
-                                </strong>
-                            </td>
-
-                            <td>
-                                andrea.torres@email.com
-                            </td>
-
-                            <td>
-                                097 654 3218
-                            </td>
-
-                            <td>
-                                Ambato
-                            </td>
-
-                            <td>
-
-                                <span class="estado-activo">
-                                    Activo
-                                </span>
-
-                            </td>
-
-                        </tr>
-
-
-                        <!-- CLIENTE 4 -->
-
-                        <tr>
-
-                            <td>
-                                4
-                            </td>
-
-                            <td>
-                                <strong>
-                                    Diego Sánchez
-                                </strong>
-                            </td>
-
-                            <td>
-                                diego.sanchez@email.com
-                            </td>
-
-                            <td>
-                                096 421 7852
-                            </td>
-
-                            <td>
-                                Guayaquil
-                            </td>
-
-                            <td>
-
-                                <span class="estado-inactivo">
-                                    Inactivo
-                                </span>
-
-                            </td>
-
-                        </tr>
-
-
-                        <!-- CLIENTE 5 -->
-
-                        <tr>
-
-                            <td>
-                                5
-                            </td>
-
-                            <td>
-                                <strong>
-                                    Sofía Ramírez
-                                </strong>
-                            </td>
-
-                            <td>
-                                sofia.ramirez@email.com
-                            </td>
-
-                            <td>
-                                095 874 6321
-                            </td>
-
-                            <td>
-                                Cuenca
-                            </td>
-
-                            <td>
-
-                                <span class="estado-activo">
-                                    Activo
-                                </span>
-
-                            </td>
-
-                        </tr>
-
+                        {% endfor %}
 
                     </tbody>
 
@@ -341,10 +168,6 @@ Clientes - FitZone Store
 
         </div>
 
-
-        <!-- ==============================================
-             INFORMACIÓN ADICIONAL
-             ============================================== -->
 
         <div class="row mt-5">
 
@@ -356,10 +179,9 @@ Clientes - FitZone Store
                         Información:
                     </strong>
 
-                    Los clientes presentados en este módulo
-                    corresponden a datos de ejemplo utilizados
-                    únicamente para demostrar el funcionamiento
-                    visual de la aplicación Flask.
+                    Los clientes presentados corresponden
+                    a datos de ejemplo utilizados para demostrar
+                    el funcionamiento dinámico de la aplicación Flask.
 
                 </div>
 
@@ -367,10 +189,6 @@ Clientes - FitZone Store
 
         </div>
 
-
-        <!-- ==============================================
-             BOTÓN PARA VOLVER AL INICIO
-             ============================================== -->
 
         <div class="text-center mt-4">
 

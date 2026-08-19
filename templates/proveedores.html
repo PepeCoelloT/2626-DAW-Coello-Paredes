@@ -14,42 +14,32 @@ Proveedores - FitZone Store
     <div class="container">
 
 
-        <!-- ==============================================
-             ENCABEZADO DEL MÓDULO
-             ============================================== -->
-
         <div class="encabezado-modulo">
 
             <h1>
-                Gestión de Proveedores
+                {{ titulo }}
             </h1>
 
             <p>
                 En este módulo se presenta información
                 demostrativa de los proveedores asociados
                 a FitZone Store. En esta etapa del proyecto
-                los datos son estáticos y no se encuentran
-                almacenados en una base de datos.
+                los datos no se encuentran almacenados
+                en una base de datos.
             </p>
 
         </div>
 
 
-        <!-- ==============================================
-             RESUMEN DEL MÓDULO
-             ============================================== -->
-
         <div class="row g-4 mb-5">
 
-
-            <!-- TOTAL DE PROVEEDORES -->
 
             <div class="col-md-4">
 
                 <div class="tarjeta-modulo text-center">
 
                     <h3 class="text-primary">
-                        4
+                        {{ proveedores|length }}
                     </h3>
 
                     <p class="mb-0">
@@ -61,14 +51,12 @@ Proveedores - FitZone Store
             </div>
 
 
-            <!-- PROVEEDORES ACTIVOS -->
-
             <div class="col-md-4">
 
                 <div class="tarjeta-modulo text-center">
 
                     <h3 class="text-success">
-                        3
+                        {{ activos }}
                     </h3>
 
                     <p class="mb-0">
@@ -80,18 +68,16 @@ Proveedores - FitZone Store
             </div>
 
 
-            <!-- PROVEEDORES INACTIVOS -->
-
             <div class="col-md-4">
 
                 <div class="tarjeta-modulo text-center">
 
                     <h3 class="text-danger">
-                        1
+                        {{ inactivos }}
                     </h3>
 
                     <p class="mb-0">
-                        Proveedor inactivo
+                        Proveedores inactivos
                     </p>
 
                 </div>
@@ -101,10 +87,6 @@ Proveedores - FitZone Store
 
         </div>
 
-
-        <!-- ==============================================
-             TABLA DE PROVEEDORES
-             ============================================== -->
 
         <div class="contenedor-tabla">
 
@@ -116,29 +98,12 @@ Proveedores - FitZone Store
 
                         <tr>
 
-                            <th>
-                                #
-                            </th>
-
-                            <th>
-                                Proveedor
-                            </th>
-
-                            <th>
-                                Productos suministrados
-                            </th>
-
-                            <th>
-                                Contacto
-                            </th>
-
-                            <th>
-                                Ciudad
-                            </th>
-
-                            <th>
-                                Estado
-                            </th>
+                            <th>#</th>
+                            <th>Proveedor</th>
+                            <th>Productos suministrados</th>
+                            <th>Contacto</th>
+                            <th>Ciudad</th>
+                            <th>Estado</th>
 
                         </tr>
 
@@ -147,154 +112,53 @@ Proveedores - FitZone Store
 
                     <tbody>
 
-
-                        <!-- PROVEEDOR 1 -->
+                        {% for proveedor in proveedores %}
 
                         <tr>
 
                             <td>
-                                1
+                                {{ loop.index }}
                             </td>
 
                             <td>
                                 <strong>
-                                    SportFit Ecuador
+                                    {{ proveedor.nombre }}
                                 </strong>
                             </td>
 
                             <td>
-                                Mancuernas y accesorios de fuerza
+                                {{ proveedor.productos }}
                             </td>
 
                             <td>
-                                098 234 5678
+                                {{ proveedor.contacto }}
                             </td>
 
                             <td>
-                                Quito
+                                {{ proveedor.ciudad }}
                             </td>
 
                             <td>
 
-                                <span class="estado-activo">
-                                    Activo
-                                </span>
+                                {% if proveedor.activo %}
+
+                                    <span class="estado-activo">
+                                        Activo
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="estado-inactivo">
+                                        Inactivo
+                                    </span>
+
+                                {% endif %}
 
                             </td>
 
                         </tr>
 
-
-                        <!-- PROVEEDOR 2 -->
-
-                        <tr>
-
-                            <td>
-                                2
-                            </td>
-
-                            <td>
-                                <strong>
-                                    ActiveGear
-                                </strong>
-                            </td>
-
-                            <td>
-                                Ropa deportiva y guantes
-                            </td>
-
-                            <td>
-                                099 876 5432
-                            </td>
-
-                            <td>
-                                Guayaquil
-                            </td>
-
-                            <td>
-
-                                <span class="estado-activo">
-                                    Activo
-                                </span>
-
-                            </td>
-
-                        </tr>
-
-
-                        <!-- PROVEEDOR 3 -->
-
-                        <tr>
-
-                            <td>
-                                3
-                            </td>
-
-                            <td>
-                                <strong>
-                                    Fitness Supply
-                                </strong>
-                            </td>
-
-                            <td>
-                                Bandas elásticas y colchonetas
-                            </td>
-
-                            <td>
-                                097 345 6789
-                            </td>
-
-                            <td>
-                                Cuenca
-                            </td>
-
-                            <td>
-
-                                <span class="estado-activo">
-                                    Activo
-                                </span>
-
-                            </td>
-
-                        </tr>
-
-
-                        <!-- PROVEEDOR 4 -->
-
-                        <tr>
-
-                            <td>
-                                4
-                            </td>
-
-                            <td>
-                                <strong>
-                                    Hydration Sport
-                                </strong>
-                            </td>
-
-                            <td>
-                                Botellas deportivas
-                            </td>
-
-                            <td>
-                                096 567 4321
-                            </td>
-
-                            <td>
-                                Ambato
-                            </td>
-
-                            <td>
-
-                                <span class="estado-inactivo">
-                                    Inactivo
-                                </span>
-
-                            </td>
-
-                        </tr>
-
+                        {% endfor %}
 
                     </tbody>
 
@@ -304,10 +168,6 @@ Proveedores - FitZone Store
 
         </div>
 
-
-        <!-- ==============================================
-             INFORMACIÓN ADICIONAL
-             ============================================== -->
 
         <div class="row mt-5">
 
@@ -321,7 +181,7 @@ Proveedores - FitZone Store
 
                     Los proveedores mostrados corresponden
                     a datos demostrativos utilizados para
-                    representar visualmente este módulo.
+                    representar dinámicamente este módulo.
                     En esta semana todavía no se utiliza
                     una base de datos.
 
@@ -331,10 +191,6 @@ Proveedores - FitZone Store
 
         </div>
 
-
-        <!-- ==============================================
-             BOTÓN PARA VOLVER AL INICIO
-             ============================================== -->
 
         <div class="text-center mt-4">
 

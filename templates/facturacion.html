@@ -14,42 +14,32 @@ Facturación - FitZone Store
     <div class="container">
 
 
-        <!-- ==============================================
-             ENCABEZADO DEL MÓDULO
-             ============================================== -->
-
         <div class="encabezado-modulo">
 
             <h1>
-                Gestión de Facturación
+                {{ titulo }}
             </h1>
 
             <p>
                 En este módulo se presenta una factura
                 demostrativa correspondiente a una compra
                 realizada en FitZone Store. En esta etapa
-                del proyecto la información es estática
-                y no se almacena en una base de datos.
+                del proyecto la información no se almacena
+                en una base de datos.
             </p>
 
         </div>
 
 
-        <!-- ==============================================
-             RESUMEN DEL MÓDULO
-             ============================================== -->
-
         <div class="row g-4 mb-5">
 
-
-            <!-- FACTURAS -->
 
             <div class="col-md-4">
 
                 <div class="tarjeta-modulo text-center">
 
                     <h3 class="text-primary">
-                        3
+                        {{ facturas_registradas }}
                     </h3>
 
                     <p class="mb-0">
@@ -61,14 +51,12 @@ Facturación - FitZone Store
             </div>
 
 
-            <!-- PRODUCTOS VENDIDOS -->
-
             <div class="col-md-4">
 
                 <div class="tarjeta-modulo text-center">
 
                     <h3 class="text-success">
-                        4
+                        {{ productos_vendidos }}
                     </h3>
 
                     <p class="mb-0">
@@ -80,14 +68,12 @@ Facturación - FitZone Store
             </div>
 
 
-            <!-- TOTAL DEMOSTRATIVO -->
-
             <div class="col-md-4">
 
                 <div class="tarjeta-modulo text-center">
 
                     <h3 class="text-primary">
-                        $100.05
+                        ${{ "%.2f"|format(total) }}
                     </h3>
 
                     <p class="mb-0">
@@ -102,19 +88,12 @@ Facturación - FitZone Store
         </div>
 
 
-        <!-- ==============================================
-             FACTURA DEMOSTRATIVA
-             ============================================== -->
-
         <div class="factura">
 
-
-            <!-- ENCABEZADO DE LA FACTURA -->
 
             <div class="factura-encabezado">
 
                 <div class="row align-items-center">
-
 
                     <div class="col-md-7">
 
@@ -149,7 +128,7 @@ Facturación - FitZone Store
                                 N.º:
                             </strong>
 
-                            FZ-001-0003
+                            {{ factura.numero }}
 
                         </p>
 
@@ -159,23 +138,19 @@ Facturación - FitZone Store
                                 Fecha:
                             </strong>
 
-                            13/08/2026
+                            {{ factura.fecha }}
 
                         </p>
 
                     </div>
-
 
                 </div>
 
             </div>
 
 
-            <!-- ==============================================
-                 DATOS DEL CLIENTE
-                 ============================================== -->
-
             <div class="row mb-4">
+
 
                 <div class="col-md-6">
 
@@ -189,7 +164,7 @@ Facturación - FitZone Store
                             Cliente:
                         </strong>
 
-                        María López
+                        {{ factura.cliente.nombre }}
 
                     </p>
 
@@ -199,7 +174,7 @@ Facturación - FitZone Store
                             Correo:
                         </strong>
 
-                        maria.lopez@email.com
+                        {{ factura.cliente.correo }}
 
                     </p>
 
@@ -209,7 +184,7 @@ Facturación - FitZone Store
                             Teléfono:
                         </strong>
 
-                        098 456 7821
+                        {{ factura.cliente.telefono }}
 
                     </p>
 
@@ -228,7 +203,7 @@ Facturación - FitZone Store
                             Forma de pago:
                         </strong>
 
-                        Tarjeta
+                        {{ factura.forma_pago }}
 
                     </p>
 
@@ -238,20 +213,28 @@ Facturación - FitZone Store
                             Estado:
                         </strong>
 
-                        <span class="estado-activo">
-                            Pagada
-                        </span>
+
+                        {% if factura.pagada %}
+
+                            <span class="estado-activo">
+                                Pagada
+                            </span>
+
+                        {% else %}
+
+                            <span class="estado-inactivo">
+                                Pendiente
+                            </span>
+
+                        {% endif %}
 
                     </p>
 
                 </div>
 
+
             </div>
 
-
-            <!-- ==============================================
-                 DETALLE DE PRODUCTOS
-                 ============================================== -->
 
             <div class="table-responsive">
 
@@ -285,73 +268,29 @@ Facturación - FitZone Store
                     <tbody>
 
 
-                        <!-- PRODUCTO 1 -->
+                        {% for item in factura.detalle %}
 
                         <tr>
 
                             <td>
-                                Mancuernas
+                                {{ item.producto }}
                             </td>
 
                             <td class="text-center">
-                                1
+                                {{ item.cantidad }}
                             </td>
 
                             <td class="text-end">
-                                $35.00
+                                ${{ "%.2f"|format(item.precio) }}
                             </td>
 
                             <td class="text-end">
-                                $35.00
+                                ${{ "%.2f"|format(item.cantidad * item.precio) }}
                             </td>
 
                         </tr>
 
-
-                        <!-- PRODUCTO 2 -->
-
-                        <tr>
-
-                            <td>
-                                Bandas elásticas
-                            </td>
-
-                            <td class="text-center">
-                                2
-                            </td>
-
-                            <td class="text-end">
-                                $20.00
-                            </td>
-
-                            <td class="text-end">
-                                $40.00
-                            </td>
-
-                        </tr>
-
-
-                        <!-- PRODUCTO 3 -->
-
-                        <tr>
-
-                            <td>
-                                Botella deportiva
-                            </td>
-
-                            <td class="text-center">
-                                1
-                            </td>
-
-                            <td class="text-end">
-                                $12.00
-                            </td>
-
-                            <td class="text-end">
-                                $12.00
-                            </td>
-
-                        </tr>
+                        {% endfor %}
 
 
                     </tbody>
@@ -360,10 +299,6 @@ Facturación - FitZone Store
 
             </div>
 
-
-            <!-- ==============================================
-                 TOTALES
-                 ============================================== -->
 
             <div class="row justify-content-end mt-4">
 
@@ -380,7 +315,7 @@ Facturación - FitZone Store
                                 </th>
 
                                 <td class="text-end">
-                                    $87.00
+                                    ${{ "%.2f"|format(subtotal) }}
                                 </td>
 
                             </tr>
@@ -393,7 +328,7 @@ Facturación - FitZone Store
                                 </th>
 
                                 <td class="text-end">
-                                    $13.05
+                                    ${{ "%.2f"|format(iva) }}
                                 </td>
 
                             </tr>
@@ -408,7 +343,7 @@ Facturación - FitZone Store
                                 <td class="text-end">
 
                                     <strong>
-                                        $100.05
+                                        ${{ "%.2f"|format(total) }}
                                     </strong>
 
                                 </td>
@@ -424,10 +359,6 @@ Facturación - FitZone Store
             </div>
 
 
-            <!-- ==============================================
-                 MENSAJE FINAL
-                 ============================================== -->
-
             <div class="alert alert-success text-center mt-4">
 
                 <strong>
@@ -441,10 +372,6 @@ Facturación - FitZone Store
 
         </div>
 
-
-        <!-- ==============================================
-             NOTA
-             ============================================== -->
 
         <div class="row mt-5">
 
@@ -467,10 +394,6 @@ Facturación - FitZone Store
 
         </div>
 
-
-        <!-- ==============================================
-             BOTÓN PARA VOLVER AL INICIO
-             ============================================== -->
 
         <div class="text-center mt-4">
 
