@@ -14,6 +14,8 @@ Clientes - FitZone Store
     <div class="container">
 
 
+        <!-- ENCABEZADO DEL MÓDULO -->
+
         <div class="encabezado-modulo">
 
             <h1>
@@ -22,14 +24,30 @@ Clientes - FitZone Store
 
             <p>
                 En este módulo se presenta información
-                demostrativa de los clientes registrados
-                en FitZone Store. En esta etapa del proyecto
-                los datos no se encuentran almacenados
-                en una base de datos.
+                de los clientes registrados en FitZone Store.
+                Los datos se mantienen temporalmente durante
+                la ejecución de la aplicación y todavía no
+                se utiliza una base de datos.
             </p>
 
         </div>
 
+
+        <!-- BOTÓN PARA REGISTRAR CLIENTE -->
+
+        <div class="d-flex justify-content-end mb-4">
+
+            <a
+                href="{{ url_for('registrar_cliente') }}"
+                class="btn btn-primary"
+            >
+                + Registrar cliente
+            </a>
+
+        </div>
+
+
+        <!-- RESUMEN DEL MÓDULO -->
 
         <div class="row g-4 mb-5">
 
@@ -87,6 +105,8 @@ Clientes - FitZone Store
 
         </div>
 
+
+        <!-- TABLA DE CLIENTES -->
 
         <div class="contenedor-tabla">
 
@@ -158,6 +178,19 @@ Clientes - FitZone Store
 
                         </tr>
 
+                        {% else %}
+
+                        <tr>
+
+                            <td
+                                colspan="6"
+                                class="text-center py-4"
+                            >
+                                No existen clientes registrados.
+                            </td>
+
+                        </tr>
+
                         {% endfor %}
 
                     </tbody>
@@ -169,6 +202,8 @@ Clientes - FitZone Store
         </div>
 
 
+        <!-- INFORMACIÓN -->
+
         <div class="row mt-5">
 
             <div class="col-lg-8 mx-auto">
@@ -179,9 +214,10 @@ Clientes - FitZone Store
                         Información:
                     </strong>
 
-                    Los clientes presentados corresponden
-                    a datos de ejemplo utilizados para demostrar
-                    el funcionamiento dinámico de la aplicación Flask.
+                    Los clientes se mantienen temporalmente
+                    mediante estructuras de Python.
+                    En esta semana todavía no se utiliza una
+                    base de datos.
 
                 </div>
 
@@ -189,6 +225,8 @@ Clientes - FitZone Store
 
         </div>
 
+
+        <!-- VOLVER AL INICIO -->
 
         <div class="text-center mt-4">
 

@@ -14,6 +14,8 @@ Facturación - FitZone Store
     <div class="container">
 
 
+        <!-- ENCABEZADO DEL MÓDULO -->
+
         <div class="encabezado-modulo">
 
             <h1>
@@ -21,15 +23,31 @@ Facturación - FitZone Store
             </h1>
 
             <p>
-                En este módulo se presenta una factura
-                demostrativa correspondiente a una compra
-                realizada en FitZone Store. En esta etapa
-                del proyecto la información no se almacena
-                en una base de datos.
+                En este módulo se presenta la información
+                correspondiente a la facturación de FitZone Store.
+                Los datos se mantienen temporalmente durante
+                la ejecución de la aplicación y todavía no
+                se utiliza una base de datos.
             </p>
 
         </div>
 
+
+        <!-- BOTÓN PARA REGISTRAR FACTURA -->
+
+        <div class="d-flex justify-content-end mb-4">
+
+            <a
+                href="{{ url_for('registrar_facturacion') }}"
+                class="btn btn-primary"
+            >
+                + Registrar factura
+            </a>
+
+        </div>
+
+
+        <!-- RESUMEN DEL MÓDULO -->
 
         <div class="row g-4 mb-5">
 
@@ -88,8 +106,12 @@ Facturación - FitZone Store
         </div>
 
 
+        <!-- FACTURA -->
+
         <div class="factura">
 
+
+            <!-- ENCABEZADO DE LA FACTURA -->
 
             <div class="factura-encabezado">
 
@@ -148,6 +170,8 @@ Facturación - FitZone Store
 
             </div>
 
+
+            <!-- DATOS DEL CLIENTE Y COMPRA -->
 
             <div class="row mb-4">
 
@@ -213,7 +237,6 @@ Facturación - FitZone Store
                             Estado:
                         </strong>
 
-
                         {% if factura.pagada %}
 
                             <span class="estado-activo">
@@ -235,6 +258,8 @@ Facturación - FitZone Store
 
             </div>
 
+
+            <!-- DETALLE DE PRODUCTOS -->
 
             <div class="table-responsive">
 
@@ -267,7 +292,6 @@ Facturación - FitZone Store
 
                     <tbody>
 
-
                         {% for item in factura.detalle %}
 
                         <tr>
@@ -290,8 +314,20 @@ Facturación - FitZone Store
 
                         </tr>
 
-                        {% endfor %}
+                        {% else %}
 
+                        <tr>
+
+                            <td
+                                colspan="4"
+                                class="text-center py-4"
+                            >
+                                No existen productos registrados en la factura.
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
 
                     </tbody>
 
@@ -299,6 +335,8 @@ Facturación - FitZone Store
 
             </div>
 
+
+            <!-- TOTALES -->
 
             <div class="row justify-content-end mt-4">
 
@@ -359,19 +397,39 @@ Facturación - FitZone Store
             </div>
 
 
-            <div class="alert alert-success text-center mt-4">
+            <!-- ESTADO DE LA FACTURA -->
 
-                <strong>
-                    Compra procesada correctamente.
-                </strong>
+            {% if factura.pagada %}
 
-                Gracias por confiar en FitZone Store.
+                <div class="alert alert-success text-center mt-4">
 
-            </div>
+                    <strong>
+                        Compra procesada correctamente.
+                    </strong>
+
+                    Gracias por confiar en FitZone Store.
+
+                </div>
+
+            {% else %}
+
+                <div class="alert alert-warning text-center mt-4">
+
+                    <strong>
+                        Factura pendiente de pago.
+                    </strong>
+
+                    La información se encuentra registrada temporalmente.
+
+                </div>
+
+            {% endif %}
 
 
         </div>
 
+
+        <!-- INFORMACIÓN -->
 
         <div class="row mt-5">
 
@@ -383,10 +441,10 @@ Facturación - FitZone Store
                         Información:
                     </strong>
 
-                    Esta factura contiene datos demostrativos.
-                    En esta semana del proyecto todavía no
-                    se realiza almacenamiento de información
-                    ni procesamiento real de pagos.
+                    La información de facturación se mantiene
+                    temporalmente mediante estructuras de Python.
+                    En esta semana todavía no se utiliza una
+                    base de datos ni se procesan pagos reales.
 
                 </div>
 
@@ -394,6 +452,8 @@ Facturación - FitZone Store
 
         </div>
 
+
+        <!-- VOLVER AL INICIO -->
 
         <div class="text-center mt-4">
 

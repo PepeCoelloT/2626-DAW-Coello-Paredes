@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Registrar Producto - FitZone Store
+{% endblock %}
+
+
+{% block content %}
+
+
+<section class="modulo">
+
+    <div class="container">
+
+
+        <!-- ENCABEZADO -->
+
+        <div class="encabezado-modulo">
+
+            <h1>
+                Registrar producto
+            </h1>
+
+            <p>
+                Complete la información del producto.
+                Los datos serán procesados únicamente cuando
+                todos los campos cumplan las reglas de validación.
+            </p>
+
+        </div>
+
+
+        <div class="row justify-content-center">
+
+            <div class="col-lg-8">
+
+
+                <div class="tarjeta-modulo">
+
+
+                    <!-- FORMULARIO -->
+
+                    <form
+                        method="POST"
+                        novalidate
+                    >
+
+
+                        <!-- TOKEN DE PROTECCIÓN CSRF -->
+
+                        {{ form.hidden_tag() }}
+
+
+                        <!-- NOMBRE -->
+
+                        <div class="mb-4">
+
+                            {{ form.nombre.label(
+                                class="form-label fw-semibold"
+                            ) }}
+
+                            {% if form.nombre.errors %}
+
+                                {{ form.nombre(
+                                    class="form-control is-invalid",
+                                    placeholder="Ej. Mancuernas ajustables"
+                                ) }}
+
+                                <div class="invalid-feedback">
+
+                                    {% for error in form.nombre.errors %}
+
+                                        <div>
+                                            {{ error }}
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% else %}
+
+                                {{ form.nombre(
+                                    class="form-control",
+                                    placeholder="Ej. Mancuernas ajustables"
+                                ) }}
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- CATEGORÍA -->
+
+                        <div class="mb-4">
+
+                            {{ form.categoria.label(
+                                class="form-label fw-semibold"
+                            ) }}
+
+                            {% if form.categoria.errors %}
+
+                                {{ form.categoria(
+                                    class="form-select is-invalid"
+                                ) }}
+
+                                <div class="invalid-feedback">
+
+                                    {% for error in form.categoria.errors %}
+
+                                        <div>
+                                            {{ error }}
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% else %}
+
+                                {{ form.categoria(
+                                    class="form-select"
+                                ) }}
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- DESCRIPCIÓN -->
+
+                        <div class="mb-4">
+
+                            {{ form.descripcion.label(
+                                class="form-label fw-semibold"
+                            ) }}
+
+                            {% if form.descripcion.errors %}
+
+                                {{ form.descripcion(
+                                    class="form-control is-invalid",
+                                    rows="4",
+                                    placeholder="Describa las principales características del producto"
+                                ) }}
+
+                                <div class="invalid-feedback">
+
+                                    {% for error in form.descripcion.errors %}
+
+                                        <div>
+                                            {{ error }}
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% else %}
+
+                                {{ form.descripcion(
+                                    class="form-control",
+                                    rows="4",
+                                    placeholder="Describa las principales características del producto"
+                                ) }}
+
+                            {% endif %}
+
+                            <div class="form-text">
+                                La descripción debe tener entre 10 y 250 caracteres.
+                            </div>
+
+                        </div>
+
+
+                        <!-- STOCK -->
+
+                        <div class="mb-4">
+
+                            {{ form.stock.label(
+                                class="form-label fw-semibold"
+                            ) }}
+
+                            {% if form.stock.errors %}
+
+                                {{ form.stock(
+                                    class="form-control is-invalid",
+                                    min="0",
+                                    max="1000",
+                                    placeholder="Ej. 10"
+                                ) }}
+
+                                <div class="invalid-feedback">
+
+                                    {% for error in form.stock.errors %}
+
+                                        <div>
+                                            {{ error }}
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% else %}
+
+                                {{ form.stock(
+                                    class="form-control",
+                                    min="0",
+                                    max="1000",
+                                    placeholder="Ej. 10"
+                                ) }}
+
+                            {% endif %}
+
+                            <div class="form-text">
+                                Puede ingresar 0 si el producto se encuentra agotado.
+                            </div>
+
+                        </div>
+
+
+                        <!-- BOTONES -->
+
+                        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center mt-5">
+
+                            {{ form.submit(
+                                class="btn btn-primary px-4"
+                            ) }}
+
+                            <a
+                                href="{{ url_for('productos') }}"
+                                class="btn btn-outline-secondary px-4"
+                            >
+                                Cancelar
+                            </a>
+
+                        </div>
+
+
+                    </form>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+{% endblock %}

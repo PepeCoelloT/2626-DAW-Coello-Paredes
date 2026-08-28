@@ -1,0 +1,271 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Registrar Proveedor - FitZone Store
+{% endblock %}
+
+
+{% block content %}
+
+
+<section class="modulo">
+
+    <div class="container">
+
+
+        <!-- ENCABEZADO -->
+
+        <div class="encabezado-modulo">
+
+            <h1>
+                Registrar proveedor
+            </h1>
+
+            <p>
+                Complete la información del proveedor.
+                Los datos serán procesados únicamente cuando
+                cumplan correctamente las reglas de validación.
+            </p>
+
+        </div>
+
+
+        <div class="row justify-content-center">
+
+            <div class="col-lg-8">
+
+
+                <div class="tarjeta-modulo">
+
+
+                    <!-- FORMULARIO -->
+
+                    <form
+                        method="POST"
+                        novalidate
+                    >
+
+
+                        <!-- TOKEN DE PROTECCIÓN CSRF -->
+
+                        {{ form.hidden_tag() }}
+
+
+                        <!-- NOMBRE -->
+
+                        <div class="mb-4">
+
+                            {{ form.nombre.label(
+                                class="form-label fw-semibold"
+                            ) }}
+
+                            {% if form.nombre.errors %}
+
+                                {{ form.nombre(
+                                    class="form-control is-invalid",
+                                    placeholder="Ej. SportFit Ecuador"
+                                ) }}
+
+                                <div class="invalid-feedback">
+
+                                    {% for error in form.nombre.errors %}
+
+                                        <div>
+                                            {{ error }}
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% else %}
+
+                                {{ form.nombre(
+                                    class="form-control",
+                                    placeholder="Ej. SportFit Ecuador"
+                                ) }}
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- PRODUCTOS SUMINISTRADOS -->
+
+                        <div class="mb-4">
+
+                            {{ form.productos.label(
+                                class="form-label fw-semibold"
+                            ) }}
+
+                            {% if form.productos.errors %}
+
+                                {{ form.productos(
+                                    class="form-control is-invalid",
+                                    placeholder="Ej. Mancuernas y accesorios de fuerza"
+                                ) }}
+
+                                <div class="invalid-feedback">
+
+                                    {% for error in form.productos.errors %}
+
+                                        <div>
+                                            {{ error }}
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% else %}
+
+                                {{ form.productos(
+                                    class="form-control",
+                                    placeholder="Ej. Mancuernas y accesorios de fuerza"
+                                ) }}
+
+                            {% endif %}
+
+                            <div class="form-text">
+                                Indique los principales productos suministrados por el proveedor.
+                            </div>
+
+                        </div>
+
+
+                        <!-- CONTACTO -->
+
+                        <div class="mb-4">
+
+                            {{ form.contacto.label(
+                                class="form-label fw-semibold"
+                            ) }}
+
+                            {% if form.contacto.errors %}
+
+                                {{ form.contacto(
+                                    class="form-control is-invalid",
+                                    placeholder="Ej. 098 234 5678"
+                                ) }}
+
+                                <div class="invalid-feedback">
+
+                                    {% for error in form.contacto.errors %}
+
+                                        <div>
+                                            {{ error }}
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% else %}
+
+                                {{ form.contacto(
+                                    class="form-control",
+                                    placeholder="Ej. 098 234 5678"
+                                ) }}
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- CIUDAD -->
+
+                        <div class="mb-4">
+
+                            {{ form.ciudad.label(
+                                class="form-label fw-semibold"
+                            ) }}
+
+                            {% if form.ciudad.errors %}
+
+                                {{ form.ciudad(
+                                    class="form-control is-invalid",
+                                    placeholder="Ej. Quito"
+                                ) }}
+
+                                <div class="invalid-feedback">
+
+                                    {% for error in form.ciudad.errors %}
+
+                                        <div>
+                                            {{ error }}
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% else %}
+
+                                {{ form.ciudad(
+                                    class="form-control",
+                                    placeholder="Ej. Quito"
+                                ) }}
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- ESTADO -->
+
+                        <div class="mb-4">
+
+                            <div class="form-check">
+
+                                {{ form.activo(
+                                    class="form-check-input"
+                                ) }}
+
+                                {{ form.activo.label(
+                                    class="form-check-label fw-semibold"
+                                ) }}
+
+                            </div>
+
+                            <div class="form-text">
+                                Mantenga esta opción seleccionada si el proveedor se encuentra activo.
+                            </div>
+
+                        </div>
+
+
+                        <!-- BOTONES -->
+
+                        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center mt-5">
+
+                            {{ form.submit(
+                                class="btn btn-primary px-4"
+                            ) }}
+
+                            <a
+                                href="{{ url_for('proveedores') }}"
+                                class="btn btn-outline-secondary px-4"
+                            >
+                                Cancelar
+                            </a>
+
+                        </div>
+
+
+                    </form>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+{% endblock %}

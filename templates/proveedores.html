@@ -14,6 +14,8 @@ Proveedores - FitZone Store
     <div class="container">
 
 
+        <!-- ENCABEZADO DEL MÓDULO -->
+
         <div class="encabezado-modulo">
 
             <h1>
@@ -22,14 +24,30 @@ Proveedores - FitZone Store
 
             <p>
                 En este módulo se presenta información
-                demostrativa de los proveedores asociados
-                a FitZone Store. En esta etapa del proyecto
-                los datos no se encuentran almacenados
-                en una base de datos.
+                de los proveedores registrados en FitZone Store.
+                Los datos se mantienen temporalmente durante
+                la ejecución de la aplicación y todavía no
+                se utiliza una base de datos.
             </p>
 
         </div>
 
+
+        <!-- BOTÓN PARA REGISTRAR PROVEEDOR -->
+
+        <div class="d-flex justify-content-end mb-4">
+
+            <a
+                href="{{ url_for('registrar_proveedor') }}"
+                class="btn btn-primary"
+            >
+                + Registrar proveedor
+            </a>
+
+        </div>
+
+
+        <!-- RESUMEN DEL MÓDULO -->
 
         <div class="row g-4 mb-5">
 
@@ -87,6 +105,8 @@ Proveedores - FitZone Store
 
         </div>
 
+
+        <!-- TABLA DE PROVEEDORES -->
 
         <div class="contenedor-tabla">
 
@@ -158,6 +178,19 @@ Proveedores - FitZone Store
 
                         </tr>
 
+                        {% else %}
+
+                        <tr>
+
+                            <td
+                                colspan="6"
+                                class="text-center py-4"
+                            >
+                                No existen proveedores registrados.
+                            </td>
+
+                        </tr>
+
                         {% endfor %}
 
                     </tbody>
@@ -169,6 +202,8 @@ Proveedores - FitZone Store
         </div>
 
 
+        <!-- INFORMACIÓN -->
+
         <div class="row mt-5">
 
             <div class="col-lg-8 mx-auto">
@@ -179,11 +214,10 @@ Proveedores - FitZone Store
                         Información:
                     </strong>
 
-                    Los proveedores mostrados corresponden
-                    a datos demostrativos utilizados para
-                    representar dinámicamente este módulo.
-                    En esta semana todavía no se utiliza
-                    una base de datos.
+                    Los proveedores se mantienen temporalmente
+                    mediante estructuras de Python.
+                    En esta semana todavía no se utiliza una
+                    base de datos.
 
                 </div>
 
@@ -191,6 +225,8 @@ Proveedores - FitZone Store
 
         </div>
 
+
+        <!-- VOLVER AL INICIO -->
 
         <div class="text-center mt-4">
 

@@ -14,6 +14,8 @@ Productos - FitZone Store
     <div class="container">
 
 
+        <!-- ENCABEZADO DEL MÓDULO -->
+
         <div class="encabezado-modulo">
 
             <h1>
@@ -23,12 +25,29 @@ Productos - FitZone Store
             <p>
                 En este módulo se presentan los principales
                 productos deportivos disponibles en FitZone Store.
-                Los datos mostrados son demostrativos y no se
-                encuentran conectados a una base de datos.
+                Los datos se mantienen temporalmente durante la
+                ejecución de la aplicación y todavía no se utiliza
+                una base de datos.
             </p>
 
         </div>
 
+
+        <!-- BOTÓN PARA REGISTRAR PRODUCTO -->
+
+        <div class="d-flex justify-content-end mb-4">
+
+            <a
+                href="{{ url_for('registrar_producto') }}"
+                class="btn btn-primary"
+            >
+                + Registrar producto
+            </a>
+
+        </div>
+
+
+        <!-- RESUMEN DEL MÓDULO -->
 
         <div class="row g-4 mb-5">
 
@@ -86,6 +105,8 @@ Productos - FitZone Store
 
         </div>
 
+
+        <!-- TABLA DE PRODUCTOS -->
 
         <div class="contenedor-tabla">
 
@@ -152,6 +173,19 @@ Productos - FitZone Store
 
                         </tr>
 
+                        {% else %}
+
+                        <tr>
+
+                            <td
+                                colspan="5"
+                                class="text-center py-4"
+                            >
+                                No existen productos registrados.
+                            </td>
+
+                        </tr>
+
                         {% endfor %}
 
                     </tbody>
@@ -163,6 +197,8 @@ Productos - FitZone Store
         </div>
 
 
+        <!-- INFORMACIÓN -->
+
         <div class="row mt-5">
 
             <div class="col-lg-8 mx-auto">
@@ -173,8 +209,10 @@ Productos - FitZone Store
                         Información:
                     </strong>
 
-                    Los productos son datos de ejemplo.
-                    La aplicación todavía no utiliza una base de datos.
+                    Los productos se mantienen temporalmente
+                    mediante estructuras de Python.
+                    En esta semana todavía no se utiliza una
+                    base de datos.
 
                 </div>
 
@@ -182,6 +220,8 @@ Productos - FitZone Store
 
         </div>
 
+
+        <!-- VOLVER AL INICIO -->
 
         <div class="text-center mt-4">
 

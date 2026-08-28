@@ -1,0 +1,267 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Registrar Cliente - FitZone Store
+{% endblock %}
+
+
+{% block content %}
+
+
+<section class="modulo">
+
+    <div class="container">
+
+
+        <!-- ENCABEZADO -->
+
+        <div class="encabezado-modulo">
+
+            <h1>
+                Registrar cliente
+            </h1>
+
+            <p>
+                Complete la información del cliente.
+                Los datos serán procesados únicamente cuando
+                cumplan correctamente las reglas de validación.
+            </p>
+
+        </div>
+
+
+        <div class="row justify-content-center">
+
+            <div class="col-lg-8">
+
+
+                <div class="tarjeta-modulo">
+
+
+                    <!-- FORMULARIO -->
+
+                    <form
+                        method="POST"
+                        novalidate
+                    >
+
+
+                        <!-- TOKEN DE PROTECCIÓN CSRF -->
+
+                        {{ form.hidden_tag() }}
+
+
+                        <!-- NOMBRE -->
+
+                        <div class="mb-4">
+
+                            {{ form.nombre.label(
+                                class="form-label fw-semibold"
+                            ) }}
+
+                            {% if form.nombre.errors %}
+
+                                {{ form.nombre(
+                                    class="form-control is-invalid",
+                                    placeholder="Ej. María López"
+                                ) }}
+
+                                <div class="invalid-feedback">
+
+                                    {% for error in form.nombre.errors %}
+
+                                        <div>
+                                            {{ error }}
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% else %}
+
+                                {{ form.nombre(
+                                    class="form-control",
+                                    placeholder="Ej. María López"
+                                ) }}
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- CORREO -->
+
+                        <div class="mb-4">
+
+                            {{ form.correo.label(
+                                class="form-label fw-semibold"
+                            ) }}
+
+                            {% if form.correo.errors %}
+
+                                {{ form.correo(
+                                    class="form-control is-invalid",
+                                    placeholder="Ej. maria@email.com"
+                                ) }}
+
+                                <div class="invalid-feedback">
+
+                                    {% for error in form.correo.errors %}
+
+                                        <div>
+                                            {{ error }}
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% else %}
+
+                                {{ form.correo(
+                                    class="form-control",
+                                    placeholder="Ej. maria@email.com"
+                                ) }}
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- TELÉFONO -->
+
+                        <div class="mb-4">
+
+                            {{ form.telefono.label(
+                                class="form-label fw-semibold"
+                            ) }}
+
+                            {% if form.telefono.errors %}
+
+                                {{ form.telefono(
+                                    class="form-control is-invalid",
+                                    placeholder="Ej. 098 456 7821"
+                                ) }}
+
+                                <div class="invalid-feedback">
+
+                                    {% for error in form.telefono.errors %}
+
+                                        <div>
+                                            {{ error }}
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% else %}
+
+                                {{ form.telefono(
+                                    class="form-control",
+                                    placeholder="Ej. 098 456 7821"
+                                ) }}
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- CIUDAD -->
+
+                        <div class="mb-4">
+
+                            {{ form.ciudad.label(
+                                class="form-label fw-semibold"
+                            ) }}
+
+                            {% if form.ciudad.errors %}
+
+                                {{ form.ciudad(
+                                    class="form-control is-invalid",
+                                    placeholder="Ej. Puyo"
+                                ) }}
+
+                                <div class="invalid-feedback">
+
+                                    {% for error in form.ciudad.errors %}
+
+                                        <div>
+                                            {{ error }}
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% else %}
+
+                                {{ form.ciudad(
+                                    class="form-control",
+                                    placeholder="Ej. Puyo"
+                                ) }}
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- ESTADO -->
+
+                        <div class="mb-4">
+
+                            <div class="form-check">
+
+                                {{ form.activo(
+                                    class="form-check-input"
+                                ) }}
+
+                                {{ form.activo.label(
+                                    class="form-check-label fw-semibold"
+                                ) }}
+
+                            </div>
+
+                            <div class="form-text">
+                                Mantenga esta opción seleccionada si el cliente se encuentra activo.
+                            </div>
+
+                        </div>
+
+
+                        <!-- BOTONES -->
+
+                        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center mt-5">
+
+                            {{ form.submit(
+                                class="btn btn-primary px-4"
+                            ) }}
+
+                            <a
+                                href="{{ url_for('clientes') }}"
+                                class="btn btn-outline-secondary px-4"
+                            >
+                                Cancelar
+                            </a>
+
+                        </div>
+
+
+                    </form>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+{% endblock %}

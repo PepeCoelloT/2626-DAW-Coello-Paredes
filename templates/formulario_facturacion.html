@@ -1,0 +1,536 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Registrar Factura - FitZone Store
+{% endblock %}
+
+
+{% block content %}
+
+
+<section class="modulo">
+
+    <div class="container">
+
+
+        <!-- ENCABEZADO -->
+
+        <div class="encabezado-modulo">
+
+            <h1>
+                Registrar factura
+            </h1>
+
+            <p>
+                Complete la información correspondiente a la factura.
+                Los datos serán procesados únicamente cuando
+                todas las reglas de validación se cumplan correctamente.
+            </p>
+
+        </div>
+
+
+        <div class="row justify-content-center">
+
+            <div class="col-lg-9">
+
+
+                <div class="tarjeta-modulo">
+
+
+                    <!-- FORMULARIO -->
+
+                    <form
+                        method="POST"
+                        novalidate
+                    >
+
+
+                        <!-- TOKEN DE PROTECCIÓN CSRF -->
+
+                        {{ form.hidden_tag() }}
+
+
+                        <!-- DATOS DE LA FACTURA -->
+
+                        <h4 class="mb-4 text-primary">
+                            Datos de la factura
+                        </h4>
+
+
+                        <div class="row">
+
+
+                            <!-- NÚMERO DE FACTURA -->
+
+                            <div class="col-md-6 mb-4">
+
+                                {{ form.numero.label(
+                                    class="form-label fw-semibold"
+                                ) }}
+
+                                {% if form.numero.errors %}
+
+                                    {{ form.numero(
+                                        class="form-control is-invalid",
+                                        placeholder="Ej. FZ-001-0004"
+                                    ) }}
+
+                                    <div class="invalid-feedback">
+
+                                        {% for error in form.numero.errors %}
+
+                                            <div>
+                                                {{ error }}
+                                            </div>
+
+                                        {% endfor %}
+
+                                    </div>
+
+                                {% else %}
+
+                                    {{ form.numero(
+                                        class="form-control",
+                                        placeholder="Ej. FZ-001-0004"
+                                    ) }}
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- FECHA -->
+
+                            <div class="col-md-6 mb-4">
+
+                                {{ form.fecha.label(
+                                    class="form-label fw-semibold"
+                                ) }}
+
+                                {% if form.fecha.errors %}
+
+                                    {{ form.fecha(
+                                        class="form-control is-invalid"
+                                    ) }}
+
+                                    <div class="invalid-feedback">
+
+                                        {% for error in form.fecha.errors %}
+
+                                            <div>
+                                                {{ error }}
+                                            </div>
+
+                                        {% endfor %}
+
+                                    </div>
+
+                                {% else %}
+
+                                    {{ form.fecha(
+                                        class="form-control"
+                                    ) }}
+
+                                {% endif %}
+
+                            </div>
+
+
+                        </div>
+
+
+                        <hr class="my-4">
+
+
+                        <!-- DATOS DEL CLIENTE -->
+
+                        <h4 class="mb-4 text-primary">
+                            Datos del cliente
+                        </h4>
+
+
+                        <!-- NOMBRE DEL CLIENTE -->
+
+                        <div class="mb-4">
+
+                            {{ form.cliente_nombre.label(
+                                class="form-label fw-semibold"
+                            ) }}
+
+                            {% if form.cliente_nombre.errors %}
+
+                                {{ form.cliente_nombre(
+                                    class="form-control is-invalid",
+                                    placeholder="Ej. María López"
+                                ) }}
+
+                                <div class="invalid-feedback">
+
+                                    {% for error in form.cliente_nombre.errors %}
+
+                                        <div>
+                                            {{ error }}
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% else %}
+
+                                {{ form.cliente_nombre(
+                                    class="form-control",
+                                    placeholder="Ej. María López"
+                                ) }}
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="row">
+
+
+                            <!-- CORREO -->
+
+                            <div class="col-md-6 mb-4">
+
+                                {{ form.cliente_correo.label(
+                                    class="form-label fw-semibold"
+                                ) }}
+
+                                {% if form.cliente_correo.errors %}
+
+                                    {{ form.cliente_correo(
+                                        class="form-control is-invalid",
+                                        placeholder="Ej. maria@email.com"
+                                    ) }}
+
+                                    <div class="invalid-feedback">
+
+                                        {% for error in form.cliente_correo.errors %}
+
+                                            <div>
+                                                {{ error }}
+                                            </div>
+
+                                        {% endfor %}
+
+                                    </div>
+
+                                {% else %}
+
+                                    {{ form.cliente_correo(
+                                        class="form-control",
+                                        placeholder="Ej. maria@email.com"
+                                    ) }}
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- TELÉFONO -->
+
+                            <div class="col-md-6 mb-4">
+
+                                {{ form.cliente_telefono.label(
+                                    class="form-label fw-semibold"
+                                ) }}
+
+                                {% if form.cliente_telefono.errors %}
+
+                                    {{ form.cliente_telefono(
+                                        class="form-control is-invalid",
+                                        placeholder="Ej. 098 456 7821"
+                                    ) }}
+
+                                    <div class="invalid-feedback">
+
+                                        {% for error in form.cliente_telefono.errors %}
+
+                                            <div>
+                                                {{ error }}
+                                            </div>
+
+                                        {% endfor %}
+
+                                    </div>
+
+                                {% else %}
+
+                                    {{ form.cliente_telefono(
+                                        class="form-control",
+                                        placeholder="Ej. 098 456 7821"
+                                    ) }}
+
+                                {% endif %}
+
+                            </div>
+
+
+                        </div>
+
+
+                        <hr class="my-4">
+
+
+                        <!-- INFORMACIÓN DE PAGO -->
+
+                        <h4 class="mb-4 text-primary">
+                            Información de pago
+                        </h4>
+
+
+                        <!-- FORMA DE PAGO -->
+
+                        <div class="mb-4">
+
+                            {{ form.forma_pago.label(
+                                class="form-label fw-semibold"
+                            ) }}
+
+                            {% if form.forma_pago.errors %}
+
+                                {{ form.forma_pago(
+                                    class="form-select is-invalid"
+                                ) }}
+
+                                <div class="invalid-feedback">
+
+                                    {% for error in form.forma_pago.errors %}
+
+                                        <div>
+                                            {{ error }}
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% else %}
+
+                                {{ form.forma_pago(
+                                    class="form-select"
+                                ) }}
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- ESTADO DE PAGO -->
+
+                        <div class="mb-4">
+
+                            <div class="form-check">
+
+                                {{ form.pagada(
+                                    class="form-check-input"
+                                ) }}
+
+                                {{ form.pagada.label(
+                                    class="form-check-label fw-semibold"
+                                ) }}
+
+                            </div>
+
+                            <div class="form-text">
+                                Mantenga esta opción seleccionada si la factura ya fue pagada.
+                            </div>
+
+                        </div>
+
+
+                        <hr class="my-4">
+
+
+                        <!-- DETALLE DEL PRODUCTO -->
+
+                        <h4 class="mb-4 text-primary">
+                            Detalle del producto
+                        </h4>
+
+
+                        <!-- PRODUCTO -->
+
+                        <div class="mb-4">
+
+                            {{ form.producto.label(
+                                class="form-label fw-semibold"
+                            ) }}
+
+                            {% if form.producto.errors %}
+
+                                {{ form.producto(
+                                    class="form-control is-invalid",
+                                    placeholder="Ej. Mancuernas"
+                                ) }}
+
+                                <div class="invalid-feedback">
+
+                                    {% for error in form.producto.errors %}
+
+                                        <div>
+                                            {{ error }}
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% else %}
+
+                                {{ form.producto(
+                                    class="form-control",
+                                    placeholder="Ej. Mancuernas"
+                                ) }}
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="row">
+
+
+                            <!-- CANTIDAD -->
+
+                            <div class="col-md-6 mb-4">
+
+                                {{ form.cantidad.label(
+                                    class="form-label fw-semibold"
+                                ) }}
+
+                                {% if form.cantidad.errors %}
+
+                                    {{ form.cantidad(
+                                        class="form-control is-invalid",
+                                        min="1",
+                                        max="100",
+                                        placeholder="Ej. 2"
+                                    ) }}
+
+                                    <div class="invalid-feedback">
+
+                                        {% for error in form.cantidad.errors %}
+
+                                            <div>
+                                                {{ error }}
+                                            </div>
+
+                                        {% endfor %}
+
+                                    </div>
+
+                                {% else %}
+
+                                    {{ form.cantidad(
+                                        class="form-control",
+                                        min="1",
+                                        max="100",
+                                        placeholder="Ej. 2"
+                                    ) }}
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- PRECIO -->
+
+                            <div class="col-md-6 mb-4">
+
+                                {{ form.precio.label(
+                                    class="form-label fw-semibold"
+                                ) }}
+
+                                {% if form.precio.errors %}
+
+                                    {{ form.precio(
+                                        class="form-control is-invalid",
+                                        min="0.01",
+                                        max="10000",
+                                        step="0.01",
+                                        placeholder="Ej. 35.00"
+                                    ) }}
+
+                                    <div class="invalid-feedback">
+
+                                        {% for error in form.precio.errors %}
+
+                                            <div>
+                                                {{ error }}
+                                            </div>
+
+                                        {% endfor %}
+
+                                    </div>
+
+                                {% else %}
+
+                                    {{ form.precio(
+                                        class="form-control",
+                                        min="0.01",
+                                        max="10000",
+                                        step="0.01",
+                                        placeholder="Ej. 35.00"
+                                    ) }}
+
+                                {% endif %}
+
+                                <div class="form-text">
+                                    Ingrese el precio unitario del producto.
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+                        <!-- INFORMACIÓN -->
+
+                        <div class="alert alert-info mt-3">
+
+                            El subtotal, IVA y total de la factura serán
+                            calculados automáticamente por la aplicación.
+                        </div>
+
+
+                        <!-- BOTONES -->
+
+                        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center mt-5">
+
+                            {{ form.submit(
+                                class="btn btn-primary px-4"
+                            ) }}
+
+                            <a
+                                href="{{ url_for('facturacion') }}"
+                                class="btn btn-outline-secondary px-4"
+                            >
+                                Cancelar
+                            </a>
+
+                        </div>
+
+
+                    </form>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+{% endblock %}

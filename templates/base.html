@@ -37,18 +37,58 @@
         href="{{ url_for('static', filename='css/style.css') }}"
     >
 
+
+    {% block extra_css %}
+
+    {% endblock %}
+
 </head>
 
 
 <body>
 
 
-    <!-- COMPONENTE REUTILIZABLE -->
+    <!-- COMPONENTE REUTILIZABLE: BARRA DE NAVEGACIÓN -->
 
     {% include "components/navbar.html" %}
 
 
-    <!-- CONTENIDO DE CADA PÁGINA -->
+    <!-- MENSAJES GENERADOS POR FLASK -->
+
+    <div class="container mt-3">
+
+        {% with mensajes = get_flashed_messages(with_categories=true) %}
+
+            {% if mensajes %}
+
+                {% for categoria, mensaje in mensajes %}
+
+                    <div
+                        class="alert alert-{{ categoria }} alert-dismissible fade show"
+                        role="alert"
+                    >
+
+                        {{ mensaje }}
+
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert"
+                            aria-label="Cerrar"
+                        ></button>
+
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+    </div>
+
+
+    <!-- CONTENIDO PRINCIPAL DE CADA PÁGINA -->
 
     <main>
 
@@ -59,31 +99,9 @@
     </main>
 
 
-    <!-- PIE DE PÁGINA -->
+    <!-- COMPONENTE REUTILIZABLE: PIE DE PÁGINA -->
 
-    <footer>
-
-        <div class="container">
-
-            <p>
-                Elaborado por: Paul Paredes y Jose Coello
-            </p>
-
-            <p>
-                Asignatura: Desarrollo de Aplicaciones Web
-            </p>
-
-            <p>
-                Proyecto Integrador - Semana 10
-            </p>
-
-            <p>
-                FitZone Store - 2026
-            </p>
-
-        </div>
-
-    </footer>
+    {% include "components/footer.html" %}
 
 
     <!-- JAVASCRIPT DE BOOTSTRAP -->
@@ -99,6 +117,8 @@
         src="{{ url_for('static', filename='js/script.js') }}"
     ></script>
 
+
+    <!-- JAVASCRIPT ESPECÍFICO DE CADA PÁGINA -->
 
     {% block scripts %}
 
