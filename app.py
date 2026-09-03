@@ -1,3 +1,6 @@
+import os
+import sqlite3
+
 from flask import (
     Flask,
     render_template,
@@ -22,63 +25,178 @@ app = Flask(__name__)
 # =========================================================
 
 # Clave necesaria para la protección CSRF de Flask-WTF.
-# En esta etapa académica se utiliza una clave local.
+# Se mantiene la configuración desarrollada en la Semana 11.
 app.config["SECRET_KEY"] = "fitzone-store-semana11-2026"
 
 
 # =========================================================
-# DATOS TEMPORALES DEL SISTEMA
-# SEMANA 11 - FORMULARIOS Y VALIDACIÓN
+# BASE DE DATOS SQLITE
+# SEMANA 12 - PERSISTENCIA LOCAL
+# =========================================================
+
+# Ruta absoluta del directorio principal del proyecto.
+BASE_DIR = os.path.abspath(
+    os.path.dirname(__file__)
+)
+
+# Carpeta destinada al almacenamiento local.
+DATA_DIR = os.path.join(
+    BASE_DIR,
+    "data"
+)
+
+# Se crea la carpeta data si todavía no existe.
+os.makedirs(
+    DATA_DIR,
+    exist_ok=True
+)
+
+# Nombre solicitado en la actividad de Semana 12.
+DATABASE = os.path.join(
+    DATA_DIR,
+    "ferreteria.db"
+)
+
+
+# ---------------------------------------------------------
+# CONEXIÓN A SQLITE
+# ---------------------------------------------------------
+
+def obtener_conexion():
+
+    conn = sqlite3.connect(
+        DATABASE
+    )
+
+    # Permite acceder a las columnas utilizando su nombre.
+    # Ejemplo:
+    # producto["nombre"]
+    conn.row_factory = sqlite3.Row
+
+    return conn
+
+
+# ---------------------------------------------------------
+# INICIALIZACIÓN DE LA BASE DE DATOS
+# ---------------------------------------------------------
+
+def inicializar_base_datos():
+
+    conn = obtener_conexion()
+
+    cursor = conn.cursor()
+
+    # -----------------------------------------------------
+    # TABLA PRODUCTOS
+    # -----------------------------------------------------
+
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS productos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT NOT NULL,
+            categoria TEXT NOT NULL,
+            descripcion TEXT NOT NULL,
+            stock INTEGER NOT NULL
+        )
+        """
+    )
+
+
+    # -----------------------------------------------------
+    # PRODUCTOS INICIALES DEL PROYECTO
+    # -----------------------------------------------------
+    #
+    # Estos registros corresponden a los productos que ya
+    # existían durante la Semana 11.
+    #
+    # Solamente se insertan cuando la tabla se encuentra
+    # completamente vacía.
+    #
+    # Después de esta inicialización, SQLite constituye el
+    # mecanismo principal de almacenamiento del módulo.
+    # -----------------------------------------------------
+
+    cursor.execute(
+        """
+        SELECT COUNT(*)
+        FROM productos
+        """
+    )
+
+    cantidad_productos = cursor.fetchone()[0]
+
+    if cantidad_productos == 0:
+
+        productos_iniciales = [
+            (
+                "Bandas elásticas",
+                "Fuerza",
+                "Ideales para ejercicios de fuerza, movilidad y entrenamiento funcional.",
+                10
+            ),
+            (
+                "Mancuernas",
+                "Fuerza",
+                "Accesorios para entrenar brazos, hombros, espalda y piernas.",
+                8
+            ),
+            (
+                "Colchonetas",
+                "Movilidad",
+                "Recomendadas para yoga, abdominales y estiramientos.",
+                0
+            ),
+            (
+                "Botellas deportivas",
+                "Accesorios",
+                "Útiles para mantener una correcta hidratación durante el entrenamiento.",
+                15
+            ),
+            (
+                "Guantes de gimnasio",
+                "Accesorios",
+                "Brindan comodidad y protección durante ejercicios con peso.",
+                6
+            ),
+            (
+                "Ropa deportiva",
+                "Ropa deportiva",
+                "Prendas cómodas para entrenamientos en casa, gimnasio o al aire libre.",
+                0
+            )
+        ]
+
+        cursor.executemany(
+            """
+            INSERT INTO productos (
+                nombre,
+                categoria,
+                descripcion,
+                stock
+            )
+            VALUES (?, ?, ?, ?)
+            """,
+            productos_iniciales
+        )
+
+    # Guarda definitivamente los cambios realizados.
+    conn.commit()
+
+    # Cierra correctamente la conexión.
+    conn.close()
+
+
+# =========================================================
+# DATOS TEMPORALES DE LOS DEMÁS MÓDULOS
 # =========================================================
 #
-# En esta etapa todavía no se utiliza una base de datos.
-# Los datos permanecen en memoria mientras la aplicación
-# se encuentra en ejecución.
+# Durante la Semana 12 la persistencia obligatoria se
+# implementa en el módulo de productos.
+#
+# Clientes, proveedores y facturación conservan por ahora
+# la lógica desarrollada durante la Semana 11.
 # =========================================================
-
-
-# ---------------------------------------------------------
-# PRODUCTOS
-# ---------------------------------------------------------
-
-lista_productos = [
-    {
-        "nombre": "Bandas elásticas",
-        "categoria": "Fuerza",
-        "descripcion": "Ideales para ejercicios de fuerza, movilidad y entrenamiento funcional.",
-        "stock": 10
-    },
-    {
-        "nombre": "Mancuernas",
-        "categoria": "Fuerza",
-        "descripcion": "Accesorios para entrenar brazos, hombros, espalda y piernas.",
-        "stock": 8
-    },
-    {
-        "nombre": "Colchonetas",
-        "categoria": "Movilidad",
-        "descripcion": "Recomendadas para yoga, abdominales y estiramientos.",
-        "stock": 0
-    },
-    {
-        "nombre": "Botellas deportivas",
-        "categoria": "Accesorios",
-        "descripcion": "Útiles para mantener una correcta hidratación durante el entrenamiento.",
-        "stock": 15
-    },
-    {
-        "nombre": "Guantes de gimnasio",
-        "categoria": "Accesorios",
-        "descripcion": "Brindan comodidad y protección durante ejercicios con peso.",
-        "stock": 6
-    },
-    {
-        "nombre": "Ropa deportiva",
-        "categoria": "Ropa deportiva",
-        "descripcion": "Prendas cómodas para entrenamientos en casa, gimnasio o al aire libre.",
-        "stock": 0
-    }
-]
 
 
 # ---------------------------------------------------------
@@ -220,17 +338,50 @@ def inicio():
 
 # =========================================================
 # PRODUCTOS
+# SEMANA 12 - SQLITE
 # =========================================================
 
 
 # ---------------------------------------------------------
 # LISTADO DE PRODUCTOS
+# SELECT + FETCHALL
 # ---------------------------------------------------------
 
 @app.route("/productos")
 def productos():
 
     titulo = "Gestión de Productos"
+
+    # Se establece una conexión con SQLite.
+    conn = obtener_conexion()
+
+    cursor = conn.cursor()
+
+    # Se recuperan todos los productos almacenados
+    # persistentemente en la base de datos.
+    cursor.execute(
+        """
+        SELECT
+            id,
+            nombre,
+            categoria,
+            descripcion,
+            stock
+        FROM productos
+        ORDER BY id ASC
+        """
+    )
+
+    # La actividad solicita utilizar fetchall().
+    lista_productos = cursor.fetchall()
+
+    # Se cierra la conexión después de recuperar los datos.
+    conn.close()
+
+
+    # -----------------------------------------------------
+    # RESUMEN DE PRODUCTOS
+    # -----------------------------------------------------
 
     disponibles = sum(
         1
@@ -244,6 +395,9 @@ def productos():
         if producto["stock"] == 0
     )
 
+
+    # Los registros recuperados desde SQLite se envían
+    # hacia la plantilla productos.html.
     return render_template(
         "productos.html",
         titulo=titulo,
@@ -255,6 +409,7 @@ def productos():
 
 # ---------------------------------------------------------
 # REGISTRAR PRODUCTO
+# VALIDACIÓN + INSERT
 # ---------------------------------------------------------
 
 @app.route(
@@ -265,18 +420,42 @@ def registrar_producto():
 
     form = ProductoForm()
 
+    # Solamente se almacena información cuando todas
+    # las reglas de validación de WTForms se cumplen.
     if form.validate_on_submit():
 
-        nuevo_producto = {
-            "nombre": form.nombre.data,
-            "categoria": form.categoria.data,
-            "descripcion": form.descripcion.data,
-            "stock": form.stock.data
-        }
+        conn = obtener_conexion()
 
-        lista_productos.append(
-            nuevo_producto
+        cursor = conn.cursor()
+
+        # Consulta SQL parametrizada.
+        #
+        # Se utilizan signos ? para evitar concatenar
+        # directamente los datos recibidos del usuario.
+        cursor.execute(
+            """
+            INSERT INTO productos (
+                nombre,
+                categoria,
+                descripcion,
+                stock
+            )
+            VALUES (?, ?, ?, ?)
+            """,
+            (
+                form.nombre.data,
+                form.categoria.data,
+                form.descripcion.data,
+                form.stock.data
+            )
         )
+
+        # Confirma el INSERT y almacena el registro
+        # permanentemente en ferreteria.db.
+        conn.commit()
+
+        # Cierra correctamente la conexión.
+        conn.close()
 
         flash(
             "Producto registrado correctamente.",
@@ -553,6 +732,10 @@ def registrar_facturacion():
 # =========================================================
 
 if __name__ == "__main__":
+
+    # Antes de iniciar Flask se comprueba la existencia
+    # de la base de datos y de la tabla productos.
+    inicializar_base_datos()
 
     app.run(
         debug=True

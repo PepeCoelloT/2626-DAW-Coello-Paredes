@@ -23,11 +23,10 @@ Productos - FitZone Store
             </h1>
 
             <p>
-                En este módulo se presentan los principales
-                productos deportivos disponibles en FitZone Store.
-                Los datos se mantienen temporalmente durante la
-                ejecución de la aplicación y todavía no se utiliza
-                una base de datos.
+                En este módulo se presentan los productos
+                deportivos registrados en FitZone Store.
+                La información se almacena de forma persistente
+                en una base de datos local SQLite.
             </p>
 
         </div>
@@ -52,6 +51,8 @@ Productos - FitZone Store
         <div class="row g-4 mb-5">
 
 
+            <!-- TOTAL DE PRODUCTOS -->
+
             <div class="col-md-4">
 
                 <div class="tarjeta-modulo text-center">
@@ -69,6 +70,8 @@ Productos - FitZone Store
             </div>
 
 
+            <!-- PRODUCTOS DISPONIBLES -->
+
             <div class="col-md-4">
 
                 <div class="tarjeta-modulo text-center">
@@ -85,6 +88,8 @@ Productos - FitZone Store
 
             </div>
 
+
+            <!-- PRODUCTOS AGOTADOS -->
 
             <div class="col-md-4">
 
@@ -118,11 +123,29 @@ Productos - FitZone Store
 
                         <tr>
 
-                            <th>#</th>
-                            <th>Producto</th>
-                            <th>Categoría</th>
-                            <th>Descripción</th>
-                            <th>Estado</th>
+                            <th>
+                                ID
+                            </th>
+
+                            <th>
+                                Producto
+                            </th>
+
+                            <th>
+                                Categoría
+                            </th>
+
+                            <th>
+                                Descripción
+                            </th>
+
+                            <th>
+                                Stock
+                            </th>
+
+                            <th>
+                                Estado
+                            </th>
 
                         </tr>
 
@@ -131,27 +154,59 @@ Productos - FitZone Store
 
                     <tbody>
 
+
+                        <!--
+                            Los productos recibidos desde Flask
+                            provienen de la consulta SELECT realizada
+                            sobre la base de datos SQLite.
+                        -->
+
                         {% for producto in productos %}
+
 
                         <tr>
 
-                            <td>
-                                {{ loop.index }}
-                            </td>
+
+                            <!-- CLAVE PRIMARIA -->
 
                             <td>
+                                {{ producto.id }}
+                            </td>
+
+
+                            <!-- NOMBRE -->
+
+                            <td>
+
                                 <strong>
                                     {{ producto.nombre }}
                                 </strong>
+
                             </td>
+
+
+                            <!-- CATEGORÍA -->
 
                             <td>
                                 {{ producto.categoria }}
                             </td>
 
+
+                            <!-- DESCRIPCIÓN -->
+
                             <td>
                                 {{ producto.descripcion }}
                             </td>
+
+
+                            <!-- STOCK -->
+
+                            <td>
+                                {{ producto.stock }}
+                            </td>
+
+
+                            <!-- ESTADO -->
 
                             <td>
 
@@ -171,14 +226,19 @@ Productos - FitZone Store
 
                             </td>
 
+
                         </tr>
 
+
                         {% else %}
+
+
+                        <!-- MENSAJE CUANDO NO EXISTEN REGISTROS -->
 
                         <tr>
 
                             <td
-                                colspan="5"
+                                colspan="6"
                                 class="text-center py-4"
                             >
                                 No existen productos registrados.
@@ -186,7 +246,9 @@ Productos - FitZone Store
 
                         </tr>
 
+
                         {% endfor %}
+
 
                     </tbody>
 
@@ -197,7 +259,7 @@ Productos - FitZone Store
         </div>
 
 
-        <!-- INFORMACIÓN -->
+        <!-- INFORMACIÓN SOBRE PERSISTENCIA -->
 
         <div class="row mt-5">
 
@@ -206,13 +268,13 @@ Productos - FitZone Store
                 <div class="alert alert-info text-center">
 
                     <strong>
-                        Información:
+                        Persistencia local:
                     </strong>
 
-                    Los productos se mantienen temporalmente
-                    mediante estructuras de Python.
-                    En esta semana todavía no se utiliza una
-                    base de datos.
+                    Los productos registrados se almacenan
+                    en una base de datos SQLite y permanecen
+                    disponibles incluso después de cerrar
+                    y ejecutar nuevamente la aplicación.
 
                 </div>
 
