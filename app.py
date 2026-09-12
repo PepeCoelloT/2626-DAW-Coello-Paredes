@@ -1,13 +1,17 @@
 import os
-import sqlite3
 
 from flask import (
     Flask,
     render_template,
     redirect,
     url_for,
-    flash
+    flash,
+    request
 )
+
+from mysql.connector import Error
+
+from conexion.conexion import obtener_conexion
 
 from forms import (
     ProductoForm,
@@ -17,185 +21,96 @@ from forms import (
 )
 
 
+# =========================================================
+# APLICACIÓN FLASK
+# =========================================================
+
 app = Flask(__name__)
 
 
 # =========================================================
-# CONFIGURACIÓN DE LA APLICACIÓN
+# CONFIGURACIÓN GENERAL
 # =========================================================
 
-# Clave necesaria para la protección CSRF de Flask-WTF.
-# Se mantiene la configuración desarrollada en la Semana 11.
-app.config["SECRET_KEY"] = "fitzone-store-semana11-2026"
+app.config["SECRET_KEY"] = "fitzone-store-semana13-2026"
 
 
 # =========================================================
-# BASE DE DATOS SQLITE
-# SEMANA 12 - PERSISTENCIA LOCAL
+# CONFIGURACIÓN MYSQL
+# SEMANA 13
 # =========================================================
 
-# Ruta absoluta del directorio principal del proyecto.
-BASE_DIR = os.path.abspath(
-    os.path.dirname(__file__)
+app.config["MYSQL_HOST"] = "localhost"
+
+app.config["MYSQL_PORT"] = 3306
+
+app.config["MYSQL_USER"] = "root"
+
+app.config["MYSQL_PASSWORD"] = os.getenv(
+    "MYSQL_PASSWORD"
 )
 
-# Carpeta destinada al almacenamiento local.
-DATA_DIR = os.path.join(
-    BASE_DIR,
-    "data"
-)
-
-# Se crea la carpeta data si todavía no existe.
-os.makedirs(
-    DATA_DIR,
-    exist_ok=True
-)
-
-# Nombre solicitado en la actividad de Semana 12.
-DATABASE = os.path.join(
-    DATA_DIR,
-    "ferreteria.db"
-)
+app.config["MYSQL_DATABASE"] = "fitness_zone"
 
 
-# ---------------------------------------------------------
-# CONEXIÓN A SQLITE
-# ---------------------------------------------------------
+# =========================================================
+# COMPROBACIÓN DE CONEXIÓN MYSQL
+# =========================================================
 
-def obtener_conexion():
+def comprobar_conexion_mysql():
 
-    conn = sqlite3.connect(
-        DATABASE
-    )
+    conexion = None
+    cursor = None
 
-    # Permite acceder a las columnas utilizando su nombre.
-    # Ejemplo:
-    # producto["nombre"]
-    conn.row_factory = sqlite3.Row
+    try:
 
-    return conn
+        conexion = obtener_conexion()
 
+        cursor = conexion.cursor()
 
-# ---------------------------------------------------------
-# INICIALIZACIÓN DE LA BASE DE DATOS
-# ---------------------------------------------------------
-
-def inicializar_base_datos():
-
-    conn = obtener_conexion()
-
-    cursor = conn.cursor()
-
-    # -----------------------------------------------------
-    # TABLA PRODUCTOS
-    # -----------------------------------------------------
-
-    cursor.execute(
-        """
-        CREATE TABLE IF NOT EXISTS productos (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nombre TEXT NOT NULL,
-            categoria TEXT NOT NULL,
-            descripcion TEXT NOT NULL,
-            stock INTEGER NOT NULL
-        )
-        """
-    )
-
-
-    # -----------------------------------------------------
-    # PRODUCTOS INICIALES DEL PROYECTO
-    # -----------------------------------------------------
-    #
-    # Estos registros corresponden a los productos que ya
-    # existían durante la Semana 11.
-    #
-    # Solamente se insertan cuando la tabla se encuentra
-    # completamente vacía.
-    #
-    # Después de esta inicialización, SQLite constituye el
-    # mecanismo principal de almacenamiento del módulo.
-    # -----------------------------------------------------
-
-    cursor.execute(
-        """
-        SELECT COUNT(*)
-        FROM productos
-        """
-    )
-
-    cantidad_productos = cursor.fetchone()[0]
-
-    if cantidad_productos == 0:
-
-        productos_iniciales = [
-            (
-                "Bandas elásticas",
-                "Fuerza",
-                "Ideales para ejercicios de fuerza, movilidad y entrenamiento funcional.",
-                10
-            ),
-            (
-                "Mancuernas",
-                "Fuerza",
-                "Accesorios para entrenar brazos, hombros, espalda y piernas.",
-                8
-            ),
-            (
-                "Colchonetas",
-                "Movilidad",
-                "Recomendadas para yoga, abdominales y estiramientos.",
-                0
-            ),
-            (
-                "Botellas deportivas",
-                "Accesorios",
-                "Útiles para mantener una correcta hidratación durante el entrenamiento.",
-                15
-            ),
-            (
-                "Guantes de gimnasio",
-                "Accesorios",
-                "Brindan comodidad y protección durante ejercicios con peso.",
-                6
-            ),
-            (
-                "Ropa deportiva",
-                "Ropa deportiva",
-                "Prendas cómodas para entrenamientos en casa, gimnasio o al aire libre.",
-                0
-            )
-        ]
-
-        cursor.executemany(
-            """
-            INSERT INTO productos (
-                nombre,
-                categoria,
-                descripcion,
-                stock
-            )
-            VALUES (?, ?, ?, ?)
-            """,
-            productos_iniciales
+        cursor.execute(
+            "SELECT 1"
         )
 
-    # Guarda definitivamente los cambios realizados.
-    conn.commit()
+        cursor.fetchone()
 
-    # Cierra correctamente la conexión.
-    conn.close()
+        print(
+            "Conexión MySQL establecida correctamente."
+        )
+
+    except Error as error:
+
+        print(
+            "Error al conectar con MySQL:",
+            error
+        )
+
+    finally:
+
+        if cursor is not None:
+
+            cursor.close()
+
+        if (
+            conexion is not None
+            and conexion.is_connected()
+        ):
+
+            conexion.close()
 
 
 # =========================================================
 # DATOS TEMPORALES DE LOS DEMÁS MÓDULOS
 # =========================================================
 #
-# Durante la Semana 12 la persistencia obligatoria se
-# implementa en el módulo de productos.
+# La actividad exige como mínimo un módulo completamente
+# conectado a MySQL.
 #
-# Clientes, proveedores y facturación conservan por ahora
-# la lógica desarrollada durante la Semana 11.
+# Durante la Semana 13 el módulo PRODUCTOS implementa
+# SELECT, INSERT, UPDATE y DELETE sobre MySQL.
+#
+# Clientes, Proveedores y Facturación mantienen por ahora
+# la lógica desarrollada anteriormente.
 # =========================================================
 
 
@@ -283,7 +198,9 @@ lista_proveedores = [
 # ---------------------------------------------------------
 
 factura_actual = {
+
     "numero": "FZ-001-0003",
+
     "fecha": "13/08/2026",
 
     "cliente": {
@@ -293,6 +210,7 @@ factura_actual = {
     },
 
     "forma_pago": "Tarjeta",
+
     "pagada": True,
 
     "detalle": [
@@ -315,12 +233,11 @@ factura_actual = {
 }
 
 
-# Cantidad demostrativa inicial de facturas registradas.
 contador_facturas = 3
 
 
 # =========================================================
-# RUTAS
+# RUTAS GENERALES
 # =========================================================
 
 
@@ -338,13 +255,13 @@ def inicio():
 
 # =========================================================
 # PRODUCTOS
-# SEMANA 12 - SQLITE
+# MYSQL - CRUD COMPLETO
 # =========================================================
 
 
 # ---------------------------------------------------------
-# LISTADO DE PRODUCTOS
-# SELECT + FETCHALL
+# LISTAR PRODUCTOS
+# SELECT + JOIN + FETCHALL
 # ---------------------------------------------------------
 
 @app.route("/productos")
@@ -352,35 +269,77 @@ def productos():
 
     titulo = "Gestión de Productos"
 
-    # Se establece una conexión con SQLite.
-    conn = obtener_conexion()
+    conexion = None
+    cursor = None
 
-    cursor = conn.cursor()
+    lista_productos = []
 
-    # Se recuperan todos los productos almacenados
-    # persistentemente en la base de datos.
-    cursor.execute(
-        """
-        SELECT
-            id,
-            nombre,
-            categoria,
-            descripcion,
-            stock
-        FROM productos
-        ORDER BY id ASC
-        """
-    )
+    try:
 
-    # La actividad solicita utilizar fetchall().
-    lista_productos = cursor.fetchall()
+        conexion = obtener_conexion()
 
-    # Se cierra la conexión después de recuperar los datos.
-    conn.close()
+        cursor = conexion.cursor(
+            dictionary=True
+        )
+
+
+        # -------------------------------------------------
+        # CONSULTA RELACIONADA
+        # PRODUCTOS + CATEGORIAS
+        # -------------------------------------------------
+
+        cursor.execute(
+            """
+            SELECT
+
+                p.id_producto AS id,
+
+                p.nombre,
+
+                c.nombre AS categoria,
+
+                p.descripcion,
+
+                p.stock
+
+            FROM productos AS p
+
+            INNER JOIN categorias AS c
+                ON p.id_categoria = c.id_categoria
+
+            ORDER BY p.id_producto ASC
+            """
+        )
+
+
+        # Recuperación de varios registros.
+        lista_productos = cursor.fetchall()
+
+
+    except Error as error:
+
+        flash(
+            f"Error al consultar los productos: {error}",
+            "danger"
+        )
+
+
+    finally:
+
+        if cursor is not None:
+
+            cursor.close()
+
+        if (
+            conexion is not None
+            and conexion.is_connected()
+        ):
+
+            conexion.close()
 
 
     # -----------------------------------------------------
-    # RESUMEN DE PRODUCTOS
+    # RESUMEN
     # -----------------------------------------------------
 
     disponibles = sum(
@@ -389,6 +348,7 @@ def productos():
         if producto["stock"] > 0
     )
 
+
     agotados = sum(
         1
         for producto in lista_productos
@@ -396,8 +356,6 @@ def productos():
     )
 
 
-    # Los registros recuperados desde SQLite se envían
-    # hacia la plantilla productos.html.
     return render_template(
         "productos.html",
         titulo=titulo,
@@ -409,7 +367,7 @@ def productos():
 
 # ---------------------------------------------------------
 # REGISTRAR PRODUCTO
-# VALIDACIÓN + INSERT
+# INSERT INTO + COMMIT
 # ---------------------------------------------------------
 
 @app.route(
@@ -420,55 +378,453 @@ def registrar_producto():
 
     form = ProductoForm()
 
-    # Solamente se almacena información cuando todas
-    # las reglas de validación de WTForms se cumplen.
+
     if form.validate_on_submit():
 
-        conn = obtener_conexion()
+        conexion = None
+        cursor = None
 
-        cursor = conn.cursor()
+        try:
 
-        # Consulta SQL parametrizada.
-        #
-        # Se utilizan signos ? para evitar concatenar
-        # directamente los datos recibidos del usuario.
+            conexion = obtener_conexion()
+
+            cursor = conexion.cursor(
+                dictionary=True
+            )
+
+
+            # ---------------------------------------------
+            # BUSCAR CATEGORÍA
+            # SELECT + WHERE
+            # ---------------------------------------------
+
+            cursor.execute(
+                """
+                SELECT id_categoria
+
+                FROM categorias
+
+                WHERE nombre = %s
+                """,
+                (
+                    form.categoria.data,
+                )
+            )
+
+
+            categoria = cursor.fetchone()
+
+
+            if categoria is None:
+
+                flash(
+                    "La categoría seleccionada no existe.",
+                    "danger"
+                )
+
+                return render_template(
+                    "formulario_producto.html",
+                    form=form,
+                    modo="registrar"
+                )
+
+
+            # ---------------------------------------------
+            # INSERT
+            # ---------------------------------------------
+
+            cursor.execute(
+                """
+                INSERT INTO productos (
+                    nombre,
+                    id_categoria,
+                    descripcion,
+                    stock
+                )
+
+                VALUES (
+                    %s,
+                    %s,
+                    %s,
+                    %s
+                )
+                """,
+                (
+                    form.nombre.data,
+                    categoria["id_categoria"],
+                    form.descripcion.data,
+                    form.stock.data
+                )
+            )
+
+
+            conexion.commit()
+
+
+            flash(
+                "Producto registrado correctamente.",
+                "success"
+            )
+
+
+            return redirect(
+                url_for("productos")
+            )
+
+
+        except Error as error:
+
+            if conexion is not None:
+
+                conexion.rollback()
+
+            flash(
+                f"Error al registrar el producto: {error}",
+                "danger"
+            )
+
+
+        finally:
+
+            if cursor is not None:
+
+                cursor.close()
+
+            if (
+                conexion is not None
+                and conexion.is_connected()
+            ):
+
+                conexion.close()
+
+
+    return render_template(
+        "formulario_producto.html",
+        form=form,
+        modo="registrar"
+    )
+
+
+# ---------------------------------------------------------
+# MODIFICAR PRODUCTO
+# SELECT WHERE + UPDATE WHERE + COMMIT
+# ---------------------------------------------------------
+
+@app.route(
+    "/productos/editar/<int:id_producto>",
+    methods=["GET", "POST"]
+)
+def editar_producto(id_producto):
+
+    conexion = None
+    cursor = None
+
+    producto = None
+
+
+    # -----------------------------------------------------
+    # RECUPERAR REGISTRO ACTUAL
+    # -----------------------------------------------------
+
+    try:
+
+        conexion = obtener_conexion()
+
+        cursor = conexion.cursor(
+            dictionary=True
+        )
+
+
         cursor.execute(
             """
-            INSERT INTO productos (
-                nombre,
-                categoria,
-                descripcion,
-                stock
-            )
-            VALUES (?, ?, ?, ?)
+            SELECT
+
+                p.id_producto AS id,
+
+                p.nombre,
+
+                c.nombre AS categoria,
+
+                p.descripcion,
+
+                p.stock
+
+            FROM productos AS p
+
+            INNER JOIN categorias AS c
+                ON p.id_categoria = c.id_categoria
+
+            WHERE p.id_producto = %s
             """,
             (
-                form.nombre.data,
-                form.categoria.data,
-                form.descripcion.data,
-                form.stock.data
+                id_producto,
             )
         )
 
-        # Confirma el INSERT y almacena el registro
-        # permanentemente en ferreteria.db.
-        conn.commit()
 
-        # Cierra correctamente la conexión.
-        conn.close()
+        producto = cursor.fetchone()
+
+
+    except Error as error:
 
         flash(
-            "Producto registrado correctamente.",
-            "success"
+            f"Error al consultar el producto: {error}",
+            "danger"
+        )
+
+
+    finally:
+
+        if cursor is not None:
+
+            cursor.close()
+
+        if (
+            conexion is not None
+            and conexion.is_connected()
+        ):
+
+            conexion.close()
+
+
+    if producto is None:
+
+        flash(
+            "El producto seleccionado no existe.",
+            "warning"
         )
 
         return redirect(
             url_for("productos")
         )
 
+
+    form = ProductoForm()
+
+
+    # -----------------------------------------------------
+    # GUARDAR MODIFICACIÓN
+    # -----------------------------------------------------
+
+    if form.validate_on_submit():
+
+        conexion = None
+        cursor = None
+
+        try:
+
+            conexion = obtener_conexion()
+
+            cursor = conexion.cursor(
+                dictionary=True
+            )
+
+
+            # ---------------------------------------------
+            # OBTENER ID DE CATEGORÍA
+            # ---------------------------------------------
+
+            cursor.execute(
+                """
+                SELECT id_categoria
+
+                FROM categorias
+
+                WHERE nombre = %s
+                """,
+                (
+                    form.categoria.data,
+                )
+            )
+
+
+            categoria = cursor.fetchone()
+
+
+            if categoria is None:
+
+                flash(
+                    "La categoría seleccionada no existe.",
+                    "danger"
+                )
+
+                return render_template(
+                    "formulario_producto.html",
+                    form=form,
+                    modo="editar"
+                )
+
+
+            # ---------------------------------------------
+            # UPDATE
+            # ---------------------------------------------
+
+            cursor.execute(
+                """
+                UPDATE productos
+
+                SET
+                    nombre = %s,
+                    id_categoria = %s,
+                    descripcion = %s,
+                    stock = %s
+
+                WHERE id_producto = %s
+                """,
+                (
+                    form.nombre.data,
+                    categoria["id_categoria"],
+                    form.descripcion.data,
+                    form.stock.data,
+                    id_producto
+                )
+            )
+
+
+            conexion.commit()
+
+
+            flash(
+                "Producto modificado correctamente.",
+                "success"
+            )
+
+
+            return redirect(
+                url_for("productos")
+            )
+
+
+        except Error as error:
+
+            if conexion is not None:
+
+                conexion.rollback()
+
+
+            flash(
+                f"Error al modificar el producto: {error}",
+                "danger"
+            )
+
+
+        finally:
+
+            if cursor is not None:
+
+                cursor.close()
+
+            if (
+                conexion is not None
+                and conexion.is_connected()
+            ):
+
+                conexion.close()
+
+
+    # -----------------------------------------------------
+    # PRECARGAR DATOS DEL PRODUCTO
+    # SOLO EN GET
+    # -----------------------------------------------------
+
+    if request.method == "GET":
+
+        form.nombre.data = producto["nombre"]
+
+        form.categoria.data = producto["categoria"]
+
+        form.descripcion.data = producto["descripcion"]
+
+        form.stock.data = producto["stock"]
+
+
     return render_template(
         "formulario_producto.html",
-        form=form
+        form=form,
+        modo="editar"
+    )
+
+
+# ---------------------------------------------------------
+# ELIMINAR PRODUCTO
+# DELETE WHERE + COMMIT
+# ---------------------------------------------------------
+
+@app.route(
+    "/productos/eliminar/<int:id_producto>",
+    methods=["POST"]
+)
+def eliminar_producto(id_producto):
+
+    conexion = None
+    cursor = None
+
+    try:
+
+        conexion = obtener_conexion()
+
+        cursor = conexion.cursor()
+
+
+        cursor.execute(
+            """
+            DELETE FROM productos
+
+            WHERE id_producto = %s
+            """,
+            (
+                id_producto,
+            )
+        )
+
+
+        conexion.commit()
+
+
+        if cursor.rowcount > 0:
+
+            flash(
+                "Producto eliminado correctamente.",
+                "success"
+            )
+
+        else:
+
+            flash(
+                "El producto seleccionado no existe.",
+                "warning"
+            )
+
+
+    except Error as error:
+
+        if conexion is not None:
+
+            conexion.rollback()
+
+
+        flash(
+            f"No fue posible eliminar el producto: {error}",
+            "danger"
+        )
+
+
+    finally:
+
+        if cursor is not None:
+
+            cursor.close()
+
+        if (
+            conexion is not None
+            and conexion.is_connected()
+        ):
+
+            conexion.close()
+
+
+    return redirect(
+        url_for("productos")
     )
 
 
@@ -477,14 +833,11 @@ def registrar_producto():
 # =========================================================
 
 
-# ---------------------------------------------------------
-# LISTADO DE CLIENTES
-# ---------------------------------------------------------
-
 @app.route("/clientes")
 def clientes():
 
     titulo = "Gestión de Clientes"
+
 
     activos = sum(
         1
@@ -492,11 +845,13 @@ def clientes():
         if cliente["activo"]
     )
 
+
     inactivos = sum(
         1
         for cliente in lista_clientes
         if not cliente["activo"]
     )
+
 
     return render_template(
         "clientes.html",
@@ -519,28 +874,43 @@ def registrar_cliente():
 
     form = ClienteForm()
 
+
     if form.validate_on_submit():
 
         nuevo_cliente = {
-            "nombre": form.nombre.data,
-            "correo": form.correo.data,
-            "telefono": form.telefono.data,
-            "ciudad": form.ciudad.data,
-            "activo": form.activo.data
+
+            "nombre":
+                form.nombre.data,
+
+            "correo":
+                form.correo.data,
+
+            "telefono":
+                form.telefono.data,
+
+            "ciudad":
+                form.ciudad.data,
+
+            "activo":
+                form.activo.data
         }
+
 
         lista_clientes.append(
             nuevo_cliente
         )
+
 
         flash(
             "Cliente registrado correctamente.",
             "success"
         )
 
+
         return redirect(
             url_for("clientes")
         )
+
 
     return render_template(
         "formulario_cliente.html",
@@ -553,14 +923,11 @@ def registrar_cliente():
 # =========================================================
 
 
-# ---------------------------------------------------------
-# LISTADO DE PROVEEDORES
-# ---------------------------------------------------------
-
 @app.route("/proveedores")
 def proveedores():
 
     titulo = "Gestión de Proveedores"
+
 
     activos = sum(
         1
@@ -568,11 +935,13 @@ def proveedores():
         if proveedor["activo"]
     )
 
+
     inactivos = sum(
         1
         for proveedor in lista_proveedores
         if not proveedor["activo"]
     )
+
 
     return render_template(
         "proveedores.html",
@@ -595,28 +964,43 @@ def registrar_proveedor():
 
     form = ProveedorForm()
 
+
     if form.validate_on_submit():
 
         nuevo_proveedor = {
-            "nombre": form.nombre.data,
-            "productos": form.productos.data,
-            "contacto": form.contacto.data,
-            "ciudad": form.ciudad.data,
-            "activo": form.activo.data
+
+            "nombre":
+                form.nombre.data,
+
+            "productos":
+                form.productos.data,
+
+            "contacto":
+                form.contacto.data,
+
+            "ciudad":
+                form.ciudad.data,
+
+            "activo":
+                form.activo.data
         }
+
 
         lista_proveedores.append(
             nuevo_proveedor
         )
+
 
         flash(
             "Proveedor registrado correctamente.",
             "success"
         )
 
+
         return redirect(
             url_for("proveedores")
         )
+
 
     return render_template(
         "formulario_proveedor.html",
@@ -629,28 +1013,29 @@ def registrar_proveedor():
 # =========================================================
 
 
-# ---------------------------------------------------------
-# VISUALIZAR FACTURA ACTUAL
-# ---------------------------------------------------------
-
 @app.route("/facturacion")
 def facturacion():
 
     titulo = "Gestión de Facturación"
+
 
     subtotal = sum(
         item["cantidad"] * item["precio"]
         for item in factura_actual["detalle"]
     )
 
+
     iva = subtotal * 0.15
 
+
     total = subtotal + iva
+
 
     productos_vendidos = sum(
         item["cantidad"]
         for item in factura_actual["detalle"]
     )
+
 
     return render_template(
         "facturacion.html",
@@ -677,49 +1062,70 @@ def registrar_facturacion():
     global factura_actual
     global contador_facturas
 
+
     form = FacturacionForm()
+
 
     if form.validate_on_submit():
 
         factura_actual = {
 
-            "numero": form.numero.data,
+            "numero":
+                form.numero.data,
 
-            "fecha": form.fecha.data.strftime(
-                "%d/%m/%Y"
-            ),
+            "fecha":
+                form.fecha.data.strftime(
+                    "%d/%m/%Y"
+                ),
 
             "cliente": {
-                "nombre": form.cliente_nombre.data,
-                "correo": form.cliente_correo.data,
-                "telefono": form.cliente_telefono.data
+
+                "nombre":
+                    form.cliente_nombre.data,
+
+                "correo":
+                    form.cliente_correo.data,
+
+                "telefono":
+                    form.cliente_telefono.data
             },
 
-            "forma_pago": form.forma_pago.data,
+            "forma_pago":
+                form.forma_pago.data,
 
-            "pagada": form.pagada.data,
+            "pagada":
+                form.pagada.data,
 
             "detalle": [
                 {
-                    "producto": form.producto.data,
-                    "cantidad": form.cantidad.data,
-                    "precio": float(
-                        form.precio.data
-                    )
+                    "producto":
+                        form.producto.data,
+
+                    "cantidad":
+                        form.cantidad.data,
+
+                    "precio":
+                        float(
+                            form.precio.data
+                        )
                 }
             ]
         }
 
+
         contador_facturas += 1
+
 
         flash(
             "Factura registrada correctamente.",
             "success"
         )
 
+
         return redirect(
             url_for("facturacion")
         )
+
 
     return render_template(
         "formulario_facturacion.html",
@@ -733,9 +1139,10 @@ def registrar_facturacion():
 
 if __name__ == "__main__":
 
-    # Antes de iniciar Flask se comprueba la existencia
-    # de la base de datos y de la tabla productos.
-    inicializar_base_datos()
+    with app.app_context():
+
+        comprobar_conexion_mysql()
+
 
     app.run(
         debug=True

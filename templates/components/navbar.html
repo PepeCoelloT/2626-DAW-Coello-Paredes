@@ -1,20 +1,33 @@
 <nav
-    class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top"
+    class="navbar navbar-expand-lg navbar-dark sticky-top fitzone-navbar"
     aria-label="Menú principal"
 >
 
     <div class="container">
 
+
+        <!-- MARCA -->
+
         <a
-            class="navbar-brand fw-bold"
+            class="navbar-brand fitzone-brand"
             href="{{ url_for('inicio') }}"
         >
-            FitZone Store
+
+            <span class="brand-main">
+                FitZone
+            </span>
+
+            <span class="brand-accent">
+                Store
+            </span>
+
         </a>
 
 
+        <!-- BOTÓN MÓVIL -->
+
         <button
-            class="navbar-toggler"
+            class="navbar-toggler border-0"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#menuPrincipal"
@@ -28,81 +41,113 @@
         </button>
 
 
+        <!-- MENÚ -->
+
         <div
             class="collapse navbar-collapse"
             id="menuPrincipal"
         >
 
-            <ul class="navbar-nav ms-auto">
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+
 
                 <li class="nav-item">
+
                     <a
-                        class="nav-link"
+                        class="nav-link fitzone-nav-link"
                         href="{{ url_for('inicio') }}"
                     >
                         Inicio
                     </a>
+
                 </li>
 
 
                 <li class="nav-item">
+
                     <a
-                        class="nav-link"
+                        class="nav-link fitzone-nav-link"
                         href="{{ url_for('inicio') }}#quienes-somos"
                     >
                         Quiénes somos
                     </a>
+
                 </li>
 
 
                 <li class="nav-item">
+
                     <a
-                        class="nav-link"
+                        class="nav-link fitzone-nav-link"
                         href="{{ url_for('productos') }}"
                     >
                         Productos
                     </a>
+
                 </li>
 
 
                 <li class="nav-item">
+
                     <a
-                        class="nav-link"
+                        class="nav-link fitzone-nav-link"
                         href="{{ url_for('clientes') }}"
                     >
                         Clientes
                     </a>
+
                 </li>
 
 
                 <li class="nav-item">
+
                     <a
-                        class="nav-link"
+                        class="nav-link fitzone-nav-link"
                         href="{{ url_for('proveedores') }}"
                     >
                         Proveedores
                     </a>
+
                 </li>
 
 
                 <li class="nav-item">
+
                     <a
-                        class="nav-link"
+                        class="nav-link fitzone-nav-link"
                         href="{{ url_for('facturacion') }}"
                     >
                         Facturación
                     </a>
+
                 </li>
 
 
                 <li class="nav-item">
+
                     <a
-                        class="nav-link"
+                        class="nav-link fitzone-nav-link"
                         href="{{ url_for('inicio') }}#contacto"
                     >
                         Contacto
                     </a>
+
                 </li>
+
+
+                <!-- FORMULARIO REAL FLASK-WTF + MYSQL -->
+
+                <li class="nav-item ms-lg-2 mt-3 mt-lg-0">
+
+                    <a
+                        class="btn navbar-action-btn"
+                        href="{{ url_for('registrar_producto') }}"
+                    >
+                        Registrar producto
+                    </a>
+
+                </li>
+
 
             </ul>
 

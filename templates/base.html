@@ -12,7 +12,12 @@
 
     <meta
         name="description"
-        content="FitZone Store, página de productos y accesorios para entrenamiento físico."
+        content="FitZone Store, plataforma web de productos, accesorios y artículos para entrenamiento físico y bienestar."
+    >
+
+    <meta
+        name="theme-color"
+        content="#0f172a"
     >
 
     <title>
@@ -38,6 +43,8 @@
     >
 
 
+    <!-- CSS ESPECÍFICO DE CADA PÁGINA -->
+
     {% block extra_css %}
 
     {% endblock %}
@@ -45,7 +52,7 @@
 </head>
 
 
-<body>
+<body class="site-body d-flex flex-column min-vh-100">
 
 
     <!-- COMPONENTE REUTILIZABLE: BARRA DE NAVEGACIÓN -->
@@ -55,7 +62,7 @@
 
     <!-- MENSAJES GENERADOS POR FLASK -->
 
-    <div class="container mt-3">
+    <div class="container flash-container">
 
         {% with mensajes = get_flashed_messages(with_categories=true) %}
 
@@ -64,7 +71,7 @@
                 {% for categoria, mensaje in mensajes %}
 
                     <div
-                        class="alert alert-{{ categoria }} alert-dismissible fade show"
+                        class="alert alert-{{ categoria }} alert-dismissible fade show shadow-sm"
                         role="alert"
                     >
 
@@ -90,7 +97,7 @@
 
     <!-- CONTENIDO PRINCIPAL DE CADA PÁGINA -->
 
-    <main>
+    <main class="flex-grow-1">
 
         {% block content %}
 

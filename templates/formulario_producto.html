@@ -1,8 +1,17 @@
 {% extends "base.html" %}
 
 
+{% set modo_actual = modo|default("registrar") %}
+
+
 {% block title %}
-Registrar Producto - FitZone Store
+
+    {% if modo_actual == "editar" %}
+        Modificar Producto - FitZone Store
+    {% else %}
+        Registrar Producto - FitZone Store
+    {% endif %}
+
 {% endblock %}
 
 
@@ -14,32 +23,58 @@ Registrar Producto - FitZone Store
     <div class="container">
 
 
-        <!-- ENCABEZADO -->
+        <!-- ==================================================
+             ENCABEZADO
+             ================================================== -->
 
         <div class="encabezado-modulo">
 
-            <h1>
-                Registrar producto
-            </h1>
+            <span class="seccion-etiqueta">
+                GESTIÓN DE PRODUCTOS
+            </span>
 
-            <p>
-                Complete la información del producto.
-                Los datos serán procesados únicamente cuando
-                todos los campos cumplan las reglas de validación.
-            </p>
+
+            {% if modo_actual == "editar" %}
+
+                <h1>
+                    Modificar producto
+                </h1>
+
+                <p>
+                    Actualice la información del producto seleccionado.
+                    Los cambios se guardarán directamente en la base
+                    de datos MySQL cuando todos los campos cumplan
+                    las reglas de validación.
+                </p>
+
+            {% else %}
+
+                <h1>
+                    Registrar producto
+                </h1>
+
+                <p>
+                    Complete la información del nuevo producto.
+                    El registro se almacenará directamente en la base
+                    de datos MySQL cuando todos los campos cumplan
+                    las reglas de validación.
+                </p>
+
+            {% endif %}
 
         </div>
 
+
+        <!-- ==================================================
+             FORMULARIO
+             ================================================== -->
 
         <div class="row justify-content-center">
 
             <div class="col-lg-8">
 
-
                 <div class="tarjeta-modulo">
 
-
-                    <!-- FORMULARIO -->
 
                     <form
                         method="POST"
@@ -52,13 +87,16 @@ Registrar Producto - FitZone Store
                         {{ form.hidden_tag() }}
 
 
-                        <!-- NOMBRE -->
+                        <!-- ==================================================
+                             NOMBRE
+                             ================================================== -->
 
                         <div class="mb-4">
 
                             {{ form.nombre.label(
                                 class="form-label fw-semibold"
                             ) }}
+
 
                             {% if form.nombre.errors %}
 
@@ -91,13 +129,16 @@ Registrar Producto - FitZone Store
                         </div>
 
 
-                        <!-- CATEGORÍA -->
+                        <!-- ==================================================
+                             CATEGORÍA
+                             ================================================== -->
 
                         <div class="mb-4">
 
                             {{ form.categoria.label(
                                 class="form-label fw-semibold"
                             ) }}
+
 
                             {% if form.categoria.errors %}
 
@@ -125,16 +166,27 @@ Registrar Producto - FitZone Store
 
                             {% endif %}
 
+
+                            <div class="form-text">
+
+                                Seleccione la categoría correspondiente
+                                al producto.
+
+                            </div>
+
                         </div>
 
 
-                        <!-- DESCRIPCIÓN -->
+                        <!-- ==================================================
+                             DESCRIPCIÓN
+                             ================================================== -->
 
                         <div class="mb-4">
 
                             {{ form.descripcion.label(
                                 class="form-label fw-semibold"
                             ) }}
+
 
                             {% if form.descripcion.errors %}
 
@@ -166,20 +218,27 @@ Registrar Producto - FitZone Store
 
                             {% endif %}
 
+
                             <div class="form-text">
-                                La descripción debe tener entre 10 y 250 caracteres.
+
+                                La descripción debe tener entre
+                                10 y 250 caracteres.
+
                             </div>
 
                         </div>
 
 
-                        <!-- STOCK -->
+                        <!-- ==================================================
+                             STOCK
+                             ================================================== -->
 
                         <div class="mb-4">
 
                             {{ form.stock.label(
                                 class="form-label fw-semibold"
                             ) }}
+
 
                             {% if form.stock.errors %}
 
@@ -213,20 +272,85 @@ Registrar Producto - FitZone Store
 
                             {% endif %}
 
+
                             <div class="form-text">
-                                Puede ingresar 0 si el producto se encuentra agotado.
+
+                                Ingrese una cantidad entre 0 y 1000.
+                                Puede utilizar 0 cuando el producto
+                                se encuentre agotado.
+
                             </div>
 
                         </div>
 
 
-                        <!-- BOTONES -->
+                        <!-- ==================================================
+                             INFORMACIÓN DE LA OPERACIÓN
+                             ================================================== -->
 
-                        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center mt-5">
+                        <div class="alert alert-info mb-4">
 
-                            {{ form.submit(
-                                class="btn btn-primary px-4"
-                            ) }}
+                            {% if modo_actual == "editar" %}
+
+                                <strong>
+                                    Operación SQL:
+                                </strong>
+
+                                Los cambios serán almacenados mediante
+                                una consulta
+
+                                <strong>
+                                    UPDATE ... WHERE ...
+                                </strong>
+
+                                sobre la base de datos MySQL.
+
+                            {% else %}
+
+                                <strong>
+                                    Operación SQL:
+                                </strong>
+
+                                El nuevo producto será almacenado mediante
+                                una consulta
+
+                                <strong>
+                                    INSERT INTO
+                                </strong>
+
+                                sobre la base de datos MySQL.
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- ==================================================
+                             BOTONES
+                             ================================================== -->
+
+                        <div
+                            class="d-flex flex-column flex-sm-row
+                                   gap-3 justify-content-center mt-5"
+                        >
+
+
+                            {% if modo_actual == "editar" %}
+
+                                {{ form.submit(
+                                    class="btn btn-warning px-4",
+                                    value="Guardar cambios"
+                                ) }}
+
+                            {% else %}
+
+                                {{ form.submit(
+                                    class="btn btn-primary px-4",
+                                    value="Registrar producto"
+                                ) }}
+
+                            {% endif %}
+
 
                             <a
                                 href="{{ url_for('productos') }}"
@@ -234,6 +358,7 @@ Registrar Producto - FitZone Store
                             >
                                 Cancelar
                             </a>
+
 
                         </div>
 
@@ -244,6 +369,22 @@ Registrar Producto - FitZone Store
                 </div>
 
             </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             VOLVER AL LISTADO
+             ================================================== -->
+
+        <div class="text-center mt-4">
+
+            <a
+                href="{{ url_for('productos') }}"
+                class="text-decoration-none"
+            >
+                ← Volver al listado de productos
+            </a>
 
         </div>
 

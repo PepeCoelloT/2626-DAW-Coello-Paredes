@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+
 from wtforms import (
     StringField,
     SelectField,
@@ -6,6 +7,7 @@ from wtforms import (
     IntegerField,
     SubmitField
 )
+
 from wtforms.validators import (
     DataRequired,
     Length,
@@ -30,11 +32,13 @@ class ProductoForm(FlaskForm):
         ]
     )
 
+
     categoria = SelectField(
         "Categoría",
         choices=[
             ("", "Seleccione una categoría"),
             ("Fuerza", "Fuerza"),
+            ("Cardio", "Cardio"),
             ("Movilidad", "Movilidad"),
             ("Accesorios", "Accesorios"),
             ("Ropa deportiva", "Ropa deportiva")
@@ -45,6 +49,7 @@ class ProductoForm(FlaskForm):
             )
         ]
     )
+
 
     descripcion = TextAreaField(
         "Descripción",
@@ -60,6 +65,7 @@ class ProductoForm(FlaskForm):
         ]
     )
 
+
     stock = IntegerField(
         "Stock",
         validators=[
@@ -73,6 +79,7 @@ class ProductoForm(FlaskForm):
             )
         ]
     )
+
 
     submit = SubmitField(
         "Guardar producto"

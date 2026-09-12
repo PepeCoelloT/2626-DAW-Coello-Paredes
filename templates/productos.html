@@ -14,25 +14,33 @@ Productos - FitZone Store
     <div class="container">
 
 
-        <!-- ENCABEZADO DEL MÓDULO -->
+        <!-- ==================================================
+             ENCABEZADO DEL MÓDULO
+             ================================================== -->
 
         <div class="encabezado-modulo">
+
+            <span class="seccion-etiqueta">
+                GESTIÓN DE DATOS
+            </span>
 
             <h1>
                 {{ titulo|upper }}
             </h1>
 
             <p>
-                En este módulo se presentan los productos
-                deportivos registrados en FitZone Store.
-                La información se almacena de forma persistente
-                en una base de datos local SQLite.
+                Administra los productos deportivos registrados
+                en FitZone Store. La información se obtiene
+                directamente desde la base de datos relacional
+                MySQL y permanece almacenada de forma persistente.
             </p>
 
         </div>
 
 
-        <!-- BOTÓN PARA REGISTRAR PRODUCTO -->
+        <!-- ==================================================
+             BOTÓN PARA REGISTRAR PRODUCTO
+             ================================================== -->
 
         <div class="d-flex justify-content-end mb-4">
 
@@ -46,16 +54,18 @@ Productos - FitZone Store
         </div>
 
 
-        <!-- RESUMEN DEL MÓDULO -->
+        <!-- ==================================================
+             RESUMEN DEL MÓDULO
+             ================================================== -->
 
         <div class="row g-4 mb-5">
 
 
-            <!-- TOTAL DE PRODUCTOS -->
+            <!-- TOTAL -->
 
             <div class="col-md-4">
 
-                <div class="tarjeta-modulo text-center">
+                <div class="tarjeta-modulo text-center h-100">
 
                     <h3 class="text-primary">
                         {{ productos|length }}
@@ -70,11 +80,11 @@ Productos - FitZone Store
             </div>
 
 
-            <!-- PRODUCTOS DISPONIBLES -->
+            <!-- DISPONIBLES -->
 
             <div class="col-md-4">
 
-                <div class="tarjeta-modulo text-center">
+                <div class="tarjeta-modulo text-center h-100">
 
                     <h3 class="text-success">
                         {{ disponibles }}
@@ -89,11 +99,11 @@ Productos - FitZone Store
             </div>
 
 
-            <!-- PRODUCTOS AGOTADOS -->
+            <!-- AGOTADOS -->
 
             <div class="col-md-4">
 
-                <div class="tarjeta-modulo text-center">
+                <div class="tarjeta-modulo text-center h-100">
 
                     <h3 class="text-danger">
                         {{ agotados }}
@@ -111,7 +121,9 @@ Productos - FitZone Store
         </div>
 
 
-        <!-- TABLA DE PRODUCTOS -->
+        <!-- ==================================================
+             TABLA DE PRODUCTOS
+             ================================================== -->
 
         <div class="contenedor-tabla">
 
@@ -147,6 +159,10 @@ Productos - FitZone Store
                                 Estado
                             </th>
 
+                            <th class="text-center">
+                                Acciones
+                            </th>
+
                         </tr>
 
                     </thead>
@@ -156,9 +172,8 @@ Productos - FitZone Store
 
 
                         <!--
-                            Los productos recibidos desde Flask
-                            provienen de la consulta SELECT realizada
-                            sobre la base de datos SQLite.
+                            Los registros son obtenidos desde MySQL
+                            mediante SELECT + JOIN + fetchall().
                         -->
 
                         {% for producto in productos %}
@@ -167,14 +182,18 @@ Productos - FitZone Store
                         <tr>
 
 
-                            <!-- CLAVE PRIMARIA -->
+                            <!-- ID -->
 
                             <td>
-                                {{ producto.id }}
+
+                                <strong>
+                                    {{ producto.id }}
+                                </strong>
+
                             </td>
 
 
-                            <!-- NOMBRE -->
+                            <!-- PRODUCTO -->
 
                             <td>
 
@@ -188,7 +207,11 @@ Productos - FitZone Store
                             <!-- CATEGORÍA -->
 
                             <td>
-                                {{ producto.categoria }}
+
+                                <span class="badge bg-primary">
+                                    {{ producto.categoria }}
+                                </span>
+
                             </td>
 
 
@@ -202,7 +225,11 @@ Productos - FitZone Store
                             <!-- STOCK -->
 
                             <td>
-                                {{ producto.stock }}
+
+                                <strong>
+                                    {{ producto.stock }}
+                                </strong>
+
                             </td>
 
 
@@ -227,21 +254,82 @@ Productos - FitZone Store
                             </td>
 
 
+                            <!-- ACCIONES -->
+
+                            <td class="text-center">
+
+                                <div
+                                    class="d-flex flex-wrap justify-content-center gap-2"
+                                >
+
+
+                                    <!-- MODIFICAR -->
+
+                                    <a
+                                        href="{{ url_for(
+                                            'editar_producto',
+                                            id_producto=producto.id
+                                        ) }}"
+                                        class="btn btn-warning btn-sm"
+                                    >
+                                        Modificar
+                                    </a>
+
+
+                                    <!-- ELIMINAR -->
+
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for(
+                                            'eliminar_producto',
+                                            id_producto=producto.id
+                                        ) }}"
+                                        class="d-inline"
+                                        onsubmit="return confirm(
+                                            '¿Está seguro de eliminar el producto {{ producto.nombre }}?'
+                                        );"
+                                    >
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-danger btn-sm"
+                                        >
+                                            Eliminar
+                                        </button>
+
+                                    </form>
+
+
+                                </div>
+
+                            </td>
+
+
                         </tr>
 
 
                         {% else %}
 
 
-                        <!-- MENSAJE CUANDO NO EXISTEN REGISTROS -->
+                        <!-- SIN REGISTROS -->
 
                         <tr>
 
                             <td
-                                colspan="6"
-                                class="text-center py-4"
+                                colspan="7"
+                                class="text-center py-5"
                             >
-                                No existen productos registrados.
+
+                                <strong>
+                                    No existen productos registrados.
+                                </strong>
+
+                                <p class="text-muted mb-0 mt-2">
+                                    Utilice el botón
+                                    "Registrar producto"
+                                    para agregar el primer registro.
+                                </p>
+
                             </td>
 
                         </tr>
@@ -259,22 +347,31 @@ Productos - FitZone Store
         </div>
 
 
-        <!-- INFORMACIÓN SOBRE PERSISTENCIA -->
+        <!-- ==================================================
+             INFORMACIÓN DE PERSISTENCIA
+             ================================================== -->
 
         <div class="row mt-5">
 
-            <div class="col-lg-8 mx-auto">
+            <div class="col-lg-9 mx-auto">
 
                 <div class="alert alert-info text-center">
 
                     <strong>
-                        Persistencia local:
+                        Persistencia MySQL:
                     </strong>
 
-                    Los productos registrados se almacenan
-                    en una base de datos SQLite y permanecen
-                    disponibles incluso después de cerrar
-                    y ejecutar nuevamente la aplicación.
+                    Los productos mostrados en esta tabla
+                    se consultan directamente desde la base de
+                    datos relacional
+
+                    <strong>
+                        fitness_zone
+                    </strong>.
+
+                    Los registros permanecen almacenados incluso
+                    después de cerrar y ejecutar nuevamente
+                    la aplicación Flask.
 
                 </div>
 
@@ -283,9 +380,90 @@ Productos - FitZone Store
         </div>
 
 
-        <!-- VOLVER AL INICIO -->
+        <!-- ==================================================
+             OPERACIONES IMPLEMENTADAS
+             ================================================== -->
 
-        <div class="text-center mt-4">
+        <div class="row mt-4">
+
+            <div class="col-lg-10 mx-auto">
+
+                <div class="tarjeta-modulo">
+
+                    <h3 class="text-center mb-4">
+                        Operaciones de gestión implementadas
+                    </h3>
+
+
+                    <div class="row g-3 text-center">
+
+
+                        <div class="col-6 col-md-3">
+
+                            <strong class="text-primary">
+                                SELECT
+                            </strong>
+
+                            <p class="mb-0">
+                                Listar
+                            </p>
+
+                        </div>
+
+
+                        <div class="col-6 col-md-3">
+
+                            <strong class="text-success">
+                                INSERT
+                            </strong>
+
+                            <p class="mb-0">
+                                Agregar
+                            </p>
+
+                        </div>
+
+
+                        <div class="col-6 col-md-3">
+
+                            <strong class="text-warning">
+                                UPDATE
+                            </strong>
+
+                            <p class="mb-0">
+                                Modificar
+                            </p>
+
+                        </div>
+
+
+                        <div class="col-6 col-md-3">
+
+                            <strong class="text-danger">
+                                DELETE
+                            </strong>
+
+                            <p class="mb-0">
+                                Eliminar
+                            </p>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             VOLVER AL INICIO
+             ================================================== -->
+
+        <div class="text-center mt-5">
 
             <a
                 href="{{ url_for('inicio') }}"

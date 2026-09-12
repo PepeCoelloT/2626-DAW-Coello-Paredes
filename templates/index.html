@@ -9,184 +9,65 @@ Inicio - FitZone Store
 {% block content %}
 
 
-<!-- ==============================================
-     ENCABEZADO PRINCIPAL
-     ============================================== -->
+<!-- ==================================================
+     HERO PRINCIPAL
+     ================================================== -->
 
-<header id="inicio">
-
-    <div class="container">
-
-        <h1>
-            FitZone Store
-        </h1>
-
-        <p>
-            Artículos deportivos y accesorios para mejorar
-            tu entrenamiento en casa o en el gimnasio.
-        </p>
-
-        <div>
-
-            <a
-                href="{{ url_for('productos') }}"
-                class="btn btn-primary mt-3"
-            >
-                Ver productos
-            </a>
-
-            <a
-                href="#registro"
-                class="btn btn-outline-light mt-3"
-            >
-                Registrar producto
-            </a>
-
-        </div>
-
-    </div>
-
-</header>
-
-
-<!-- ==============================================
-     SECCIÓN DE BIENVENIDA
-     ============================================== -->
-
-<section class="container text-center">
-
-    <h2 class="titulo-seccion">
-        Bienvenidos
-    </h2>
-
-    <p class="lead">
-        FitZone Store es una página web dedicada a presentar
-        productos, accesorios y artículos relacionados con
-        el entrenamiento físico.
-    </p>
-
-    <p>
-        Aquí podrás conocer diferentes productos deportivos,
-        consultar su disponibilidad y registrar nuevos
-        artículos de manera dinámica.
-    </p>
-
-</section>
-
-
-<!-- ==============================================
-     SECCIÓN QUIÉNES SOMOS
-     ============================================== -->
-
-<section
-    id="quienes-somos"
-    class="bg-white"
+<header
+    id="inicio"
+    class="hero-section"
 >
 
     <div class="container">
 
-        <div class="row align-items-center g-4">
+        <div class="row align-items-center min-vh-75">
 
-            <!-- INFORMACIÓN -->
+            <div class="col-lg-8">
 
-            <div class="col-lg-6">
+                <span class="hero-badge">
+                    Entrenamiento • Bienestar • Tecnología
+                </span>
 
-                <h2 class="titulo-seccion">
-                    Quiénes somos
-                </h2>
+                <h1 class="hero-title">
+                    Bienvenidos a
+                    <span>FitZone Store</span>
+                </h1>
 
-                <p>
-                    FitZone Store es un proyecto web enfocado
-                    en ofrecer productos útiles para el
-                    entrenamiento físico y el bienestar
-                    personal.
+                <p class="hero-text">
+                    Una plataforma web diseñada para presentar,
+                    organizar y gestionar productos deportivos,
+                    accesorios de entrenamiento y artículos
+                    orientados al bienestar físico.
                 </p>
 
-                <p>
-                    Nuestro objetivo es brindar a los usuarios
-                    una alternativa práctica para conocer
-                    artículos deportivos como bandas
-                    elásticas, mancuernas, colchonetas,
-                    botellas deportivas, guantes de gimnasio
-                    y ropa deportiva.
+                <p class="hero-subtext">
+                    Encuentra productos para mejorar tus
+                    entrenamientos y disfruta de una experiencia
+                    moderna, dinámica y organizada.
                 </p>
 
-                <p>
-                    Como proyecto académico, esta aplicación
-                    permite aplicar conocimientos de HTML5,
-                    CSS3, Bootstrap, JavaScript, Python y Flask
-                    mediante una estructura organizada,
-                    dinámica y responsiva.
-                </p>
+                <div class="hero-buttons">
 
-            </div>
+                    <a
+                        href="{{ url_for('productos') }}"
+                        class="btn btn-primary btn-lg"
+                    >
+                        Ver productos
+                    </a>
 
+                   <a
+    href="{{ url_for('registrar_producto') }}"
+    class="btn btn-outline-light btn-lg"
+>
+    Registrar producto
+</a>
 
-            <!-- INTEGRANTES -->
-
-            <div class="col-lg-6">
-
-                <div class="row g-4">
-
-
-                    <!-- PAUL PAREDES -->
-
-                    <div class="col-md-6">
-
-                        <div class="card h-100 text-center shadow-sm">
-
-                            <img
-                                src="{{ url_for('static', filename='img/paulparedes.png') }}"
-                                class="card-img-top"
-                                alt="Paul Paredes"
-                            >
-
-                            <div class="card-body">
-
-                                <h3 class="card-title">
-                                    Paul Paredes
-                                </h3>
-
-                                <p class="card-text">
-                                    Integrante del proyecto
-                                    FitZone Store.
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- JOSE COELLO -->
-
-                    <div class="col-md-6">
-
-                        <div class="card h-100 text-center shadow-sm">
-
-                            <img
-                                src="{{ url_for('static', filename='img/josecoello.png') }}"
-                                class="card-img-top"
-                                alt="Jose Coello"
-                            >
-
-                            <div class="card-body">
-
-                                <h3 class="card-title">
-                                    Jose Coello
-                                </h3>
-
-                                <p class="card-text">
-                                    Integrante del proyecto
-                                    FitZone Store.
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                    </div>
+                    <a
+                        href="#quienes-somos"
+                        class="btn btn-outline-light btn-lg"
+                    >
+                        Conocer el proyecto
+                    </a>
 
                 </div>
 
@@ -196,79 +77,443 @@ Inicio - FitZone Store
 
     </div>
 
-</section>
+</header>
 
 
-<!-- ==============================================
-     SECCIÓN DE PRODUCTOS DINÁMICOS
-     ============================================== -->
+<!-- ==================================================
+     PRESENTACIÓN
+     ================================================== -->
 
-<section
-    id="productos"
-    class="container"
->
+<section class="presentacion-section">
 
-    <h2 class="titulo-seccion text-center">
-        Nuestros productos
-    </h2>
+    <div class="container text-center">
 
-    <p class="text-center mb-3">
-        Los siguientes productos son generados
-        dinámicamente mediante JavaScript y
-        presentados utilizando tarjetas de Bootstrap.
-    </p>
-
-
-    <!-- CONTADOR -->
-
-    <p class="text-center fw-bold mb-4">
-
-        Total de productos:
-
-        <span
-            id="totalRegistros"
-            class="badge bg-primary"
-        >
-            0
+        <span class="seccion-etiqueta">
+            FITZONE STORE
         </span>
 
-    </p>
+        <h2 class="titulo-seccion">
+            Entrena mejor, vive mejor
+        </h2>
+
+        <p class="seccion-descripcion mx-auto">
+
+            FitZone Store reúne productos, accesorios y
+            artículos relacionados con el entrenamiento
+            físico en una plataforma web moderna y fácil
+            de utilizar.
+
+        </p>
 
 
-    <!-- PRODUCTOS GENERADOS POR JAVASCRIPT -->
+        <div class="row g-4 mt-4">
 
-    <div
-        id="contenedorProductos"
-        class="row g-4"
-        aria-live="polite"
-    >
 
-        <!-- JavaScript insertará aquí los productos -->
+            <div class="col-md-4">
+
+                <div class="caracteristica-card h-100">
+
+                    <div class="caracteristica-icono">
+                        01
+                    </div>
+
+                    <h3>
+                        Productos deportivos
+                    </h3>
+
+                    <p>
+                        Consulta artículos destinados al
+                        entrenamiento, fuerza, cardio,
+                        movilidad y bienestar personal.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="caracteristica-card h-100">
+
+                    <div class="caracteristica-icono">
+                        02
+                    </div>
+
+                    <h3>
+                        Gestión dinámica
+                    </h3>
+
+                    <p>
+                        La plataforma permite organizar y
+                        administrar información de productos
+                        mediante tecnologías web.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="caracteristica-card h-100">
+
+                    <div class="caracteristica-icono">
+                        03
+                    </div>
+
+                    <h3>
+                        Proyecto académico
+                    </h3>
+
+                    <p>
+                        Integra diseño web, programación,
+                        formularios, Flask y gestión de datos
+                        dentro de un mismo sistema.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+        </div>
 
     </div>
 
 </section>
 
 
-<!-- ==============================================
-     SECCIÓN REGISTRO DE PRODUCTOS
-     ============================================== -->
+<!-- ==================================================
+     QUIÉNES SOMOS
+     ================================================== -->
 
 <section
-    id="registro"
-    class="bg-white"
+    id="quienes-somos"
+    class="quienes-section"
 >
 
     <div class="container">
 
-        <h2 class="titulo-seccion text-center">
-            Registro de productos deportivos
-        </h2>
 
-        <p class="text-center mb-4">
-            Complete el formulario para agregar un nuevo
-            producto a la sección dinámica.
-        </p>
+        <!-- INFORMACIÓN DEL PROYECTO -->
+
+        <div class="row justify-content-center">
+
+            <div class="col-lg-10 text-center">
+
+                <span class="seccion-etiqueta">
+                    NUESTRO PROYECTO
+                </span>
+
+                <h2 class="titulo-seccion">
+                    Quiénes somos
+                </h2>
+
+                <p class="seccion-descripcion mx-auto">
+
+                    FitZone Store es un proyecto web orientado
+                    a la presentación y gestión de productos
+                    relacionados con el entrenamiento físico,
+                    el deporte y el bienestar personal.
+
+                </p>
+
+                <p class="seccion-descripcion mx-auto">
+
+                    Nuestro objetivo es integrar diseño,
+                    usabilidad y tecnología en una solución
+                    funcional desarrollada con herramientas
+                    como HTML5, CSS3, Bootstrap, JavaScript,
+                    Python, Flask y bases de datos relacionales.
+
+                </p>
+
+                <p class="seccion-descripcion mx-auto">
+
+                    La aplicación permite aplicar de manera
+                    práctica los conocimientos adquiridos
+                    durante la asignatura Desarrollo de
+                    Aplicaciones Web.
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- EQUIPO -->
+
+        <div class="equipo-encabezado text-center">
+
+            <span class="seccion-etiqueta">
+                DESARROLLADORES
+            </span>
+
+            <h2 class="titulo-seccion">
+                Nuestro equipo
+            </h2>
+
+            <p class="equipo-introduccion">
+
+                Este proyecto fue desarrollado por
+                <strong>Paul Paredes Aldas</strong>
+                y
+                <strong>Jose Coello Troncoso</strong>
+                como parte del Proyecto Integrador de
+                Desarrollo de Aplicaciones Web.
+
+            </p>
+
+        </div>
+
+
+        <!-- TARJETAS DE DESARROLLADORES -->
+
+        <div class="row justify-content-center g-4 equipo-grid">
+
+
+            <!-- PAUL PAREDES ALDAS -->
+
+            <div class="col-lg-5 col-md-6">
+
+                <article class="developer-card h-100">
+
+                    <div class="developer-photo-container">
+
+                        <img
+                            src="{{ url_for('static', filename='img/paulparedes.png') }}"
+                            class="developer-photo"
+                            alt="Paul Paredes Aldas"
+                        >
+
+                    </div>
+
+                    <div class="developer-body">
+
+                        <span class="developer-label">
+                            DESARROLLADOR
+                        </span>
+
+                        <h3>
+                            Paul Paredes Aldas
+                        </h3>
+
+                        <p class="developer-role">
+                            Desarrollo Web
+                        </p>
+
+                        <p class="developer-description">
+
+                            Desarrollador de FitZone Store.
+                            Participó en el diseño visual,
+                            organización de interfaces,
+                            estructura del proyecto e
+                            implementación de funcionalidades
+                            para la aplicación web.
+
+                        </p>
+
+                        <div class="developer-skills">
+
+                            <span>
+                                HTML5
+                            </span>
+
+                            <span>
+                                CSS3
+                            </span>
+
+                            <span>
+                                Bootstrap
+                            </span>
+
+                            <span>
+                                Flask
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+
+            <!-- JOSE COELLO TRONCOSO -->
+
+            <div class="col-lg-5 col-md-6">
+
+                <article class="developer-card h-100">
+
+                    <div class="developer-photo-container">
+
+                        <img
+                            src="{{ url_for('static', filename='img/josecoello.png') }}"
+                            class="developer-photo"
+                            alt="Jose Coello Troncoso"
+                        >
+
+                    </div>
+
+                    <div class="developer-body">
+
+                        <span class="developer-label">
+                            DESARROLLADOR
+                        </span>
+
+                        <h3>
+                            Jose Coello Troncoso
+                        </h3>
+
+                        <p class="developer-role">
+                            Desarrollo Web
+                        </p>
+
+                        <p class="developer-description">
+
+                            Desarrollador de FitZone Store.
+                            Participó en la organización del
+                            sistema, desarrollo de la lógica
+                            del proyecto e integración de
+                            funcionalidades para la aplicación
+                            web.
+
+                        </p>
+
+                        <div class="developer-skills">
+
+                            <span>
+                                Python
+                            </span>
+
+                            <span>
+                                Flask
+                            </span>
+
+                            <span>
+                                JavaScript
+                            </span>
+
+                            <span>
+                                Base de datos
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ==================================================
+     PRODUCTOS DINÁMICOS
+     ================================================== -->
+
+<section
+    id="productos"
+    class="productos-section"
+>
+
+    <div class="container">
+
+        <div class="text-center">
+
+            <span class="seccion-etiqueta">
+                CATÁLOGO
+            </span>
+
+            <h2 class="titulo-seccion">
+                Nuestros productos
+            </h2>
+
+            <p class="seccion-descripcion mx-auto">
+
+                Explora los diferentes productos deportivos
+                disponibles en FitZone Store.
+
+            </p>
+
+        </div>
+
+
+        <!-- CONTADOR -->
+
+        <div class="contador-productos">
+
+            <span>
+                Productos disponibles
+            </span>
+
+            <span
+                id="totalRegistros"
+                class="badge bg-primary"
+            >
+                0
+            </span>
+
+        </div>
+
+
+        <!-- PRODUCTOS GENERADOS POR JAVASCRIPT -->
+
+        <div
+            id="contenedorProductos"
+            class="row g-4"
+            aria-live="polite"
+        >
+
+            <!-- JavaScript insertará aquí los productos -->
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ==================================================
+     REGISTRO DE PRODUCTOS
+     ================================================== -->
+
+<section
+    id="registro"
+    class="registro-section"
+>
+
+    <div class="container">
+
+        <div class="text-center">
+
+            <span class="seccion-etiqueta">
+                ADMINISTRACIÓN
+            </span>
+
+            <h2 class="titulo-seccion">
+                Registro de productos deportivos
+            </h2>
+
+            <p class="seccion-descripcion mx-auto">
+
+                Complete la información solicitada para
+                registrar un nuevo producto dentro de
+                FitZone Store.
+
+            </p>
+
+        </div>
 
 
         <div class="row justify-content-center">
@@ -289,8 +534,6 @@ Inicio - FitZone Store
                         novalidate
                     >
 
-
-                        <!-- NOMBRE Y CATEGORÍA -->
 
                         <div class="row">
 
@@ -412,7 +655,7 @@ Inicio - FitZone Store
 
                                 <button
                                     type="submit"
-                                    class="btn btn-success w-100"
+                                    class="btn btn-success w-100 btn-lg"
                                 >
                                     Registrar producto
                                 </button>
@@ -464,58 +707,385 @@ Inicio - FitZone Store
 </section>
 
 
-<!-- ==============================================
+<!-- ==================================================
      VIDEO
-     ============================================== -->
+     ================================================== -->
 
 <section
     id="video"
-    class="container"
+    class="video-section"
 >
 
-    <h2 class="titulo-seccion text-center">
-        Video relacionado
-    </h2>
+    <div class="container">
 
-    <p class="text-center mb-4">
-        En este video se explica cómo crear una
-        rutina de entrenamiento desde cero,
-        tanto en casa como en un gimnasio.
-    </p>
+        <div class="text-center">
+
+            <span class="seccion-etiqueta">
+                APRENDE Y ENTRENA
+            </span>
+
+            <h2 class="titulo-seccion">
+                Video relacionado
+            </h2>
+
+            <p class="seccion-descripcion mx-auto">
+
+                Aprende cómo organizar una rutina de
+                entrenamiento desde cero tanto para casa
+                como para gimnasio.
+
+            </p>
+
+        </div>
 
 
-    <div class="row justify-content-center">
+        <div class="row justify-content-center">
 
-        <div class="col-lg-9">
+            <div class="col-lg-9">
 
-            <div class="ratio ratio-16x9">
+                <div class="video-contenedor">
 
-                <iframe
-                    src="https://www.youtube.com/embed/tzNcmLFNKWE"
-                    title="Cómo crear una rutina de entrenamiento desde cero"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerpolicy="strict-origin-when-cross-origin"
-                    allowfullscreen
-                ></iframe>
+                    <div class="ratio ratio-16x9">
+
+                        <iframe
+                            src="https://www.youtube.com/embed/tzNcmLFNKWE"
+                            title="Cómo crear una rutina de entrenamiento desde cero"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin"
+                            allowfullscreen
+                        ></iframe>
+
+                    </div>
+
+                </div>
+
+
+                <p class="text-center mt-4">
+
+                    Si el video no se reproduce puede verlo
+                    directamente en YouTube.
+
+                    <a
+                        href="https://www.youtube.com/watch?v=tzNcmLFNKWE"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="btn btn-outline-primary btn-sm ms-2"
+                    >
+                        Ver video
+                    </a>
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ==================================================
+     INFORMACIÓN ADICIONAL
+     ================================================== -->
+
+<section class="info-section">
+
+    <div class="container">
+
+        <div class="info-card">
+
+            <div class="row g-4">
+
+
+                <div class="col-md-4">
+
+                    <h3>
+                        Promociones
+                    </h3>
+
+                    <p>
+                        Consulta nuestras promociones y
+                        descuentos disponibles en productos
+                        deportivos seleccionados.
+                    </p>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <h3>
+                        Horario de atención
+                    </h3>
+
+                    <p>
+                        Lunes a sábado de
+                        <strong>
+                            08h00 a 18h00
+                        </strong>.
+                    </p>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <h3>
+                        Recomendación
+                    </h3>
+
+                    <p>
+                        Antes de iniciar una rutina intensa
+                        de ejercicios se recomienda recibir
+                        orientación de un profesional.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ==================================================
+     CONTACTO
+     ================================================== -->
+
+<section
+    id="contacto"
+    class="contacto-section"
+>
+
+    <div class="container">
+
+        <div class="text-center">
+
+            <span class="seccion-etiqueta">
+                CONTÁCTANOS
+            </span>
+
+            <h2 class="titulo-seccion">
+                Contacto
+            </h2>
+
+            <p class="seccion-descripcion mx-auto">
+                Si necesitas información adicional sobre
+                FitZone Store, puedes comunicarte con nosotros.
+            </p>
+
+        </div>
+
+
+        <div class="row g-4 mt-3">
+
+
+            <!-- DATOS DE CONTACTO -->
+
+            <div class="col-lg-5">
+
+                <div class="contacto-card h-100">
+
+                    <h3>
+                        Datos de contacto
+                    </h3>
+
+                    <div class="contacto-item">
+
+                        <strong>
+                            Correo electrónico
+                        </strong>
+
+                        <p>
+                            fitzonestore@gmail.com
+                        </p>
+
+                    </div>
+
+
+                    <div class="contacto-item">
+
+                        <strong>
+                            Teléfono
+                        </strong>
+
+                        <p>
+                            0987654321
+                        </p>
+
+                    </div>
+
+
+                    <div class="contacto-item">
+
+                        <strong>
+                            Dirección
+                        </strong>
+
+                        <p>
+                            Puyo, Ecuador
+                        </p>
+
+                    </div>
+
+
+                    <h4 class="mt-4">
+                        Redes sociales
+                    </h4>
+
+
+                    <div class="redes-contacto">
+
+                        <a
+                            href="https://www.instagram.com/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="btn btn-danger"
+                        >
+                            Instagram
+                        </a>
+
+
+                        <a
+                            href="https://www.facebook.com/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="btn btn-primary"
+                        >
+                            Facebook
+                        </a>
+
+
+                        <a
+                            href="https://www.tiktok.com/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="btn btn-dark"
+                        >
+                            TikTok
+                        </a>
+
+
+                        <a
+                            href="mailto:fitzonestore@gmail.com"
+                            class="btn btn-success"
+                        >
+                            Enviar correo
+                        </a>
+
+                    </div>
+
+                </div>
 
             </div>
 
 
-            <p class="text-center mt-3">
+            <!-- FORMULARIO DE CONTACTO -->
 
-                Si el video no se reproduce,
-                puede verlo directamente en YouTube:
+            <div class="col-lg-7">
 
-                <a
-                    href="https://www.youtube.com/watch?v=tzNcmLFNKWE"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="btn btn-outline-primary btn-sm ms-2"
-                >
-                    Ver video
-                </a>
+                <div class="contacto-card">
 
-            </p>
+                    <h3>
+                        Envíanos un mensaje
+                    </h3>
+
+                    <form>
+
+
+                        <div class="mb-3">
+
+                            <label
+                                for="nombre"
+                                class="form-label"
+                            >
+                                Nombre
+                            </label>
+
+                            <input
+                                type="text"
+                                id="nombre"
+                                class="form-control"
+                                placeholder="Ingrese su nombre"
+                            >
+
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label
+                                for="correo"
+                                class="form-label"
+                            >
+                                Correo electrónico
+                            </label>
+
+                            <input
+                                type="email"
+                                id="correo"
+                                class="form-control"
+                                placeholder="Ingrese su correo electrónico"
+                            >
+
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label
+                                for="asunto"
+                                class="form-label"
+                            >
+                                Asunto
+                            </label>
+
+                            <input
+                                type="text"
+                                id="asunto"
+                                class="form-control"
+                                placeholder="Ingrese el asunto"
+                            >
+
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label
+                                for="mensaje"
+                                class="form-label"
+                            >
+                                Mensaje
+                            </label>
+
+                            <textarea
+                                id="mensaje"
+                                class="form-control"
+                                rows="4"
+                                placeholder="Escriba su mensaje"
+                            ></textarea>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            class="btn btn-primary btn-lg"
+                        >
+                            Enviar mensaje
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
 
         </div>
 
@@ -524,251 +1094,9 @@ Inicio - FitZone Store
 </section>
 
 
-<!-- ==============================================
-     INFORMACIÓN ADICIONAL
-     ============================================== -->
-
-<div class="container my-4">
-
-    <aside>
-
-        <h3>
-            Información adicional
-        </h3>
-
-        <p>
-            <strong>
-                Promoción especial:
-            </strong>
-
-            descuentos en combos de bandas
-            elásticas y colchonetas.
-        </p>
-
-        <p>
-            <strong>
-                Horario de atención:
-            </strong>
-
-            lunes a sábado de 08h00 a 18h00.
-        </p>
-
-        <p>
-            <strong>
-                Recomendación:
-            </strong>
-
-            antes de iniciar una rutina intensa
-            de ejercicios, es importante recibir
-            orientación de un profesional.
-        </p>
-
-    </aside>
-
-</div>
-
-
-<!-- ==============================================
-     CONTACTO
-     ============================================== -->
-
-<section
-    id="contacto"
-    class="container"
->
-
-    <h2 class="titulo-seccion text-center">
-        Contacto
-    </h2>
-
-
-    <div class="row g-4">
-
-
-        <!-- DATOS DE CONTACTO -->
-
-        <div class="col-lg-6">
-
-            <h3>
-                Datos de contacto
-            </h3>
-
-            <p>
-                <strong>
-                    Correo electrónico:
-                </strong>
-
-                fitzonestore@gmail.com
-            </p>
-
-            <p>
-                <strong>
-                    Teléfono:
-                </strong>
-
-                0987654321
-            </p>
-
-            <p>
-                <strong>
-                    Dirección:
-                </strong>
-
-                Puyo, Ecuador
-            </p>
-
-            <p>
-                <strong>
-                    Redes sociales:
-                </strong>
-            </p>
-
-
-            <a
-                href="https://www.instagram.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="btn btn-danger m-1"
-            >
-                Instagram
-            </a>
-
-
-            <a
-                href="https://www.facebook.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="btn btn-primary m-1"
-            >
-                Facebook
-            </a>
-
-
-            <a
-                href="https://www.tiktok.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="btn btn-dark m-1"
-            >
-                TikTok
-            </a>
-
-
-            <a
-                href="mailto:fitzonestore@gmail.com"
-                class="btn btn-success m-1"
-            >
-                Enviar correo
-            </a>
-
-        </div>
-
-
-        <!-- FORMULARIO DE CONTACTO -->
-
-        <div class="col-lg-6">
-
-            <h3>
-                Formulario de contacto
-            </h3>
-
-            <form>
-
-                <div class="mb-3">
-
-                    <label
-                        for="nombre"
-                        class="form-label"
-                    >
-                        Nombre
-                    </label>
-
-                    <input
-                        type="text"
-                        id="nombre"
-                        class="form-control"
-                        placeholder="Ingrese su nombre"
-                    >
-
-                </div>
-
-
-                <div class="mb-3">
-
-                    <label
-                        for="correo"
-                        class="form-label"
-                    >
-                        Correo electrónico
-                    </label>
-
-                    <input
-                        type="email"
-                        id="correo"
-                        class="form-control"
-                        placeholder="Ingrese su correo electrónico"
-                    >
-
-                </div>
-
-
-                <div class="mb-3">
-
-                    <label
-                        for="asunto"
-                        class="form-label"
-                    >
-                        Asunto
-                    </label>
-
-                    <input
-                        type="text"
-                        id="asunto"
-                        class="form-control"
-                        placeholder="Ingrese el asunto"
-                    >
-
-                </div>
-
-
-                <div class="mb-3">
-
-                    <label
-                        for="mensaje"
-                        class="form-label"
-                    >
-                        Mensaje
-                    </label>
-
-                    <textarea
-                        id="mensaje"
-                        class="form-control"
-                        rows="4"
-                        placeholder="Escriba su mensaje"
-                    ></textarea>
-
-                </div>
-
-
-                <button
-                    type="button"
-                    class="btn btn-primary"
-                >
-                    Enviar mensaje
-                </button>
-
-            </form>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- ==============================================
+<!-- ==================================================
      MODAL DE DETALLES DEL PRODUCTO
-     ============================================== -->
+     ================================================== -->
 
 <div
     class="modal fade"
@@ -846,7 +1174,7 @@ Inicio - FitZone Store
             </div>
 
 
-            <!-- PIE DEL MODAL -->
+            <!-- PIE -->
 
             <div class="modal-footer">
 
