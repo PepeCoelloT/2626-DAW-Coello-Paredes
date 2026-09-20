@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Registro de usuario - FitZone Store
+{% endblock %}
+
+
+{% block content %}
+
+<section class="modulo">
+
+    <div class="container">
+
+        <div class="row justify-content-center">
+
+            <div class="col-md-8 col-lg-6">
+
+                <div class="tarjeta-modulo">
+
+                    <div class="text-center mb-4">
+
+                        <h1 class="text-primary">
+                            Registrar usuario
+                        </h1>
+
+                        <p class="text-muted">
+                            Crea una cuenta para acceder a las
+                            páginas administrativas de FitZone Store.
+                        </p>
+
+                    </div>
+
+
+                    <form method="POST" novalidate>
+
+                        {{ form.hidden_tag() }}
+
+
+                        <!-- USUARIO -->
+
+                        <div class="mb-3">
+
+                            {{ form.usuario.label(
+                                class="form-label fw-bold"
+                            ) }}
+
+                            {{ form.usuario(
+                                class="form-control",
+                                placeholder="Ingrese un nombre de usuario"
+                            ) }}
+
+                            {% for error in form.usuario.errors %}
+
+                                <div class="text-danger small mt-1">
+
+                                    {{ error }}
+
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        <!-- CONTRASEÑA -->
+
+                        <div class="mb-3">
+
+                            {{ form.password.label(
+                                class="form-label fw-bold"
+                            ) }}
+
+                            {{ form.password(
+                                class="form-control",
+                                placeholder="Ingrese una contraseña"
+                            ) }}
+
+                            {% for error in form.password.errors %}
+
+                                <div class="text-danger small mt-1">
+
+                                    {{ error }}
+
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        <!-- CONFIRMAR CONTRASEÑA -->
+
+                        <div class="mb-4">
+
+                            {{ form.confirmar_password.label(
+                                class="form-label fw-bold"
+                            ) }}
+
+                            {{ form.confirmar_password(
+                                class="form-control",
+                                placeholder="Repita la contraseña"
+                            ) }}
+
+                            {% for error in form.confirmar_password.errors %}
+
+                                <div class="text-danger small mt-1">
+
+                                    {{ error }}
+
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        <!-- BOTÓN -->
+
+                        <div class="d-grid">
+
+                            {{ form.submit(
+                                class="btn btn-success btn-lg"
+                            ) }}
+
+                        </div>
+
+                    </form>
+
+
+                    <hr class="my-4">
+
+
+                    <p class="text-center mb-0">
+
+                        ¿Ya tienes una cuenta?
+
+                        <a
+                            href="{{ url_for('login') }}"
+                            class="fw-bold text-decoration-none"
+                        >
+                            Iniciar sesión
+                        </a>
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

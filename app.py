@@ -9,9 +9,24 @@ from flask import (
     request
 )
 
+from flask_login import (
+    LoginManager,
+    login_user,
+    logout_user,
+    login_required,
+    current_user
+)
+
+from werkzeug.security import (
+    generate_password_hash,
+    check_password_hash
+)
+
 from mysql.connector import Error
 
 from conexion.conexion import obtener_conexion
+
+from models import Usuario
 
 from forms import (
     ProductoForm,
@@ -19,6 +34,9 @@ from forms import (
     ProveedorForm,
     FacturacionForm
 )
+
+from forms.login_form import LoginForm
+from forms.usuario_form import UsuarioForm
 
 
 # =========================================================
@@ -32,12 +50,20 @@ app = Flask(__name__)
 # CONFIGURACIÓN GENERAL
 # =========================================================
 
-app.config["SECRET_KEY"] = "fitzone-store-semana13-2026"
+app.config["SECRET_KEY"] = os.getenv(
+    "SECRET_KEY"
+)
+
+if not app.config["SECRET_KEY"]:
+
+    raise RuntimeError(
+        "Debe definir la variable de entorno SECRET_KEY."
+    )
 
 
 # =========================================================
 # CONFIGURACIÓN MYSQL
-# SEMANA 13
+# SEMANA 14
 # =========================================================
 
 app.config["MYSQL_HOST"] = "localhost"
@@ -51,6 +77,25 @@ app.config["MYSQL_PASSWORD"] = os.getenv(
 )
 
 app.config["MYSQL_DATABASE"] = "fitness_zone"
+
+
+# =========================================================
+# CONFIGURACIÓN FLASK-LOGIN
+# =========================================================
+
+login_manager = LoginManager()
+
+login_manager.init_app(
+    app
+)
+
+login_manager.login_view = "login"
+
+login_manager.login_message = (
+    "Debe iniciar sesión para acceder a esta página."
+)
+
+login_manager.login_message_category = "warning"
 
 
 # =========================================================
@@ -106,7 +151,7 @@ def comprobar_conexion_mysql():
 # La actividad exige como mínimo un módulo completamente
 # conectado a MySQL.
 #
-# Durante la Semana 13 el módulo PRODUCTOS implementa
+# El módulo PRODUCTOS implementa
 # SELECT, INSERT, UPDATE y DELETE sobre MySQL.
 #
 # Clientes, Proveedores y Facturación mantienen por ahora
@@ -237,6 +282,380 @@ contador_facturas = 3
 
 
 # =========================================================
+# AUTENTICACIÓN DE USUARIOS
+# SEMANA 14
+# =========================================================
+
+
+# ---------------------------------------------------------
+# CARGAR USUARIO PARA FLASK-LOGIN
+# ---------------------------------------------------------
+
+@login_manager.user_loader
+def load_user(user_id):
+
+    conexion = None
+    cursor = None
+
+    try:
+
+        id_usuario = int(
+            user_id
+        )
+
+        conexion = obtener_conexion()
+
+        cursor = conexion.cursor(
+            dictionary=True
+        )
+
+        cursor.execute(
+            """
+            SELECT
+                id,
+                usuario,
+                password
+
+            FROM usuarios
+
+            WHERE id = %s
+            """,
+            (
+                id_usuario,
+            )
+        )
+
+        registro = cursor.fetchone()
+
+        if registro is None:
+
+            return None
+
+        return Usuario(
+            registro["id"],
+            registro["usuario"],
+            registro["password"]
+        )
+
+    except (
+        ValueError,
+        TypeError,
+        Error
+    ):
+
+        return None
+
+    finally:
+
+        if cursor is not None:
+
+            cursor.close()
+
+        if (
+            conexion is not None
+            and conexion.is_connected()
+        ):
+
+            conexion.close()
+
+
+# ---------------------------------------------------------
+# REGISTRAR USUARIO
+# ---------------------------------------------------------
+
+@app.route(
+    "/registro",
+    methods=["GET", "POST"]
+)
+def registro():
+
+    if current_user.is_authenticated:
+
+        return redirect(
+            url_for("dashboard")
+        )
+
+    form = UsuarioForm()
+
+    if form.validate_on_submit():
+
+        conexion = None
+        cursor = None
+
+        try:
+
+            nombre_usuario = (
+                form.usuario.data.strip()
+            )
+
+            conexion = obtener_conexion()
+
+            cursor = conexion.cursor(
+                dictionary=True
+            )
+
+            # ---------------------------------------------
+            # COMPROBAR QUE EL USUARIO NO EXISTA
+            # ---------------------------------------------
+
+            cursor.execute(
+                """
+                SELECT id
+
+                FROM usuarios
+
+                WHERE usuario = %s
+                """,
+                (
+                    nombre_usuario,
+                )
+            )
+
+            usuario_existente = cursor.fetchone()
+
+            if usuario_existente is not None:
+
+                flash(
+                    "El nombre de usuario ya está registrado.",
+                    "warning"
+                )
+
+                return render_template(
+                    "registro.html",
+                    form=form
+                )
+
+            # ---------------------------------------------
+            # GENERAR HASH DE LA CONTRASEÑA
+            # ---------------------------------------------
+
+            password_hash = generate_password_hash(
+                form.password.data
+            )
+
+            # ---------------------------------------------
+            # INSERT PARAMETRIZADO
+            # ---------------------------------------------
+
+            cursor.execute(
+                """
+                INSERT INTO usuarios (
+                    usuario,
+                    password
+                )
+
+                VALUES (
+                    %s,
+                    %s
+                )
+                """,
+                (
+                    nombre_usuario,
+                    password_hash
+                )
+            )
+
+            conexion.commit()
+
+            flash(
+                "Usuario registrado correctamente. "
+                "Ahora puede iniciar sesión.",
+                "success"
+            )
+
+            return redirect(
+                url_for("login")
+            )
+
+        except Error as error:
+
+            if conexion is not None:
+
+                conexion.rollback()
+
+            flash(
+                f"Error al registrar el usuario: {error}",
+                "danger"
+            )
+
+        finally:
+
+            if cursor is not None:
+
+                cursor.close()
+
+            if (
+                conexion is not None
+                and conexion.is_connected()
+            ):
+
+                conexion.close()
+
+    return render_template(
+        "registro.html",
+        form=form
+    )
+
+
+# ---------------------------------------------------------
+# INICIAR SESIÓN
+# ---------------------------------------------------------
+
+@app.route(
+    "/login",
+    methods=["GET", "POST"]
+)
+def login():
+
+    if current_user.is_authenticated:
+
+        return redirect(
+            url_for("dashboard")
+        )
+
+    form = LoginForm()
+
+    if form.validate_on_submit():
+
+        conexion = None
+        cursor = None
+
+        try:
+
+            nombre_usuario = (
+                form.usuario.data.strip()
+            )
+
+            conexion = obtener_conexion()
+
+            cursor = conexion.cursor(
+                dictionary=True
+            )
+
+            # ---------------------------------------------
+            # BUSCAR USUARIO
+            # ---------------------------------------------
+
+            cursor.execute(
+                """
+                SELECT
+                    id,
+                    usuario,
+                    password
+
+                FROM usuarios
+
+                WHERE usuario = %s
+                """,
+                (
+                    nombre_usuario,
+                )
+            )
+
+            registro = cursor.fetchone()
+
+            # ---------------------------------------------
+            # COMPROBAR CONTRASEÑA MEDIANTE HASH
+            # ---------------------------------------------
+
+            if (
+                registro is None
+                or not check_password_hash(
+                    registro["password"],
+                    form.password.data
+                )
+            ):
+
+                flash(
+                    "Usuario o contraseña incorrectos.",
+                    "danger"
+                )
+
+                return render_template(
+                    "login.html",
+                    form=form
+                )
+
+            usuario = Usuario(
+                registro["id"],
+                registro["usuario"],
+                registro["password"]
+            )
+
+            login_user(
+                usuario
+            )
+
+            flash(
+                f"Bienvenido, {current_user.usuario}.",
+                "success"
+            )
+
+            return redirect(
+                url_for("dashboard")
+            )
+
+        except Error as error:
+
+            flash(
+                f"Error al iniciar sesión: {error}",
+                "danger"
+            )
+
+        finally:
+
+            if cursor is not None:
+
+                cursor.close()
+
+            if (
+                conexion is not None
+                and conexion.is_connected()
+            ):
+
+                conexion.close()
+
+    return render_template(
+        "login.html",
+        form=form
+    )
+
+
+# ---------------------------------------------------------
+# DASHBOARD
+# ---------------------------------------------------------
+
+@app.route("/dashboard")
+@login_required
+def dashboard():
+
+    return render_template(
+        "dashboard.html",
+        usuario=current_user.usuario
+    )
+
+
+# ---------------------------------------------------------
+# CERRAR SESIÓN
+# ---------------------------------------------------------
+
+@app.route("/logout")
+@login_required
+def logout():
+
+    logout_user()
+
+    flash(
+        "Sesión cerrada correctamente.",
+        "success"
+    )
+
+    return redirect(
+        url_for("login")
+    )
+
+
+# =========================================================
 # RUTAS GENERALES
 # =========================================================
 
@@ -265,6 +684,7 @@ def inicio():
 # ---------------------------------------------------------
 
 @app.route("/productos")
+@login_required
 def productos():
 
     titulo = "Gestión de Productos"
@@ -374,6 +794,7 @@ def productos():
     "/productos/nuevo",
     methods=["GET", "POST"]
 )
+@login_required
 def registrar_producto():
 
     form = ProductoForm()
@@ -514,6 +935,7 @@ def registrar_producto():
     "/productos/editar/<int:id_producto>",
     methods=["GET", "POST"]
 )
+@login_required
 def editar_producto(id_producto):
 
     conexion = None
@@ -754,6 +1176,7 @@ def editar_producto(id_producto):
     "/productos/eliminar/<int:id_producto>",
     methods=["POST"]
 )
+@login_required
 def eliminar_producto(id_producto):
 
     conexion = None
@@ -834,6 +1257,7 @@ def eliminar_producto(id_producto):
 
 
 @app.route("/clientes")
+@login_required
 def clientes():
 
     titulo = "Gestión de Clientes"
@@ -870,6 +1294,7 @@ def clientes():
     "/clientes/nuevo",
     methods=["GET", "POST"]
 )
+@login_required
 def registrar_cliente():
 
     form = ClienteForm()
@@ -924,6 +1349,7 @@ def registrar_cliente():
 
 
 @app.route("/proveedores")
+@login_required
 def proveedores():
 
     titulo = "Gestión de Proveedores"
@@ -960,6 +1386,7 @@ def proveedores():
     "/proveedores/nuevo",
     methods=["GET", "POST"]
 )
+@login_required
 def registrar_proveedor():
 
     form = ProveedorForm()
@@ -1014,6 +1441,7 @@ def registrar_proveedor():
 
 
 @app.route("/facturacion")
+@login_required
 def facturacion():
 
     titulo = "Gestión de Facturación"
@@ -1057,6 +1485,7 @@ def facturacion():
     "/facturacion/nueva",
     methods=["GET", "POST"]
 )
+@login_required
 def registrar_facturacion():
 
     global factura_actual

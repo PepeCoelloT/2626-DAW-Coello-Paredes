@@ -51,6 +51,8 @@
             <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
 
 
+                <!-- INICIO -->
+
                 <li class="nav-item">
 
                     <a
@@ -62,6 +64,8 @@
 
                 </li>
 
+
+                <!-- QUIÉNES SOMOS -->
 
                 <li class="nav-item">
 
@@ -75,53 +79,87 @@
                 </li>
 
 
-                <li class="nav-item">
+                <!-- ==================================================
+                     OPCIONES PARA USUARIO AUTENTICADO
+                     ================================================== -->
 
-                    <a
-                        class="nav-link fitzone-nav-link"
-                        href="{{ url_for('productos') }}"
-                    >
-                        Productos
-                    </a>
-
-                </li>
+                {% if current_user.is_authenticated %}
 
 
-                <li class="nav-item">
+                    <!-- DASHBOARD -->
 
-                    <a
-                        class="nav-link fitzone-nav-link"
-                        href="{{ url_for('clientes') }}"
-                    >
-                        Clientes
-                    </a>
+                    <li class="nav-item">
 
-                </li>
+                        <a
+                            class="nav-link fitzone-nav-link"
+                            href="{{ url_for('dashboard') }}"
+                        >
+                            Dashboard
+                        </a>
 
-
-                <li class="nav-item">
-
-                    <a
-                        class="nav-link fitzone-nav-link"
-                        href="{{ url_for('proveedores') }}"
-                    >
-                        Proveedores
-                    </a>
-
-                </li>
+                    </li>
 
 
-                <li class="nav-item">
+                    <!-- PRODUCTOS -->
 
-                    <a
-                        class="nav-link fitzone-nav-link"
-                        href="{{ url_for('facturacion') }}"
-                    >
-                        Facturación
-                    </a>
+                    <li class="nav-item">
 
-                </li>
+                        <a
+                            class="nav-link fitzone-nav-link"
+                            href="{{ url_for('productos') }}"
+                        >
+                            Productos
+                        </a>
 
+                    </li>
+
+
+                    <!-- CLIENTES -->
+
+                    <li class="nav-item">
+
+                        <a
+                            class="nav-link fitzone-nav-link"
+                            href="{{ url_for('clientes') }}"
+                        >
+                            Clientes
+                        </a>
+
+                    </li>
+
+
+                    <!-- PROVEEDORES -->
+
+                    <li class="nav-item">
+
+                        <a
+                            class="nav-link fitzone-nav-link"
+                            href="{{ url_for('proveedores') }}"
+                        >
+                            Proveedores
+                        </a>
+
+                    </li>
+
+
+                    <!-- FACTURACIÓN -->
+
+                    <li class="nav-item">
+
+                        <a
+                            class="nav-link fitzone-nav-link"
+                            href="{{ url_for('facturacion') }}"
+                        >
+                            Facturación
+                        </a>
+
+                    </li>
+
+
+                {% endif %}
+
+
+                <!-- CONTACTO -->
 
                 <li class="nav-item">
 
@@ -135,18 +173,90 @@
                 </li>
 
 
-                <!-- FORMULARIO REAL FLASK-WTF + MYSQL -->
+                <!-- ==================================================
+                     SESIÓN INICIADA
+                     ================================================== -->
 
-                <li class="nav-item ms-lg-2 mt-3 mt-lg-0">
+                {% if current_user.is_authenticated %}
 
-                    <a
-                        class="btn navbar-action-btn"
-                        href="{{ url_for('registrar_producto') }}"
-                    >
-                        Registrar producto
-                    </a>
 
-                </li>
+                    <!-- REGISTRAR PRODUCTO -->
+
+                    <li class="nav-item ms-lg-2 mt-3 mt-lg-0">
+
+                        <a
+                            class="btn navbar-action-btn"
+                            href="{{ url_for('registrar_producto') }}"
+                        >
+                            Registrar producto
+                        </a>
+
+                    </li>
+
+
+                    <!-- USUARIO ACTUAL -->
+
+                    <li class="nav-item ms-lg-2 mt-3 mt-lg-0">
+
+                        <span
+                            class="navbar-text text-white fw-bold px-2"
+                        >
+                            {{ current_user.usuario }}
+                        </span>
+
+                    </li>
+
+
+                    <!-- CERRAR SESIÓN -->
+
+                    <li class="nav-item ms-lg-2 mt-3 mt-lg-0">
+
+                        <a
+                            class="btn btn-outline-light"
+                            href="{{ url_for('logout') }}"
+                        >
+                            Cerrar sesión
+                        </a>
+
+                    </li>
+
+
+                <!-- ==================================================
+                     USUARIO NO AUTENTICADO
+                     ================================================== -->
+
+                {% else %}
+
+
+                    <!-- INICIAR SESIÓN -->
+
+                    <li class="nav-item ms-lg-2 mt-3 mt-lg-0">
+
+                        <a
+                            class="btn btn-outline-light"
+                            href="{{ url_for('login') }}"
+                        >
+                            Iniciar sesión
+                        </a>
+
+                    </li>
+
+
+                    <!-- REGISTRARSE -->
+
+                    <li class="nav-item ms-lg-2 mt-3 mt-lg-0">
+
+                        <a
+                            class="btn navbar-action-btn"
+                            href="{{ url_for('registro') }}"
+                        >
+                            Registrarse
+                        </a>
+
+                    </li>
+
+
+                {% endif %}
 
 
             </ul>

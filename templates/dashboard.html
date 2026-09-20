@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Panel principal - FitZone Store
+{% endblock %}
+
+
+{% block content %}
+
+<section class="modulo">
+
+    <div class="container">
+
+
+        <!-- ENCABEZADO -->
+
+        <div class="encabezado-modulo">
+
+            <h1>
+                Panel de Administración
+            </h1>
+
+            <p>
+                Bienvenido,
+                <strong>
+                    {{ current_user.usuario }}
+                </strong>.
+                Has iniciado sesión correctamente en FitZone Store.
+            </p>
+
+        </div>
+
+
+        <!-- MÓDULOS -->
+
+        <div class="row g-4">
+
+
+            <!-- PRODUCTOS -->
+
+            <div class="col-md-6 col-lg-3">
+
+                <div class="tarjeta-modulo h-100 text-center">
+
+                    <h3 class="text-primary">
+                        Productos
+                    </h3>
+
+                    <p>
+                        Consulta, registra, modifica y elimina
+                        los productos disponibles.
+                    </p>
+
+                    <a
+                        href="{{ url_for('productos') }}"
+                        class="btn btn-primary"
+                    >
+                        Ir a Productos
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- CLIENTES -->
+
+            <div class="col-md-6 col-lg-3">
+
+                <div class="tarjeta-modulo h-100 text-center">
+
+                    <h3 class="text-success">
+                        Clientes
+                    </h3>
+
+                    <p>
+                        Consulta y administra la información
+                        de los clientes.
+                    </p>
+
+                    <a
+                        href="{{ url_for('clientes') }}"
+                        class="btn btn-success"
+                    >
+                        Ir a Clientes
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- PROVEEDORES -->
+
+            <div class="col-md-6 col-lg-3">
+
+                <div class="tarjeta-modulo h-100 text-center">
+
+                    <h3 class="text-warning">
+                        Proveedores
+                    </h3>
+
+                    <p>
+                        Consulta y administra los proveedores
+                        registrados en el sistema.
+                    </p>
+
+                    <a
+                        href="{{ url_for('proveedores') }}"
+                        class="btn btn-warning"
+                    >
+                        Ir a Proveedores
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- FACTURACIÓN -->
+
+            <div class="col-md-6 col-lg-3">
+
+                <div class="tarjeta-modulo h-100 text-center">
+
+                    <h3 class="text-danger">
+                        Facturación
+                    </h3>
+
+                    <p>
+                        Consulta y registra información
+                        relacionada con facturación.
+                    </p>
+
+                    <a
+                        href="{{ url_for('facturacion') }}"
+                        class="btn btn-danger"
+                    >
+                        Ir a Facturación
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- INFORMACIÓN DE SESIÓN -->
+
+        <div class="text-center mt-5">
+
+            <p class="text-muted">
+
+                Sesión activa como:
+
+                <strong>
+                    {{ current_user.usuario }}
+                </strong>
+
+            </p>
+
+            <a
+                href="{{ url_for('logout') }}"
+                class="btn btn-outline-danger"
+            >
+                Cerrar sesión
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

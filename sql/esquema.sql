@@ -1,6 +1,7 @@
 -- =========================================================
 -- FITZONE STORE
--- SEMANA 13
+-- SEMANA 14
+-- CONTINUIDAD DEL PROYECTO INTEGRADOR
 -- BASE DE DATOS RELACIONAL MYSQL
 -- =========================================================
 
@@ -15,6 +16,29 @@ COLLATE utf8mb4_unicode_ci;
 
 
 USE fitness_zone;
+
+
+-- =========================================================
+-- TABLA: USUARIOS
+-- =========================================================
+--
+-- Almacena los usuarios autorizados para ingresar
+-- al sistema.
+--
+-- La contraseña nunca deberá almacenarse en texto plano.
+-- El valor almacenado en password será generado desde
+-- Flask mediante generate_password_hash().
+-- =========================================================
+
+CREATE TABLE IF NOT EXISTS usuarios (
+
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    usuario VARCHAR(50) NOT NULL UNIQUE,
+
+    password VARCHAR(255) NOT NULL
+
+);
 
 
 -- =========================================================
@@ -375,6 +399,21 @@ SHOW TABLES;
 
 SELECT *
 FROM categorias;
+
+
+-- VERIFICAR USUARIOS
+--
+-- Al principio puede aparecer vacío.
+-- Los usuarios se registrarán posteriormente desde Flask
+-- y la contraseña deberá mostrarse como un hash.
+-- =========================================================
+
+SELECT
+    id,
+    usuario,
+    password
+FROM usuarios
+ORDER BY id ASC;
 
 
 -- =========================================================
