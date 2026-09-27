@@ -1,8 +1,17 @@
 {% extends "base.html" %}
 
 
+{% set modo_actual = modo|default("registrar") %}
+
+
 {% block title %}
-Registrar Cliente - FitZone Store
+
+    {% if modo_actual == "editar" %}
+        Modificar Cliente - FitZone Store
+    {% else %}
+        Registrar Cliente - FitZone Store
+    {% endif %}
+
 {% endblock %}
 
 
@@ -14,32 +23,57 @@ Registrar Cliente - FitZone Store
     <div class="container">
 
 
-        <!-- ENCABEZADO -->
+        <!-- ==================================================
+             ENCABEZADO
+             ================================================== -->
 
         <div class="encabezado-modulo">
 
-            <h1>
-                Registrar cliente
-            </h1>
+            <span class="seccion-etiqueta">
+                GESTIÓN DE CLIENTES
+            </span>
 
-            <p>
-                Complete la información del cliente.
-                Los datos serán procesados únicamente cuando
-                cumplan correctamente las reglas de validación.
-            </p>
+
+            {% if modo_actual == "editar" %}
+
+                <h1>
+                    Modificar cliente
+                </h1>
+
+                <p>
+                    Actualice la información del cliente seleccionado.
+                    Los cambios se guardarán directamente en PostgreSQL
+                    cuando todos los campos cumplan las reglas
+                    de validación.
+                </p>
+
+            {% else %}
+
+                <h1>
+                    Registrar cliente
+                </h1>
+
+                <p>
+                    Complete la información del nuevo cliente.
+                    El registro se almacenará directamente en PostgreSQL
+                    cuando todos los campos cumplan las reglas
+                    de validación.
+                </p>
+
+            {% endif %}
 
         </div>
 
+
+        <!-- ==================================================
+             FORMULARIO
+             ================================================== -->
 
         <div class="row justify-content-center">
 
             <div class="col-lg-8">
 
-
                 <div class="tarjeta-modulo">
-
-
-                    <!-- FORMULARIO -->
 
                     <form
                         method="POST"
@@ -52,7 +86,9 @@ Registrar Cliente - FitZone Store
                         {{ form.hidden_tag() }}
 
 
-                        <!-- NOMBRE -->
+                        <!-- ==================================================
+                             NOMBRE
+                             ================================================== -->
 
                         <div class="mb-4">
 
@@ -91,7 +127,9 @@ Registrar Cliente - FitZone Store
                         </div>
 
 
-                        <!-- CORREO -->
+                        <!-- ==================================================
+                             CORREO
+                             ================================================== -->
 
                         <div class="mb-4">
 
@@ -130,7 +168,9 @@ Registrar Cliente - FitZone Store
                         </div>
 
 
-                        <!-- TELÉFONO -->
+                        <!-- ==================================================
+                             TELÉFONO
+                             ================================================== -->
 
                         <div class="mb-4">
 
@@ -169,7 +209,9 @@ Registrar Cliente - FitZone Store
                         </div>
 
 
-                        <!-- CIUDAD -->
+                        <!-- ==================================================
+                             CIUDAD
+                             ================================================== -->
 
                         <div class="mb-4">
 
@@ -208,7 +250,9 @@ Registrar Cliente - FitZone Store
                         </div>
 
 
-                        <!-- ESTADO -->
+                        <!-- ==================================================
+                             ESTADO
+                             ================================================== -->
 
                         <div class="mb-4">
 
@@ -225,19 +269,79 @@ Registrar Cliente - FitZone Store
                             </div>
 
                             <div class="form-text">
-                                Mantenga esta opción seleccionada si el cliente se encuentra activo.
+                                Mantenga esta opción seleccionada si
+                                el cliente se encuentra activo.
                             </div>
 
                         </div>
 
 
-                        <!-- BOTONES -->
+                        <!-- ==================================================
+                             INFORMACIÓN DE LA OPERACIÓN
+                             ================================================== -->
 
-                        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center mt-5">
+                        <div class="alert alert-info mb-4">
 
-                            {{ form.submit(
-                                class="btn btn-primary px-4"
-                            ) }}
+                            {% if modo_actual == "editar" %}
+
+                                <strong>
+                                    Operación SQL:
+                                </strong>
+
+                                Los cambios del cliente serán almacenados
+                                mediante una consulta
+
+                                <strong>
+                                    UPDATE
+                                </strong>
+
+                                en PostgreSQL.
+
+                            {% else %}
+
+                                <strong>
+                                    Operación SQL:
+                                </strong>
+
+                                El nuevo cliente será almacenado mediante
+                                una consulta
+
+                                <strong>
+                                    INSERT
+                                </strong>
+
+                                en PostgreSQL.
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- ==================================================
+                             BOTONES
+                             ================================================== -->
+
+                        <div
+                            class="d-flex flex-column flex-sm-row
+                                   gap-3 justify-content-center mt-5"
+                        >
+
+                            {% if modo_actual == "editar" %}
+
+                                {{ form.submit(
+                                    class="btn btn-warning px-4",
+                                    value="Guardar cambios"
+                                ) }}
+
+                            {% else %}
+
+                                {{ form.submit(
+                                    class="btn btn-primary px-4",
+                                    value="Registrar cliente"
+                                ) }}
+
+                            {% endif %}
+
 
                             <a
                                 href="{{ url_for('clientes') }}"
@@ -251,10 +355,25 @@ Registrar Cliente - FitZone Store
 
                     </form>
 
-
                 </div>
 
             </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             VOLVER
+             ================================================== -->
+
+        <div class="text-center mt-4">
+
+            <a
+                href="{{ url_for('clientes') }}"
+                class="text-decoration-none"
+            >
+                ← Volver al listado de clientes
+            </a>
 
         </div>
 

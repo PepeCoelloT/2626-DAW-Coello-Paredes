@@ -14,26 +14,33 @@ Facturación - FitZone Store
     <div class="container">
 
 
-        <!-- ENCABEZADO DEL MÓDULO -->
+        <!-- ==================================================
+             ENCABEZADO
+             ================================================== -->
 
         <div class="encabezado-modulo">
+
+            <span class="seccion-etiqueta">
+                GESTIÓN DE FACTURACIÓN
+            </span>
 
             <h1>
                 {{ titulo }}
             </h1>
 
             <p>
-                En este módulo se presenta la información
-                correspondiente a la facturación de FitZone Store.
-                Los datos se mantienen temporalmente durante
-                la ejecución de la aplicación y todavía no
-                se utiliza una base de datos.
+                Administra las facturas registradas en FitZone Store.
+                La información se almacena en PostgreSQL y utiliza
+                relaciones entre clientes, facturas, detalle de factura
+                y productos.
             </p>
 
         </div>
 
 
-        <!-- BOTÓN PARA REGISTRAR FACTURA -->
+        <!-- ==================================================
+             REGISTRAR FACTURA
+             ================================================== -->
 
         <div class="d-flex justify-content-end mb-4">
 
@@ -47,17 +54,21 @@ Facturación - FitZone Store
         </div>
 
 
-        <!-- RESUMEN DEL MÓDULO -->
+        <!-- ==================================================
+             RESUMEN
+             ================================================== -->
 
         <div class="row g-4 mb-5">
 
 
+            <!-- FACTURAS REGISTRADAS -->
+
             <div class="col-md-4">
 
-                <div class="tarjeta-modulo text-center">
+                <div class="tarjeta-modulo text-center h-100">
 
                     <h3 class="text-primary">
-                        {{ facturas_registradas }}
+                        {{ facturas|length }}
                     </h3>
 
                     <p class="mb-0">
@@ -69,9 +80,11 @@ Facturación - FitZone Store
             </div>
 
 
+            <!-- PRODUCTOS VENDIDOS -->
+
             <div class="col-md-4">
 
-                <div class="tarjeta-modulo text-center">
+                <div class="tarjeta-modulo text-center h-100">
 
                     <h3 class="text-success">
                         {{ productos_vendidos }}
@@ -86,16 +99,18 @@ Facturación - FitZone Store
             </div>
 
 
+            <!-- TOTAL FACTURADO -->
+
             <div class="col-md-4">
 
-                <div class="tarjeta-modulo text-center">
+                <div class="tarjeta-modulo text-center h-100">
 
                     <h3 class="text-primary">
-                        ${{ "%.2f"|format(total) }}
+                        ${{ "%.2f"|format(total_facturado) }}
                     </h3>
 
                     <p class="mb-0">
-                        Total de factura actual
+                        Total facturado
                     </p>
 
                 </div>
@@ -106,168 +121,35 @@ Facturación - FitZone Store
         </div>
 
 
-        <!-- FACTURA -->
-
-        <div class="factura">
-
-
-            <!-- ENCABEZADO DE LA FACTURA -->
-
-            <div class="factura-encabezado">
-
-                <div class="row align-items-center">
-
-                    <div class="col-md-7">
-
-                        <h2>
-                            FitZone Store
-                        </h2>
-
-                        <p class="mb-1">
-                            Artículos deportivos y accesorios
-                        </p>
-
-                        <p class="mb-1">
-                            Puyo, Ecuador
-                        </p>
-
-                        <p class="mb-0">
-                            fitzonestore@gmail.com
-                        </p>
-
-                    </div>
-
-
-                    <div class="col-md-5 text-md-end mt-4 mt-md-0">
-
-                        <h4>
-                            FACTURA
-                        </h4>
-
-                        <p class="mb-1">
-
-                            <strong>
-                                N.º:
-                            </strong>
-
-                            {{ factura.numero }}
-
-                        </p>
-
-                        <p class="mb-0">
-
-                            <strong>
-                                Fecha:
-                            </strong>
-
-                            {{ factura.fecha }}
-
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- DATOS DEL CLIENTE Y COMPRA -->
-
-            <div class="row mb-4">
-
-
-                <div class="col-md-6">
-
-                    <h5 class="text-primary">
-                        Datos del cliente
-                    </h5>
-
-                    <p class="mb-1">
-
-                        <strong>
-                            Cliente:
-                        </strong>
-
-                        {{ factura.cliente.nombre }}
-
-                    </p>
-
-                    <p class="mb-1">
-
-                        <strong>
-                            Correo:
-                        </strong>
-
-                        {{ factura.cliente.correo }}
-
-                    </p>
-
-                    <p class="mb-0">
-
-                        <strong>
-                            Teléfono:
-                        </strong>
-
-                        {{ factura.cliente.telefono }}
-
-                    </p>
-
-                </div>
-
-
-                <div class="col-md-6 mt-4 mt-md-0">
-
-                    <h5 class="text-primary">
-                        Información de compra
-                    </h5>
-
-                    <p class="mb-1">
-
-                        <strong>
-                            Forma de pago:
-                        </strong>
-
-                        {{ factura.forma_pago }}
-
-                    </p>
-
-                    <p class="mb-1">
-
-                        <strong>
-                            Estado:
-                        </strong>
-
-                        {% if factura.pagada %}
-
-                            <span class="estado-activo">
-                                Pagada
-                            </span>
-
-                        {% else %}
-
-                            <span class="estado-inactivo">
-                                Pendiente
-                            </span>
-
-                        {% endif %}
-
-                    </p>
-
-                </div>
-
-
-            </div>
-
-
-            <!-- DETALLE DE PRODUCTOS -->
+        <!-- ==================================================
+             TABLA DE FACTURAS
+             ================================================== -->
+
+        <div class="contenedor-tabla">
 
             <div class="table-responsive">
 
-                <table class="table table-bordered align-middle">
+                <table class="table table-hover align-middle">
 
                     <thead>
 
                         <tr>
+
+                            <th>
+                                ID
+                            </th>
+
+                            <th>
+                                Número
+                            </th>
+
+                            <th>
+                                Fecha
+                            </th>
+
+                            <th>
+                                Cliente
+                            </th>
 
                             <th>
                                 Producto
@@ -278,11 +160,23 @@ Facturación - FitZone Store
                             </th>
 
                             <th class="text-end">
-                                Precio unitario
+                                Precio
                             </th>
 
                             <th class="text-end">
-                                Total
+                                Subtotal
+                            </th>
+
+                            <th>
+                                Forma de pago
+                            </th>
+
+                            <th>
+                                Estado
+                            </th>
+
+                            <th class="text-center">
+                                Acciones
                             </th>
 
                         </tr>
@@ -292,40 +186,200 @@ Facturación - FitZone Store
 
                     <tbody>
 
-                        {% for item in factura.detalle %}
+                        {% for factura in facturas %}
 
                         <tr>
 
+
+                            <!-- ID -->
+
                             <td>
-                                {{ item.producto }}
+
+                                <strong>
+                                    {{ factura.id }}
+                                </strong>
+
                             </td>
+
+
+                            <!-- NÚMERO -->
+
+                            <td>
+
+                                <strong>
+                                    {{ factura.numero }}
+                                </strong>
+
+                            </td>
+
+
+                            <!-- FECHA -->
+
+                            <td>
+                                {{ factura.fecha }}
+                            </td>
+
+
+                            <!-- CLIENTE -->
+
+                            <td>
+
+                                <strong>
+                                    {{ factura.cliente_nombre }}
+                                </strong>
+
+                                <div class="small text-muted">
+                                    {{ factura.cliente_correo }}
+                                </div>
+
+                            </td>
+
+
+                            <!-- PRODUCTO -->
+
+                            <td>
+                                {{ factura.producto_nombre }}
+                            </td>
+
+
+                            <!-- CANTIDAD -->
 
                             <td class="text-center">
-                                {{ item.cantidad }}
+                                {{ factura.cantidad }}
                             </td>
 
-                            <td class="text-end">
-                                ${{ "%.2f"|format(item.precio) }}
-                            </td>
+
+                            <!-- PRECIO -->
 
                             <td class="text-end">
-                                ${{ "%.2f"|format(item.cantidad * item.precio) }}
+                                ${{ "%.2f"|format(factura.precio) }}
                             </td>
+
+
+                            <!-- SUBTOTAL -->
+
+                            <td class="text-end">
+
+                                <strong>
+                                    ${{ "%.2f"|format(factura.subtotal) }}
+                                </strong>
+
+                            </td>
+
+
+                            <!-- FORMA DE PAGO -->
+
+                            <td>
+                                {{ factura.forma_pago }}
+                            </td>
+
+
+                            <!-- ESTADO -->
+
+                            <td>
+
+                                {% if factura.pagada %}
+
+                                    <span class="estado-activo">
+                                        Pagada
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="estado-inactivo">
+                                        Pendiente
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- ACCIONES -->
+
+                            <td class="text-center">
+
+                                <div
+                                    class="d-flex flex-wrap
+                                           justify-content-center gap-2"
+                                >
+
+
+                                    <!-- MODIFICAR -->
+
+                                    <a
+                                        href="{{ url_for(
+                                            'editar_facturacion',
+                                            id_factura=factura.id
+                                        ) }}"
+                                        class="btn btn-warning btn-sm"
+                                    >
+                                        Modificar
+                                    </a>
+
+
+                                    <!-- ELIMINAR -->
+
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for(
+                                            'eliminar_facturacion',
+                                            id_factura=factura.id
+                                        ) }}"
+                                        class="d-inline"
+                                        onsubmit="return confirm(
+                                            '¿Está seguro de eliminar la factura {{ factura.numero }}?'
+                                        );"
+                                    >
+
+                                        <input
+                                            type="hidden"
+                                            name="csrf_token"
+                                            value="{{ csrf_token() }}"
+                                        >
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-danger btn-sm"
+                                        >
+                                            Eliminar
+                                        </button>
+
+                                    </form>
+
+
+                                </div>
+
+                            </td>
+
 
                         </tr>
 
+
                         {% else %}
+
 
                         <tr>
 
                             <td
-                                colspan="4"
-                                class="text-center py-4"
+                                colspan="11"
+                                class="text-center py-5"
                             >
-                                No existen productos registrados en la factura.
+
+                                <strong>
+                                    No existen facturas registradas.
+                                </strong>
+
+                                <p class="text-muted mb-0 mt-2">
+                                    Utilice el botón
+                                    "Registrar factura"
+                                    para agregar el primer registro.
+                                </p>
+
                             </td>
 
                         </tr>
+
 
                         {% endfor %}
 
@@ -335,116 +389,43 @@ Facturación - FitZone Store
 
             </div>
 
-
-            <!-- TOTALES -->
-
-            <div class="row justify-content-end mt-4">
-
-                <div class="col-md-5">
-
-                    <table class="table">
-
-                        <tbody>
-
-                            <tr>
-
-                                <th>
-                                    Subtotal
-                                </th>
-
-                                <td class="text-end">
-                                    ${{ "%.2f"|format(subtotal) }}
-                                </td>
-
-                            </tr>
-
-
-                            <tr>
-
-                                <th>
-                                    IVA
-                                </th>
-
-                                <td class="text-end">
-                                    ${{ "%.2f"|format(iva) }}
-                                </td>
-
-                            </tr>
-
-
-                            <tr class="table-primary">
-
-                                <th>
-                                    Total
-                                </th>
-
-                                <td class="text-end">
-
-                                    <strong>
-                                        ${{ "%.2f"|format(total) }}
-                                    </strong>
-
-                                </td>
-
-                            </tr>
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            </div>
-
-
-            <!-- ESTADO DE LA FACTURA -->
-
-            {% if factura.pagada %}
-
-                <div class="alert alert-success text-center mt-4">
-
-                    <strong>
-                        Compra procesada correctamente.
-                    </strong>
-
-                    Gracias por confiar en FitZone Store.
-
-                </div>
-
-            {% else %}
-
-                <div class="alert alert-warning text-center mt-4">
-
-                    <strong>
-                        Factura pendiente de pago.
-                    </strong>
-
-                    La información se encuentra registrada temporalmente.
-
-                </div>
-
-            {% endif %}
-
-
         </div>
 
 
-        <!-- INFORMACIÓN -->
+        <!-- ==================================================
+             INFORMACIÓN DE RELACIONES
+             ================================================== -->
 
         <div class="row mt-5">
 
-            <div class="col-lg-8 mx-auto">
+            <div class="col-lg-10 mx-auto">
 
                 <div class="alert alert-info text-center">
 
                     <strong>
-                        Información:
+                        Consulta relacionada:
                     </strong>
 
-                    La información de facturación se mantiene
-                    temporalmente mediante estructuras de Python.
-                    En esta semana todavía no se utiliza una
-                    base de datos ni se procesan pagos reales.
+                    La información mostrada se obtiene desde
+                    PostgreSQL mediante consultas
+
+                    <strong>
+                        JOIN
+                    </strong>
+
+                    entre las tablas
+
+                    <strong>
+                        facturas,
+                        clientes,
+                        detalle_factura
+                    </strong>
+
+                    y
+
+                    <strong>
+                        productos
+                    </strong>.
 
                 </div>
 
@@ -453,9 +434,153 @@ Facturación - FitZone Store
         </div>
 
 
-        <!-- VOLVER AL INICIO -->
+        <!-- ==================================================
+             RELACIONES
+             ================================================== -->
 
-        <div class="text-center mt-4">
+        <div class="row mt-4">
+
+            <div class="col-lg-10 mx-auto">
+
+                <div class="tarjeta-modulo">
+
+                    <h3 class="text-center mb-4">
+                        Relaciones utilizadas
+                    </h3>
+
+                    <div class="text-center">
+
+                        <p>
+                            <strong>
+                                clientes.id
+                            </strong>
+
+                            →
+
+                            <strong>
+                                facturas.cliente_id
+                            </strong>
+                        </p>
+
+                        <p>
+                            <strong>
+                                facturas.id
+                            </strong>
+
+                            →
+
+                            <strong>
+                                detalle_factura.factura_id
+                            </strong>
+                        </p>
+
+                        <p class="mb-0">
+
+                            <strong>
+                                productos.id
+                            </strong>
+
+                            →
+
+                            <strong>
+                                detalle_factura.producto_id
+                            </strong>
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             OPERACIONES CRUD
+             ================================================== -->
+
+        <div class="row mt-4">
+
+            <div class="col-lg-10 mx-auto">
+
+                <div class="tarjeta-modulo">
+
+                    <h3 class="text-center mb-4">
+                        Operaciones CRUD implementadas
+                    </h3>
+
+
+                    <div class="row g-3 text-center">
+
+
+                        <div class="col-6 col-md-3">
+
+                            <strong class="text-primary">
+                                SELECT
+                            </strong>
+
+                            <p class="mb-0">
+                                Listar
+                            </p>
+
+                        </div>
+
+
+                        <div class="col-6 col-md-3">
+
+                            <strong class="text-success">
+                                INSERT
+                            </strong>
+
+                            <p class="mb-0">
+                                Agregar
+                            </p>
+
+                        </div>
+
+
+                        <div class="col-6 col-md-3">
+
+                            <strong class="text-warning">
+                                UPDATE
+                            </strong>
+
+                            <p class="mb-0">
+                                Modificar
+                            </p>
+
+                        </div>
+
+
+                        <div class="col-6 col-md-3">
+
+                            <strong class="text-danger">
+                                DELETE
+                            </strong>
+
+                            <p class="mb-0">
+                                Eliminar
+                            </p>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             VOLVER
+             ================================================== -->
+
+        <div class="text-center mt-5">
 
             <a
                 href="{{ url_for('inicio') }}"

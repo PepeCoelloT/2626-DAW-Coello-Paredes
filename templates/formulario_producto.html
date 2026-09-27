@@ -43,7 +43,7 @@
                 <p>
                     Actualice la información del producto seleccionado.
                     Los cambios se guardarán directamente en la base
-                    de datos MySQL cuando todos los campos cumplan
+                    de datos PostgreSQL cuando todos los campos cumplan
                     las reglas de validación.
                 </p>
 
@@ -56,7 +56,7 @@
                 <p>
                     Complete la información del nuevo producto.
                     El registro se almacenará directamente en la base
-                    de datos MySQL cuando todos los campos cumplan
+                    de datos PostgreSQL cuando todos los campos cumplan
                     las reglas de validación.
                 </p>
 
@@ -96,7 +96,6 @@
                             {{ form.nombre.label(
                                 class="form-label fw-semibold"
                             ) }}
-
 
                             {% if form.nombre.errors %}
 
@@ -139,7 +138,6 @@
                                 class="form-label fw-semibold"
                             ) }}
 
-
                             {% if form.categoria.errors %}
 
                                 {{ form.categoria(
@@ -166,12 +164,53 @@
 
                             {% endif %}
 
-
                             <div class="form-text">
-
                                 Seleccione la categoría correspondiente
                                 al producto.
+                            </div>
 
+                        </div>
+
+
+                        <!-- ==================================================
+                             PROVEEDOR
+                             ================================================== -->
+
+                        <div class="mb-4">
+
+                            {{ form.proveedor_id.label(
+                                class="form-label fw-semibold"
+                            ) }}
+
+                            {% if form.proveedor_id.errors %}
+
+                                {{ form.proveedor_id(
+                                    class="form-select is-invalid"
+                                ) }}
+
+                                <div class="invalid-feedback">
+
+                                    {% for error in form.proveedor_id.errors %}
+
+                                        <div>
+                                            {{ error }}
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% else %}
+
+                                {{ form.proveedor_id(
+                                    class="form-select"
+                                ) }}
+
+                            {% endif %}
+
+                            <div class="form-text">
+                                Seleccione el proveedor relacionado
+                                con este producto.
                             </div>
 
                         </div>
@@ -186,7 +225,6 @@
                             {{ form.descripcion.label(
                                 class="form-label fw-semibold"
                             ) }}
-
 
                             {% if form.descripcion.errors %}
 
@@ -218,12 +256,9 @@
 
                             {% endif %}
 
-
                             <div class="form-text">
-
                                 La descripción debe tener entre
                                 10 y 250 caracteres.
-
                             </div>
 
                         </div>
@@ -238,7 +273,6 @@
                             {{ form.stock.label(
                                 class="form-label fw-semibold"
                             ) }}
-
 
                             {% if form.stock.errors %}
 
@@ -272,13 +306,10 @@
 
                             {% endif %}
 
-
                             <div class="form-text">
-
                                 Ingrese una cantidad entre 0 y 1000.
                                 Puede utilizar 0 cuando el producto
                                 se encuentre agotado.
-
                             </div>
 
                         </div>
@@ -303,7 +334,7 @@
                                     UPDATE ... WHERE ...
                                 </strong>
 
-                                sobre la base de datos MySQL.
+                                sobre la base de datos PostgreSQL.
 
                             {% else %}
 
@@ -318,7 +349,7 @@
                                     INSERT INTO
                                 </strong>
 
-                                sobre la base de datos MySQL.
+                                sobre la base de datos PostgreSQL.
 
                             {% endif %}
 
@@ -333,7 +364,6 @@
                             class="d-flex flex-column flex-sm-row
                                    gap-3 justify-content-center mt-5"
                         >
-
 
                             {% if modo_actual == "editar" %}
 
@@ -358,7 +388,6 @@
                             >
                                 Cancelar
                             </a>
-
 
                         </div>
 

@@ -14,26 +14,32 @@ Clientes - FitZone Store
     <div class="container">
 
 
-        <!-- ENCABEZADO DEL MÓDULO -->
+        <!-- ==================================================
+             ENCABEZADO
+             ================================================== -->
 
         <div class="encabezado-modulo">
+
+            <span class="seccion-etiqueta">
+                GESTIÓN DE CLIENTES
+            </span>
 
             <h1>
                 {{ titulo }}
             </h1>
 
             <p>
-                En este módulo se presenta información
-                de los clientes registrados en FitZone Store.
-                Los datos se mantienen temporalmente durante
-                la ejecución de la aplicación y todavía no
-                se utiliza una base de datos.
+                Administra los clientes registrados en FitZone Store.
+                La información se almacena de forma persistente
+                en la base de datos PostgreSQL.
             </p>
 
         </div>
 
 
-        <!-- BOTÓN PARA REGISTRAR CLIENTE -->
+        <!-- ==================================================
+             REGISTRAR CLIENTE
+             ================================================== -->
 
         <div class="d-flex justify-content-end mb-4">
 
@@ -47,14 +53,18 @@ Clientes - FitZone Store
         </div>
 
 
-        <!-- RESUMEN DEL MÓDULO -->
+        <!-- ==================================================
+             RESUMEN
+             ================================================== -->
 
         <div class="row g-4 mb-5">
 
 
+            <!-- TOTAL -->
+
             <div class="col-md-4">
 
-                <div class="tarjeta-modulo text-center">
+                <div class="tarjeta-modulo text-center h-100">
 
                     <h3 class="text-primary">
                         {{ clientes|length }}
@@ -69,9 +79,11 @@ Clientes - FitZone Store
             </div>
 
 
+            <!-- ACTIVOS -->
+
             <div class="col-md-4">
 
-                <div class="tarjeta-modulo text-center">
+                <div class="tarjeta-modulo text-center h-100">
 
                     <h3 class="text-success">
                         {{ activos }}
@@ -86,9 +98,11 @@ Clientes - FitZone Store
             </div>
 
 
+            <!-- INACTIVOS -->
+
             <div class="col-md-4">
 
-                <div class="tarjeta-modulo text-center">
+                <div class="tarjeta-modulo text-center h-100">
 
                     <h3 class="text-danger">
                         {{ inactivos }}
@@ -106,7 +120,9 @@ Clientes - FitZone Store
         </div>
 
 
-        <!-- TABLA DE CLIENTES -->
+        <!-- ==================================================
+             TABLA DE CLIENTES
+             ================================================== -->
 
         <div class="contenedor-tabla">
 
@@ -118,12 +134,33 @@ Clientes - FitZone Store
 
                         <tr>
 
-                            <th>#</th>
-                            <th>Nombre</th>
-                            <th>Correo electrónico</th>
-                            <th>Teléfono</th>
-                            <th>Ciudad</th>
-                            <th>Estado</th>
+                            <th>
+                                ID
+                            </th>
+
+                            <th>
+                                Nombre
+                            </th>
+
+                            <th>
+                                Correo electrónico
+                            </th>
+
+                            <th>
+                                Teléfono
+                            </th>
+
+                            <th>
+                                Ciudad
+                            </th>
+
+                            <th>
+                                Estado
+                            </th>
+
+                            <th class="text-center">
+                                Acciones
+                            </th>
 
                         </tr>
 
@@ -136,27 +173,51 @@ Clientes - FitZone Store
 
                         <tr>
 
-                            <td>
-                                {{ loop.index }}
-                            </td>
+
+                            <!-- ID -->
 
                             <td>
+
+                                <strong>
+                                    {{ cliente.id }}
+                                </strong>
+
+                            </td>
+
+
+                            <!-- NOMBRE -->
+
+                            <td>
+
                                 <strong>
                                     {{ cliente.nombre }}
                                 </strong>
+
                             </td>
+
+
+                            <!-- CORREO -->
 
                             <td>
                                 {{ cliente.correo }}
                             </td>
 
+
+                            <!-- TELÉFONO -->
+
                             <td>
                                 {{ cliente.telefono }}
                             </td>
 
+
+                            <!-- CIUDAD -->
+
                             <td>
                                 {{ cliente.ciudad }}
                             </td>
+
+
+                            <!-- ESTADO -->
 
                             <td>
 
@@ -176,20 +237,92 @@ Clientes - FitZone Store
 
                             </td>
 
+
+                            <!-- ACCIONES -->
+
+                            <td class="text-center">
+
+                                <div
+                                    class="d-flex flex-wrap
+                                           justify-content-center gap-2"
+                                >
+
+
+                                    <!-- MODIFICAR -->
+
+                                    <a
+                                        href="{{ url_for(
+                                            'editar_cliente',
+                                            id_cliente=cliente.id
+                                        ) }}"
+                                        class="btn btn-warning btn-sm"
+                                    >
+                                        Modificar
+                                    </a>
+
+
+                                    <!-- ELIMINAR -->
+
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for(
+                                            'eliminar_cliente',
+                                            id_cliente=cliente.id
+                                        ) }}"
+                                        class="d-inline"
+                                        onsubmit="return confirm(
+                                            '¿Está seguro de eliminar el cliente {{ cliente.nombre }}?'
+                                        );"
+                                    >
+
+                                        <input
+                                            type="hidden"
+                                            name="csrf_token"
+                                            value="{{ csrf_token() }}"
+                                        >
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-danger btn-sm"
+                                        >
+                                            Eliminar
+                                        </button>
+
+                                    </form>
+
+
+                                </div>
+
+                            </td>
+
+
                         </tr>
 
+
                         {% else %}
+
 
                         <tr>
 
                             <td
-                                colspan="6"
-                                class="text-center py-4"
+                                colspan="7"
+                                class="text-center py-5"
                             >
-                                No existen clientes registrados.
+
+                                <strong>
+                                    No existen clientes registrados.
+                                </strong>
+
+                                <p class="text-muted mb-0 mt-2">
+                                    Utilice el botón
+                                    "Registrar cliente"
+                                    para agregar el primer registro.
+                                </p>
+
                             </td>
 
                         </tr>
+
 
                         {% endfor %}
 
@@ -202,22 +335,31 @@ Clientes - FitZone Store
         </div>
 
 
-        <!-- INFORMACIÓN -->
+        <!-- ==================================================
+             INFORMACIÓN
+             ================================================== -->
 
         <div class="row mt-5">
 
-            <div class="col-lg-8 mx-auto">
+            <div class="col-lg-9 mx-auto">
 
                 <div class="alert alert-info text-center">
 
                     <strong>
-                        Información:
+                        Persistencia PostgreSQL:
                     </strong>
 
-                    Los clientes se mantienen temporalmente
-                    mediante estructuras de Python.
-                    En esta semana todavía no se utiliza una
-                    base de datos.
+                    Los clientes mostrados en esta tabla
+                    se consultan directamente desde PostgreSQL
+                    mediante una operación
+
+                    <strong>
+                        SELECT
+                    </strong>.
+
+                    Los registros permanecen almacenados
+                    después de cerrar y volver a ejecutar
+                    la aplicación Flask.
 
                 </div>
 
@@ -226,9 +368,90 @@ Clientes - FitZone Store
         </div>
 
 
-        <!-- VOLVER AL INICIO -->
+        <!-- ==================================================
+             OPERACIONES CRUD
+             ================================================== -->
 
-        <div class="text-center mt-4">
+        <div class="row mt-4">
+
+            <div class="col-lg-10 mx-auto">
+
+                <div class="tarjeta-modulo">
+
+                    <h3 class="text-center mb-4">
+                        Operaciones CRUD implementadas
+                    </h3>
+
+
+                    <div class="row g-3 text-center">
+
+
+                        <div class="col-6 col-md-3">
+
+                            <strong class="text-primary">
+                                SELECT
+                            </strong>
+
+                            <p class="mb-0">
+                                Listar
+                            </p>
+
+                        </div>
+
+
+                        <div class="col-6 col-md-3">
+
+                            <strong class="text-success">
+                                INSERT
+                            </strong>
+
+                            <p class="mb-0">
+                                Agregar
+                            </p>
+
+                        </div>
+
+
+                        <div class="col-6 col-md-3">
+
+                            <strong class="text-warning">
+                                UPDATE
+                            </strong>
+
+                            <p class="mb-0">
+                                Modificar
+                            </p>
+
+                        </div>
+
+
+                        <div class="col-6 col-md-3">
+
+                            <strong class="text-danger">
+                                DELETE
+                            </strong>
+
+                            <p class="mb-0">
+                                Eliminar
+                            </p>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             VOLVER
+             ================================================== -->
+
+        <div class="text-center mt-5">
 
             <a
                 href="{{ url_for('inicio') }}"

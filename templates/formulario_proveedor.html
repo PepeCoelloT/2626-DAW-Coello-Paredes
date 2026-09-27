@@ -1,8 +1,17 @@
 {% extends "base.html" %}
 
 
+{% set modo_actual = modo|default("registrar") %}
+
+
 {% block title %}
-Registrar Proveedor - FitZone Store
+
+    {% if modo_actual == "editar" %}
+        Modificar Proveedor - FitZone Store
+    {% else %}
+        Registrar Proveedor - FitZone Store
+    {% endif %}
+
 {% endblock %}
 
 
@@ -14,32 +23,58 @@ Registrar Proveedor - FitZone Store
     <div class="container">
 
 
-        <!-- ENCABEZADO -->
+        <!-- ==================================================
+             ENCABEZADO
+             ================================================== -->
 
         <div class="encabezado-modulo">
 
-            <h1>
-                Registrar proveedor
-            </h1>
+            <span class="seccion-etiqueta">
+                GESTIÓN DE PROVEEDORES
+            </span>
 
-            <p>
-                Complete la información del proveedor.
-                Los datos serán procesados únicamente cuando
-                cumplan correctamente las reglas de validación.
-            </p>
+
+            {% if modo_actual == "editar" %}
+
+                <h1>
+                    Modificar proveedor
+                </h1>
+
+                <p>
+                    Actualice la información del proveedor seleccionado.
+                    Los cambios se guardarán directamente en PostgreSQL
+                    cuando todos los campos cumplan las reglas
+                    de validación.
+                </p>
+
+            {% else %}
+
+                <h1>
+                    Registrar proveedor
+                </h1>
+
+                <p>
+                    Complete la información del nuevo proveedor.
+                    El registro se almacenará directamente en PostgreSQL
+                    cuando todos los campos cumplan las reglas
+                    de validación.
+                </p>
+
+            {% endif %}
 
         </div>
 
+
+        <!-- ==================================================
+             FORMULARIO
+             ================================================== -->
 
         <div class="row justify-content-center">
 
             <div class="col-lg-8">
 
-
                 <div class="tarjeta-modulo">
 
-
-                    <!-- FORMULARIO -->
 
                     <form
                         method="POST"
@@ -52,7 +87,9 @@ Registrar Proveedor - FitZone Store
                         {{ form.hidden_tag() }}
 
 
-                        <!-- NOMBRE -->
+                        <!-- ==================================================
+                             NOMBRE
+                             ================================================== -->
 
                         <div class="mb-4">
 
@@ -91,7 +128,9 @@ Registrar Proveedor - FitZone Store
                         </div>
 
 
-                        <!-- PRODUCTOS SUMINISTRADOS -->
+                        <!-- ==================================================
+                             PRODUCTOS SUMINISTRADOS
+                             ================================================== -->
 
                         <div class="mb-4">
 
@@ -128,13 +167,16 @@ Registrar Proveedor - FitZone Store
                             {% endif %}
 
                             <div class="form-text">
-                                Indique los principales productos suministrados por el proveedor.
+                                Indique los principales productos
+                                suministrados por el proveedor.
                             </div>
 
                         </div>
 
 
-                        <!-- CONTACTO -->
+                        <!-- ==================================================
+                             CONTACTO
+                             ================================================== -->
 
                         <div class="mb-4">
 
@@ -173,7 +215,9 @@ Registrar Proveedor - FitZone Store
                         </div>
 
 
-                        <!-- CIUDAD -->
+                        <!-- ==================================================
+                             CIUDAD
+                             ================================================== -->
 
                         <div class="mb-4">
 
@@ -212,7 +256,9 @@ Registrar Proveedor - FitZone Store
                         </div>
 
 
-                        <!-- ESTADO -->
+                        <!-- ==================================================
+                             ESTADO
+                             ================================================== -->
 
                         <div class="mb-4">
 
@@ -229,19 +275,79 @@ Registrar Proveedor - FitZone Store
                             </div>
 
                             <div class="form-text">
-                                Mantenga esta opción seleccionada si el proveedor se encuentra activo.
+                                Mantenga esta opción seleccionada si
+                                el proveedor se encuentra activo.
                             </div>
 
                         </div>
 
 
-                        <!-- BOTONES -->
+                        <!-- ==================================================
+                             INFORMACIÓN DE LA OPERACIÓN
+                             ================================================== -->
 
-                        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center mt-5">
+                        <div class="alert alert-info mb-4">
 
-                            {{ form.submit(
-                                class="btn btn-primary px-4"
-                            ) }}
+                            {% if modo_actual == "editar" %}
+
+                                <strong>
+                                    Operación SQL:
+                                </strong>
+
+                                Los cambios del proveedor serán
+                                almacenados mediante una consulta
+
+                                <strong>
+                                    UPDATE
+                                </strong>
+
+                                en PostgreSQL.
+
+                            {% else %}
+
+                                <strong>
+                                    Operación SQL:
+                                </strong>
+
+                                El nuevo proveedor será almacenado
+                                mediante una consulta
+
+                                <strong>
+                                    INSERT
+                                </strong>
+
+                                en PostgreSQL.
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- ==================================================
+                             BOTONES
+                             ================================================== -->
+
+                        <div
+                            class="d-flex flex-column flex-sm-row
+                                   gap-3 justify-content-center mt-5"
+                        >
+
+                            {% if modo_actual == "editar" %}
+
+                                {{ form.submit(
+                                    class="btn btn-warning px-4",
+                                    value="Guardar cambios"
+                                ) }}
+
+                            {% else %}
+
+                                {{ form.submit(
+                                    class="btn btn-primary px-4",
+                                    value="Registrar proveedor"
+                                ) }}
+
+                            {% endif %}
+
 
                             <a
                                 href="{{ url_for('proveedores') }}"
@@ -259,6 +365,22 @@ Registrar Proveedor - FitZone Store
                 </div>
 
             </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             VOLVER
+             ================================================== -->
+
+        <div class="text-center mt-4">
+
+            <a
+                href="{{ url_for('proveedores') }}"
+                class="text-decoration-none"
+            >
+                ← Volver al listado de proveedores
+            </a>
 
         </div>
 

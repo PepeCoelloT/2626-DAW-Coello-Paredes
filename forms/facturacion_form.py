@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from flask_wtf import FlaskForm
+
 from wtforms import (
     StringField,
     DateField,
@@ -10,10 +11,10 @@ from wtforms import (
     DecimalField,
     SubmitField
 )
+
 from wtforms.validators import (
     DataRequired,
     Length,
-    Email,
     InputRequired,
     NumberRange
 )
@@ -45,46 +46,13 @@ class FacturacionForm(FlaskForm):
         ]
     )
 
-    cliente_nombre = StringField(
-        "Nombre del cliente",
+    cliente_id = SelectField(
+        "Cliente",
+        choices=[],
+        coerce=int,
         validators=[
             DataRequired(
-                message="El nombre del cliente es obligatorio."
-            ),
-            Length(
-                min=3,
-                max=80,
-                message="El nombre debe tener entre 3 y 80 caracteres."
-            )
-        ]
-    )
-
-    cliente_correo = StringField(
-        "Correo electrónico",
-        validators=[
-            DataRequired(
-                message="El correo electrónico es obligatorio."
-            ),
-            Email(
-                message="Ingrese un correo electrónico válido."
-            ),
-            Length(
-                max=120,
-                message="El correo no puede superar los 120 caracteres."
-            )
-        ]
-    )
-
-    cliente_telefono = StringField(
-        "Teléfono",
-        validators=[
-            DataRequired(
-                message="El teléfono del cliente es obligatorio."
-            ),
-            Length(
-                min=7,
-                max=15,
-                message="El teléfono debe tener entre 7 y 15 caracteres."
+                message="Debe seleccionar un cliente."
             )
         ]
     )
@@ -109,16 +77,13 @@ class FacturacionForm(FlaskForm):
         default=True
     )
 
-    producto = StringField(
+    producto_id = SelectField(
         "Producto",
+        choices=[],
+        coerce=int,
         validators=[
             DataRequired(
-                message="El producto es obligatorio."
-            ),
-            Length(
-                min=2,
-                max=80,
-                message="El nombre del producto debe tener entre 2 y 80 caracteres."
+                message="Debe seleccionar un producto."
             )
         ]
     )

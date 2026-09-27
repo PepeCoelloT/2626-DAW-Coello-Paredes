@@ -1,27 +1,26 @@
-import mysql.connector
+import os
 
-from flask import current_app
+import psycopg
+from psycopg.rows import dict_row
 
 
 # =========================================================
-# CONEXIÓN A MYSQL
-# FITZONE STORE - SEMANA 13
+# CONEXIÓN A POSTGRESQL
+# FITZONE STORE - SEMANA 15
 # =========================================================
 
 def obtener_conexion():
 
-    conexion = mysql.connector.connect(
+    database_url = os.environ.get("DATABASE_URL")
 
-        host=current_app.config["MYSQL_HOST"],
+    if not database_url:
+        raise RuntimeError(
+            "Debe definir la variable de entorno DATABASE_URL."
+        )
 
-        port=current_app.config["MYSQL_PORT"],
-
-        user=current_app.config["MYSQL_USER"],
-
-        password=current_app.config["MYSQL_PASSWORD"],
-
-        database=current_app.config["MYSQL_DATABASE"]
-
+    conexion = psycopg.connect(
+        database_url,
+        row_factory=dict_row
     )
 
     return conexion

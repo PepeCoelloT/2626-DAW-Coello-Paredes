@@ -1,4 +1,7 @@
 import os
+from decimal import Decimal
+
+import psycopg
 
 from flask import (
     Flask,
@@ -17,15 +20,14 @@ from flask_login import (
     current_user
 )
 
+from flask_wtf.csrf import CSRFProtect
+
 from werkzeug.security import (
     generate_password_hash,
     check_password_hash
 )
 
-from mysql.connector import Error
-
 from conexion.conexion import obtener_conexion
-
 from models import Usuario
 
 from forms import (
@@ -50,44 +52,32 @@ app = Flask(__name__)
 # CONFIGURACIÓN GENERAL
 # =========================================================
 
-app.config["SECRET_KEY"] = os.getenv(
-    "SECRET_KEY"
-)
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
 if not app.config["SECRET_KEY"]:
-
     raise RuntimeError(
         "Debe definir la variable de entorno SECRET_KEY."
     )
 
-
-# =========================================================
-# CONFIGURACIÓN MYSQL
-# SEMANA 14
-# =========================================================
-
-app.config["MYSQL_HOST"] = "localhost"
-
-app.config["MYSQL_PORT"] = 3306
-
-app.config["MYSQL_USER"] = "root"
-
-app.config["MYSQL_PASSWORD"] = os.getenv(
-    "MYSQL_PASSWORD"
-)
-
-app.config["MYSQL_DATABASE"] = "fitness_zone"
+if not os.getenv("DATABASE_URL"):
+    raise RuntimeError(
+        "Debe definir la variable de entorno DATABASE_URL."
+    )
 
 
 # =========================================================
-# CONFIGURACIÓN FLASK-LOGIN
+# PROTECCIÓN CSRF
+# =========================================================
+
+csrf = CSRFProtect(app)
+
+
+# =========================================================
+# FLASK-LOGIN
 # =========================================================
 
 login_manager = LoginManager()
-
-login_manager.init_app(
-    app
-)
+login_manager.init_app(app)
 
 login_manager.login_view = "login"
 
@@ -99,236 +89,58 @@ login_manager.login_message_category = "warning"
 
 
 # =========================================================
-# COMPROBACIÓN DE CONEXIÓN MYSQL
+# COMPROBAR CONEXIÓN POSTGRESQL
 # =========================================================
 
-def comprobar_conexion_mysql():
-
-    conexion = None
-    cursor = None
+def comprobar_conexion_postgresql():
 
     try:
 
-        conexion = obtener_conexion()
+        with obtener_conexion() as conexion:
 
-        cursor = conexion.cursor()
+            with conexion.cursor() as cursor:
 
-        cursor.execute(
-            "SELECT 1"
-        )
+                cursor.execute("SELECT 1")
+                cursor.fetchone()
 
-        cursor.fetchone()
+        print("CONEXION POSTGRESQL CORRECTA")
 
-        print(
-            "Conexión MySQL establecida correctamente."
-        )
-
-    except Error as error:
+    except psycopg.Error as error:
 
         print(
-            "Error al conectar con MySQL:",
+            "Error al conectar con PostgreSQL:",
             error
         )
 
-    finally:
-
-        if cursor is not None:
-
-            cursor.close()
-
-        if (
-            conexion is not None
-            and conexion.is_connected()
-        ):
-
-            conexion.close()
-
 
 # =========================================================
-# DATOS TEMPORALES DE LOS DEMÁS MÓDULOS
+# CARGAR USUARIO
 # =========================================================
-#
-# La actividad exige como mínimo un módulo completamente
-# conectado a MySQL.
-#
-# El módulo PRODUCTOS implementa
-# SELECT, INSERT, UPDATE y DELETE sobre MySQL.
-#
-# Clientes, Proveedores y Facturación mantienen por ahora
-# la lógica desarrollada anteriormente.
-# =========================================================
-
-
-# ---------------------------------------------------------
-# CLIENTES
-# ---------------------------------------------------------
-
-lista_clientes = [
-    {
-        "nombre": "María López",
-        "correo": "maria.lopez@email.com",
-        "telefono": "098 456 7821",
-        "ciudad": "Puyo",
-        "activo": True
-    },
-    {
-        "nombre": "Carlos Pérez",
-        "correo": "carlos.perez@email.com",
-        "telefono": "099 785 4123",
-        "ciudad": "Quito",
-        "activo": True
-    },
-    {
-        "nombre": "Andrea Torres",
-        "correo": "andrea.torres@email.com",
-        "telefono": "097 654 3218",
-        "ciudad": "Ambato",
-        "activo": True
-    },
-    {
-        "nombre": "Diego Sánchez",
-        "correo": "diego.sanchez@email.com",
-        "telefono": "096 421 7852",
-        "ciudad": "Guayaquil",
-        "activo": False
-    },
-    {
-        "nombre": "Sofía Ramírez",
-        "correo": "sofia.ramirez@email.com",
-        "telefono": "095 874 6321",
-        "ciudad": "Cuenca",
-        "activo": True
-    }
-]
-
-
-# ---------------------------------------------------------
-# PROVEEDORES
-# ---------------------------------------------------------
-
-lista_proveedores = [
-    {
-        "nombre": "SportFit Ecuador",
-        "productos": "Mancuernas y accesorios de fuerza",
-        "contacto": "098 234 5678",
-        "ciudad": "Quito",
-        "activo": True
-    },
-    {
-        "nombre": "ActiveGear",
-        "productos": "Ropa deportiva y guantes",
-        "contacto": "099 876 5432",
-        "ciudad": "Guayaquil",
-        "activo": True
-    },
-    {
-        "nombre": "Fitness Supply",
-        "productos": "Bandas elásticas y colchonetas",
-        "contacto": "097 345 6789",
-        "ciudad": "Cuenca",
-        "activo": True
-    },
-    {
-        "nombre": "Hydration Sport",
-        "productos": "Botellas deportivas",
-        "contacto": "096 567 4321",
-        "ciudad": "Ambato",
-        "activo": False
-    }
-]
-
-
-# ---------------------------------------------------------
-# FACTURACIÓN
-# ---------------------------------------------------------
-
-factura_actual = {
-
-    "numero": "FZ-001-0003",
-
-    "fecha": "13/08/2026",
-
-    "cliente": {
-        "nombre": "María López",
-        "correo": "maria.lopez@email.com",
-        "telefono": "098 456 7821"
-    },
-
-    "forma_pago": "Tarjeta",
-
-    "pagada": True,
-
-    "detalle": [
-        {
-            "producto": "Mancuernas",
-            "cantidad": 1,
-            "precio": 35.00
-        },
-        {
-            "producto": "Bandas elásticas",
-            "cantidad": 2,
-            "precio": 20.00
-        },
-        {
-            "producto": "Botella deportiva",
-            "cantidad": 1,
-            "precio": 12.00
-        }
-    ]
-}
-
-
-contador_facturas = 3
-
-
-# =========================================================
-# AUTENTICACIÓN DE USUARIOS
-# SEMANA 14
-# =========================================================
-
-
-# ---------------------------------------------------------
-# CARGAR USUARIO PARA FLASK-LOGIN
-# ---------------------------------------------------------
 
 @login_manager.user_loader
-def load_user(user_id):
-
-    conexion = None
-    cursor = None
+def cargar_usuario(user_id):
 
     try:
 
-        id_usuario = int(
-            user_id
-        )
+        with obtener_conexion() as conexion:
 
-        conexion = obtener_conexion()
+            with conexion.cursor() as cursor:
 
-        cursor = conexion.cursor(
-            dictionary=True
-        )
+                cursor.execute(
+                    """
+                    SELECT
+                        id,
+                        usuario,
+                        password
+                    FROM usuarios
+                    WHERE id = %s
+                    """,
+                    (int(user_id),)
+                )
 
-        cursor.execute(
-            """
-            SELECT
-                id,
-                usuario,
-                password
-
-            FROM usuarios
-
-            WHERE id = %s
-            """,
-            (
-                id_usuario,
-            )
-        )
-
-        registro = cursor.fetchone()
+                registro = cursor.fetchone()
 
         if registro is None:
-
             return None
 
         return Usuario(
@@ -337,169 +149,26 @@ def load_user(user_id):
             registro["password"]
         )
 
-    except (
-        ValueError,
-        TypeError,
-        Error
-    ):
+    except (psycopg.Error, ValueError, TypeError):
 
         return None
 
-    finally:
 
-        if cursor is not None:
+# =========================================================
+# INICIO
+# =========================================================
 
-            cursor.close()
-
-        if (
-            conexion is not None
-            and conexion.is_connected()
-        ):
-
-            conexion.close()
-
-
-# ---------------------------------------------------------
-# REGISTRAR USUARIO
-# ---------------------------------------------------------
-
-@app.route(
-    "/registro",
-    methods=["GET", "POST"]
-)
-def registro():
-
-    if current_user.is_authenticated:
-
-        return redirect(
-            url_for("dashboard")
-        )
-
-    form = UsuarioForm()
-
-    if form.validate_on_submit():
-
-        conexion = None
-        cursor = None
-
-        try:
-
-            nombre_usuario = (
-                form.usuario.data.strip()
-            )
-
-            conexion = obtener_conexion()
-
-            cursor = conexion.cursor(
-                dictionary=True
-            )
-
-            # ---------------------------------------------
-            # COMPROBAR QUE EL USUARIO NO EXISTA
-            # ---------------------------------------------
-
-            cursor.execute(
-                """
-                SELECT id
-
-                FROM usuarios
-
-                WHERE usuario = %s
-                """,
-                (
-                    nombre_usuario,
-                )
-            )
-
-            usuario_existente = cursor.fetchone()
-
-            if usuario_existente is not None:
-
-                flash(
-                    "El nombre de usuario ya está registrado.",
-                    "warning"
-                )
-
-                return render_template(
-                    "registro.html",
-                    form=form
-                )
-
-            # ---------------------------------------------
-            # GENERAR HASH DE LA CONTRASEÑA
-            # ---------------------------------------------
-
-            password_hash = generate_password_hash(
-                form.password.data
-            )
-
-            # ---------------------------------------------
-            # INSERT PARAMETRIZADO
-            # ---------------------------------------------
-
-            cursor.execute(
-                """
-                INSERT INTO usuarios (
-                    usuario,
-                    password
-                )
-
-                VALUES (
-                    %s,
-                    %s
-                )
-                """,
-                (
-                    nombre_usuario,
-                    password_hash
-                )
-            )
-
-            conexion.commit()
-
-            flash(
-                "Usuario registrado correctamente. "
-                "Ahora puede iniciar sesión.",
-                "success"
-            )
-
-            return redirect(
-                url_for("login")
-            )
-
-        except Error as error:
-
-            if conexion is not None:
-
-                conexion.rollback()
-
-            flash(
-                f"Error al registrar el usuario: {error}",
-                "danger"
-            )
-
-        finally:
-
-            if cursor is not None:
-
-                cursor.close()
-
-            if (
-                conexion is not None
-                and conexion.is_connected()
-            ):
-
-                conexion.close()
+@app.route("/")
+def inicio():
 
     return render_template(
-        "registro.html",
-        form=form
+        "index.html"
     )
 
 
-# ---------------------------------------------------------
-# INICIAR SESIÓN
-# ---------------------------------------------------------
+# =========================================================
+# LOGIN
+# =========================================================
 
 @app.route(
     "/login",
@@ -510,110 +179,74 @@ def login():
     if current_user.is_authenticated:
 
         return redirect(
-            url_for("dashboard")
+            url_for("panel")
         )
 
     form = LoginForm()
 
     if form.validate_on_submit():
 
-        conexion = None
-        cursor = None
-
         try:
 
-            nombre_usuario = (
-                form.usuario.data.strip()
-            )
+            with obtener_conexion() as conexion:
 
-            conexion = obtener_conexion()
+                with conexion.cursor() as cursor:
 
-            cursor = conexion.cursor(
-                dictionary=True
-            )
+                    cursor.execute(
+                        """
+                        SELECT
+                            id,
+                            usuario,
+                            password
+                        FROM usuarios
+                        WHERE usuario = %s
+                        """,
+                        (form.usuario.data,)
+                    )
 
-            # ---------------------------------------------
-            # BUSCAR USUARIO
-            # ---------------------------------------------
-
-            cursor.execute(
-                """
-                SELECT
-                    id,
-                    usuario,
-                    password
-
-                FROM usuarios
-
-                WHERE usuario = %s
-                """,
-                (
-                    nombre_usuario,
-                )
-            )
-
-            registro = cursor.fetchone()
-
-            # ---------------------------------------------
-            # COMPROBAR CONTRASEÑA MEDIANTE HASH
-            # ---------------------------------------------
+                    registro = cursor.fetchone()
 
             if (
-                registro is None
-                or not check_password_hash(
+                registro is not None
+                and check_password_hash(
                     registro["password"],
                     form.password.data
                 )
             ):
 
+                usuario = Usuario(
+                    registro["id"],
+                    registro["usuario"],
+                    registro["password"]
+                )
+
+                login_user(usuario)
+
                 flash(
-                    "Usuario o contraseña incorrectos.",
-                    "danger"
+                    "Inicio de sesión correcto.",
+                    "success"
                 )
 
-                return render_template(
-                    "login.html",
-                    form=form
+                siguiente = request.args.get("next")
+
+                if siguiente:
+                    return redirect(siguiente)
+
+                return redirect(
+                    url_for("panel")
                 )
-
-            usuario = Usuario(
-                registro["id"],
-                registro["usuario"],
-                registro["password"]
-            )
-
-            login_user(
-                usuario
-            )
 
             flash(
-                f"Bienvenido, {current_user.usuario}.",
-                "success"
+                "Usuario o contraseña incorrectos.",
+                "danger"
             )
 
-            return redirect(
-                url_for("dashboard")
-            )
-
-        except Error as error:
+        except psycopg.Error as error:
 
             flash(
                 f"Error al iniciar sesión: {error}",
                 "danger"
             )
-
-        finally:
-
-            if cursor is not None:
-
-                cursor.close()
-
-            if (
-                conexion is not None
-                and conexion.is_connected()
-            ):
-
-                conexion.close()
 
     return render_template(
         "login.html",
@@ -621,23 +254,9 @@ def login():
     )
 
 
-# ---------------------------------------------------------
-# DASHBOARD
-# ---------------------------------------------------------
-
-@app.route("/dashboard")
-@login_required
-def dashboard():
-
-    return render_template(
-        "dashboard.html",
-        usuario=current_user.usuario
-    )
-
-
-# ---------------------------------------------------------
-# CERRAR SESIÓN
-# ---------------------------------------------------------
+# =========================================================
+# LOGOUT
+# =========================================================
 
 @app.route("/logout")
 @login_required
@@ -656,111 +275,164 @@ def logout():
 
 
 # =========================================================
-# RUTAS GENERALES
+# REGISTRO DE USUARIO
 # =========================================================
 
+@app.route(
+    "/registro",
+    methods=["GET", "POST"]
+)
+@app.route(
+    "/usuarios/registrar",
+    methods=["GET", "POST"]
+)
+def registrar_usuario():
 
-# ---------------------------------------------------------
-# INICIO
-# ---------------------------------------------------------
+    form = UsuarioForm()
 
-@app.route("/")
-def inicio():
+    if form.validate_on_submit():
+
+        try:
+
+            with obtener_conexion() as conexion:
+
+                with conexion.cursor() as cursor:
+
+                    cursor.execute(
+                        """
+                        SELECT id
+                        FROM usuarios
+                        WHERE usuario = %s
+                        """,
+                        (form.usuario.data,)
+                    )
+
+                    existente = cursor.fetchone()
+
+                    if existente is not None:
+
+                        flash(
+                            "Ese nombre de usuario ya está registrado.",
+                            "warning"
+                        )
+
+                        return render_template(
+                            "registro.html",
+                            form=form
+                        )
+
+                    password_hash = generate_password_hash(
+                        form.password.data
+                    )
+
+                    cursor.execute(
+                        """
+                        INSERT INTO usuarios (
+                            usuario,
+                            password
+                        )
+                        VALUES (%s, %s)
+                        """,
+                        (
+                            form.usuario.data,
+                            password_hash
+                        )
+                    )
+
+                conexion.commit()
+
+            flash(
+                "Usuario registrado correctamente. "
+                "Ahora puede iniciar sesión.",
+                "success"
+            )
+
+            return redirect(
+                url_for("login")
+            )
+
+        except psycopg.Error as error:
+
+            flash(
+                f"Error al registrar el usuario: {error}",
+                "danger"
+            )
 
     return render_template(
-        "index.html"
+        "registro.html",
+        form=form
     )
 
 
 # =========================================================
-# PRODUCTOS
-# MYSQL - CRUD COMPLETO
+# COMPATIBILIDAD CON url_for("registro")
 # =========================================================
 
+@app.route(
+    "/registro-usuario",
+    endpoint="registro"
+)
+def registro():
 
-# ---------------------------------------------------------
-# LISTAR PRODUCTOS
-# SELECT + JOIN + FETCHALL
-# ---------------------------------------------------------
+    return redirect(
+        url_for("registrar_usuario")
+    )
+
+
+# =========================================================
+# PANEL
+# =========================================================
+
+@app.route("/panel")
+@login_required
+def panel():
+
+    return render_template(
+        "panel.html"
+    )
+
+
+# =========================================================
+# PRODUCTOS - SELECT
+# =========================================================
 
 @app.route("/productos")
 @login_required
 def productos():
 
-    titulo = "Gestión de Productos"
-
-    conexion = None
-    cursor = None
-
     lista_productos = []
 
     try:
 
-        conexion = obtener_conexion()
+        with obtener_conexion() as conexion:
 
-        cursor = conexion.cursor(
-            dictionary=True
-        )
+            with conexion.cursor() as cursor:
 
+                cursor.execute(
+                    """
+                    SELECT
+                        p.id,
+                        p.nombre,
+                        p.categoria,
+                        p.descripcion,
+                        p.stock,
+                        p.proveedor_id,
+                        pr.nombre AS proveedor_nombre
+                    FROM productos AS p
+                    LEFT JOIN proveedores AS pr
+                        ON p.proveedor_id = pr.id
+                    ORDER BY p.id
+                    """
+                )
 
-        # -------------------------------------------------
-        # CONSULTA RELACIONADA
-        # PRODUCTOS + CATEGORIAS
-        # -------------------------------------------------
+                lista_productos = cursor.fetchall()
 
-        cursor.execute(
-            """
-            SELECT
-
-                p.id_producto AS id,
-
-                p.nombre,
-
-                c.nombre AS categoria,
-
-                p.descripcion,
-
-                p.stock
-
-            FROM productos AS p
-
-            INNER JOIN categorias AS c
-                ON p.id_categoria = c.id_categoria
-
-            ORDER BY p.id_producto ASC
-            """
-        )
-
-
-        # Recuperación de varios registros.
-        lista_productos = cursor.fetchall()
-
-
-    except Error as error:
+    except psycopg.Error as error:
 
         flash(
             f"Error al consultar los productos: {error}",
             "danger"
         )
-
-
-    finally:
-
-        if cursor is not None:
-
-            cursor.close()
-
-        if (
-            conexion is not None
-            and conexion.is_connected()
-        ):
-
-            conexion.close()
-
-
-    # -----------------------------------------------------
-    # RESUMEN
-    # -----------------------------------------------------
 
     disponibles = sum(
         1
@@ -768,27 +440,23 @@ def productos():
         if producto["stock"] > 0
     )
 
-
     agotados = sum(
         1
         for producto in lista_productos
         if producto["stock"] == 0
     )
 
-
     return render_template(
         "productos.html",
-        titulo=titulo,
+        titulo="Productos",
         productos=lista_productos,
         disponibles=disponibles,
         agotados=agotados
     )
 
-
-# ---------------------------------------------------------
-# REGISTRAR PRODUCTO
-# INSERT INTO + COMMIT
-# ---------------------------------------------------------
+# =========================================================
+# PRODUCTOS - INSERT
+# =========================================================
 
 @app.route(
     "/productos/nuevo",
@@ -799,125 +467,89 @@ def registrar_producto():
 
     form = ProductoForm()
 
+    # CARGAR PROVEEDORES ACTIVOS DESDE POSTGRESQL
+    try:
 
+        with obtener_conexion() as conexion:
+
+            with conexion.cursor() as cursor:
+
+                cursor.execute(
+                    """
+                    SELECT
+                        id,
+                        nombre
+                    FROM proveedores
+                    WHERE activo = TRUE
+                    ORDER BY nombre
+                    """
+                )
+
+                lista_proveedores = cursor.fetchall()
+
+        form.proveedor_id.choices = [
+            (
+                proveedor["id"],
+                proveedor["nombre"]
+            )
+            for proveedor in lista_proveedores
+        ]
+
+    except psycopg.Error as error:
+
+        form.proveedor_id.choices = []
+
+        flash(
+            f"Error al cargar los proveedores: {error}",
+            "danger"
+        )
+
+    # GUARDAR PRODUCTO
     if form.validate_on_submit():
-
-        conexion = None
-        cursor = None
 
         try:
 
-            conexion = obtener_conexion()
+            with obtener_conexion() as conexion:
 
-            cursor = conexion.cursor(
-                dictionary=True
-            )
+                with conexion.cursor() as cursor:
 
+                    cursor.execute(
+                        """
+                        INSERT INTO productos (
+                            nombre,
+                            categoria,
+                            descripcion,
+                            stock,
+                            proveedor_id
+                        )
+                        VALUES (%s, %s, %s, %s, %s)
+                        """,
+                        (
+                            form.nombre.data,
+                            form.categoria.data,
+                            form.descripcion.data,
+                            form.stock.data,
+                            form.proveedor_id.data
+                        )
+                    )
 
-            # ---------------------------------------------
-            # BUSCAR CATEGORÍA
-            # SELECT + WHERE
-            # ---------------------------------------------
-
-            cursor.execute(
-                """
-                SELECT id_categoria
-
-                FROM categorias
-
-                WHERE nombre = %s
-                """,
-                (
-                    form.categoria.data,
-                )
-            )
-
-
-            categoria = cursor.fetchone()
-
-
-            if categoria is None:
-
-                flash(
-                    "La categoría seleccionada no existe.",
-                    "danger"
-                )
-
-                return render_template(
-                    "formulario_producto.html",
-                    form=form,
-                    modo="registrar"
-                )
-
-
-            # ---------------------------------------------
-            # INSERT
-            # ---------------------------------------------
-
-            cursor.execute(
-                """
-                INSERT INTO productos (
-                    nombre,
-                    id_categoria,
-                    descripcion,
-                    stock
-                )
-
-                VALUES (
-                    %s,
-                    %s,
-                    %s,
-                    %s
-                )
-                """,
-                (
-                    form.nombre.data,
-                    categoria["id_categoria"],
-                    form.descripcion.data,
-                    form.stock.data
-                )
-            )
-
-
-            conexion.commit()
-
+                conexion.commit()
 
             flash(
                 "Producto registrado correctamente.",
                 "success"
             )
 
-
             return redirect(
                 url_for("productos")
             )
 
-
-        except Error as error:
-
-            if conexion is not None:
-
-                conexion.rollback()
+        except psycopg.Error as error:
 
             flash(
                 f"Error al registrar el producto: {error}",
                 "danger"
             )
-
-
-        finally:
-
-            if cursor is not None:
-
-                cursor.close()
-
-            if (
-                conexion is not None
-                and conexion.is_connected()
-            ):
-
-                conexion.close()
-
 
     return render_template(
         "formulario_producto.html",
@@ -925,11 +557,9 @@ def registrar_producto():
         modo="registrar"
     )
 
-
-# ---------------------------------------------------------
-# MODIFICAR PRODUCTO
-# SELECT WHERE + UPDATE WHERE + COMMIT
-# ---------------------------------------------------------
+# =========================================================
+# PRODUCTOS - UPDATE
+# =========================================================
 
 @app.route(
     "/productos/editar/<int:id_producto>",
@@ -938,76 +568,40 @@ def registrar_producto():
 @login_required
 def editar_producto(id_producto):
 
-    conexion = None
-    cursor = None
-
-    producto = None
-
-
-    # -----------------------------------------------------
-    # RECUPERAR REGISTRO ACTUAL
-    # -----------------------------------------------------
-
+    # BUSCAR EL PRODUCTO
     try:
 
-        conexion = obtener_conexion()
+        with obtener_conexion() as conexion:
 
-        cursor = conexion.cursor(
-            dictionary=True
-        )
+            with conexion.cursor() as cursor:
 
+                cursor.execute(
+                    """
+                    SELECT
+                        id,
+                        nombre,
+                        categoria,
+                        descripcion,
+                        stock,
+                        proveedor_id
+                    FROM productos
+                    WHERE id = %s
+                    """,
+                    (id_producto,)
+                )
 
-        cursor.execute(
-            """
-            SELECT
+                producto = cursor.fetchone()
 
-                p.id_producto AS id,
-
-                p.nombre,
-
-                c.nombre AS categoria,
-
-                p.descripcion,
-
-                p.stock
-
-            FROM productos AS p
-
-            INNER JOIN categorias AS c
-                ON p.id_categoria = c.id_categoria
-
-            WHERE p.id_producto = %s
-            """,
-            (
-                id_producto,
-            )
-        )
-
-
-        producto = cursor.fetchone()
-
-
-    except Error as error:
+    except psycopg.Error as error:
 
         flash(
             f"Error al consultar el producto: {error}",
             "danger"
         )
 
-
-    finally:
-
-        if cursor is not None:
-
-            cursor.close()
-
-        if (
-            conexion is not None
-            and conexion.is_connected()
-        ):
-
-            conexion.close()
-
+        return redirect(
+            url_for("productos")
+        )
 
     if producto is None:
 
@@ -1020,145 +614,101 @@ def editar_producto(id_producto):
             url_for("productos")
         )
 
-
     form = ProductoForm()
 
+    # CARGAR PROVEEDORES ACTIVOS
+    try:
 
-    # -----------------------------------------------------
-    # GUARDAR MODIFICACIÓN
-    # -----------------------------------------------------
+        with obtener_conexion() as conexion:
 
+            with conexion.cursor() as cursor:
+
+                cursor.execute(
+                    """
+                    SELECT
+                        id,
+                        nombre
+                    FROM proveedores
+                    WHERE activo = TRUE
+                    ORDER BY nombre
+                    """
+                )
+
+                lista_proveedores = cursor.fetchall()
+
+        form.proveedor_id.choices = [
+            (
+                proveedor["id"],
+                proveedor["nombre"]
+            )
+            for proveedor in lista_proveedores
+        ]
+
+    except psycopg.Error as error:
+
+        form.proveedor_id.choices = []
+
+        flash(
+            f"Error al cargar los proveedores: {error}",
+            "danger"
+        )
+
+    # MODIFICAR PRODUCTO
     if form.validate_on_submit():
-
-        conexion = None
-        cursor = None
 
         try:
 
-            conexion = obtener_conexion()
+            with obtener_conexion() as conexion:
 
-            cursor = conexion.cursor(
-                dictionary=True
-            )
+                with conexion.cursor() as cursor:
 
+                    cursor.execute(
+                        """
+                        UPDATE productos
+                        SET
+                            nombre = %s,
+                            categoria = %s,
+                            descripcion = %s,
+                            stock = %s,
+                            proveedor_id = %s
+                        WHERE id = %s
+                        """,
+                        (
+                            form.nombre.data,
+                            form.categoria.data,
+                            form.descripcion.data,
+                            form.stock.data,
+                            form.proveedor_id.data,
+                            id_producto
+                        )
+                    )
 
-            # ---------------------------------------------
-            # OBTENER ID DE CATEGORÍA
-            # ---------------------------------------------
-
-            cursor.execute(
-                """
-                SELECT id_categoria
-
-                FROM categorias
-
-                WHERE nombre = %s
-                """,
-                (
-                    form.categoria.data,
-                )
-            )
-
-
-            categoria = cursor.fetchone()
-
-
-            if categoria is None:
-
-                flash(
-                    "La categoría seleccionada no existe.",
-                    "danger"
-                )
-
-                return render_template(
-                    "formulario_producto.html",
-                    form=form,
-                    modo="editar"
-                )
-
-
-            # ---------------------------------------------
-            # UPDATE
-            # ---------------------------------------------
-
-            cursor.execute(
-                """
-                UPDATE productos
-
-                SET
-                    nombre = %s,
-                    id_categoria = %s,
-                    descripcion = %s,
-                    stock = %s
-
-                WHERE id_producto = %s
-                """,
-                (
-                    form.nombre.data,
-                    categoria["id_categoria"],
-                    form.descripcion.data,
-                    form.stock.data,
-                    id_producto
-                )
-            )
-
-
-            conexion.commit()
-
+                conexion.commit()
 
             flash(
                 "Producto modificado correctamente.",
                 "success"
             )
 
-
             return redirect(
                 url_for("productos")
             )
 
-
-        except Error as error:
-
-            if conexion is not None:
-
-                conexion.rollback()
-
+        except psycopg.Error as error:
 
             flash(
                 f"Error al modificar el producto: {error}",
                 "danger"
             )
 
-
-        finally:
-
-            if cursor is not None:
-
-                cursor.close()
-
-            if (
-                conexion is not None
-                and conexion.is_connected()
-            ):
-
-                conexion.close()
-
-
-    # -----------------------------------------------------
-    # PRECARGAR DATOS DEL PRODUCTO
-    # SOLO EN GET
-    # -----------------------------------------------------
-
+    # MOSTRAR LOS DATOS ACTUALES
     if request.method == "GET":
 
         form.nombre.data = producto["nombre"]
-
         form.categoria.data = producto["categoria"]
-
         form.descripcion.data = producto["descripcion"]
-
         form.stock.data = producto["stock"]
-
+        form.proveedor_id.data = producto["proveedor_id"]
 
     return render_template(
         "formulario_producto.html",
@@ -1167,10 +717,9 @@ def editar_producto(id_producto):
     )
 
 
-# ---------------------------------------------------------
-# ELIMINAR PRODUCTO
-# DELETE WHERE + COMMIT
-# ---------------------------------------------------------
+# =========================================================
+# PRODUCTOS - DELETE
+# =========================================================
 
 @app.route(
     "/productos/eliminar/<int:id_producto>",
@@ -1179,72 +728,44 @@ def editar_producto(id_producto):
 @login_required
 def eliminar_producto(id_producto):
 
-    conexion = None
-    cursor = None
-
     try:
 
-        conexion = obtener_conexion()
+        with obtener_conexion() as conexion:
 
-        cursor = conexion.cursor()
+            with conexion.cursor() as cursor:
 
+                cursor.execute(
+                    """
+                    DELETE FROM productos
+                    WHERE id = %s
+                    """,
+                    (id_producto,)
+                )
 
-        cursor.execute(
-            """
-            DELETE FROM productos
+                eliminado = cursor.rowcount
 
-            WHERE id_producto = %s
-            """,
-            (
-                id_producto,
-            )
-        )
+            conexion.commit()
 
-
-        conexion.commit()
-
-
-        if cursor.rowcount > 0:
-
-            flash(
-                "Producto eliminado correctamente.",
-                "success"
-            )
-
-        else:
+        if eliminado == 0:
 
             flash(
                 "El producto seleccionado no existe.",
                 "warning"
             )
 
+        else:
 
-    except Error as error:
+            flash(
+                "Producto eliminado correctamente.",
+                "success"
+            )
 
-        if conexion is not None:
-
-            conexion.rollback()
-
+    except psycopg.Error as error:
 
         flash(
-            f"No fue posible eliminar el producto: {error}",
+            f"No se pudo eliminar el producto: {error}",
             "danger"
         )
-
-
-    finally:
-
-        if cursor is not None:
-
-            cursor.close()
-
-        if (
-            conexion is not None
-            and conexion.is_connected()
-        ):
-
-            conexion.close()
-
 
     return redirect(
         url_for("productos")
@@ -1252,16 +773,43 @@ def eliminar_producto(id_producto):
 
 
 # =========================================================
-# CLIENTES
+# CLIENTES - SELECT
 # =========================================================
-
 
 @app.route("/clientes")
 @login_required
 def clientes():
 
-    titulo = "Gestión de Clientes"
+    lista_clientes = []
 
+    try:
+
+        with obtener_conexion() as conexion:
+
+            with conexion.cursor() as cursor:
+
+                cursor.execute(
+                    """
+                    SELECT
+                        id,
+                        nombre,
+                        correo,
+                        telefono,
+                        ciudad,
+                        activo
+                    FROM clientes
+                    ORDER BY id
+                    """
+                )
+
+                lista_clientes = cursor.fetchall()
+
+    except psycopg.Error as error:
+
+        flash(
+            f"Error al consultar los clientes: {error}",
+            "danger"
+        )
 
     activos = sum(
         1
@@ -1269,29 +817,23 @@ def clientes():
         if cliente["activo"]
     )
 
-
-    inactivos = sum(
-        1
-        for cliente in lista_clientes
-        if not cliente["activo"]
-    )
-
+    inactivos = len(lista_clientes) - activos
 
     return render_template(
         "clientes.html",
-        titulo=titulo,
+        titulo="Clientes",
         clientes=lista_clientes,
         activos=activos,
         inactivos=inactivos
     )
 
 
-# ---------------------------------------------------------
-# REGISTRAR CLIENTE
-# ---------------------------------------------------------
+# =========================================================
+# CLIENTES - INSERT
+# =========================================================
 
 @app.route(
-    "/clientes/nuevo",
+    "/clientes/registrar",
     methods=["GET", "POST"]
 )
 @login_required
@@ -1299,61 +841,272 @@ def registrar_cliente():
 
     form = ClienteForm()
 
-
     if form.validate_on_submit():
 
-        nuevo_cliente = {
+        try:
 
-            "nombre":
-                form.nombre.data,
+            with obtener_conexion() as conexion:
 
-            "correo":
-                form.correo.data,
+                with conexion.cursor() as cursor:
 
-            "telefono":
-                form.telefono.data,
+                    cursor.execute(
+                        """
+                        INSERT INTO clientes (
+                            nombre,
+                            correo,
+                            telefono,
+                            ciudad,
+                            activo
+                        )
+                        VALUES (%s, %s, %s, %s, %s)
+                        """,
+                        (
+                            form.nombre.data,
+                            form.correo.data,
+                            form.telefono.data,
+                            form.ciudad.data,
+                            form.activo.data
+                        )
+                    )
 
-            "ciudad":
-                form.ciudad.data,
+                conexion.commit()
 
-            "activo":
-                form.activo.data
-        }
+            flash(
+                "Cliente registrado correctamente.",
+                "success"
+            )
+
+            return redirect(
+                url_for("clientes")
+            )
+
+        except psycopg.Error as error:
+
+            flash(
+                f"Error al registrar el cliente: {error}",
+                "danger"
+            )
+
+    return render_template(
+        "formulario_cliente.html",
+        form=form,
+        modo="registrar"
+    )
 
 
-        lista_clientes.append(
-            nuevo_cliente
-        )
+# =========================================================
+# CLIENTES - UPDATE
+# =========================================================
 
+@app.route(
+    "/clientes/editar/<int:id_cliente>",
+    methods=["GET", "POST"]
+)
+@login_required
+def editar_cliente(id_cliente):
+
+    try:
+
+        with obtener_conexion() as conexion:
+
+            with conexion.cursor() as cursor:
+
+                cursor.execute(
+                    """
+                    SELECT
+                        id,
+                        nombre,
+                        correo,
+                        telefono,
+                        ciudad,
+                        activo
+                    FROM clientes
+                    WHERE id = %s
+                    """,
+                    (id_cliente,)
+                )
+
+                cliente = cursor.fetchone()
+
+    except psycopg.Error as error:
 
         flash(
-            "Cliente registrado correctamente.",
-            "success"
+            f"Error al consultar el cliente: {error}",
+            "danger"
         )
-
 
         return redirect(
             url_for("clientes")
         )
 
+    if cliente is None:
+
+        flash(
+            "El cliente seleccionado no existe.",
+            "warning"
+        )
+
+        return redirect(
+            url_for("clientes")
+        )
+
+    form = ClienteForm()
+
+    if form.validate_on_submit():
+
+        try:
+
+            with obtener_conexion() as conexion:
+
+                with conexion.cursor() as cursor:
+
+                    cursor.execute(
+                        """
+                        UPDATE clientes
+                        SET
+                            nombre = %s,
+                            correo = %s,
+                            telefono = %s,
+                            ciudad = %s,
+                            activo = %s
+                        WHERE id = %s
+                        """,
+                        (
+                            form.nombre.data,
+                            form.correo.data,
+                            form.telefono.data,
+                            form.ciudad.data,
+                            form.activo.data,
+                            id_cliente
+                        )
+                    )
+
+                conexion.commit()
+
+            flash(
+                "Cliente modificado correctamente.",
+                "success"
+            )
+
+            return redirect(
+                url_for("clientes")
+            )
+
+        except psycopg.Error as error:
+
+            flash(
+                f"Error al modificar el cliente: {error}",
+                "danger"
+            )
+
+    if request.method == "GET":
+
+        form.nombre.data = cliente["nombre"]
+        form.correo.data = cliente["correo"]
+        form.telefono.data = cliente["telefono"]
+        form.ciudad.data = cliente["ciudad"]
+        form.activo.data = cliente["activo"]
 
     return render_template(
         "formulario_cliente.html",
-        form=form
+        form=form,
+        modo="editar"
     )
 
 
 # =========================================================
-# PROVEEDORES
+# CLIENTES - DELETE
 # =========================================================
 
+@app.route(
+    "/clientes/eliminar/<int:id_cliente>",
+    methods=["POST"]
+)
+@login_required
+def eliminar_cliente(id_cliente):
+
+    try:
+
+        with obtener_conexion() as conexion:
+
+            with conexion.cursor() as cursor:
+
+                cursor.execute(
+                    """
+                    DELETE FROM clientes
+                    WHERE id = %s
+                    """,
+                    (id_cliente,)
+                )
+
+                eliminado = cursor.rowcount
+
+            conexion.commit()
+
+        if eliminado:
+
+            flash(
+                "Cliente eliminado correctamente.",
+                "success"
+            )
+
+        else:
+
+            flash(
+                "El cliente seleccionado no existe.",
+                "warning"
+            )
+
+    except psycopg.Error as error:
+
+        flash(
+            f"No se pudo eliminar el cliente: {error}",
+            "danger"
+        )
+
+    return redirect(
+        url_for("clientes")
+    )
+
+
+# =========================================================
+# PROVEEDORES - SELECT
+# =========================================================
 
 @app.route("/proveedores")
 @login_required
 def proveedores():
 
-    titulo = "Gestión de Proveedores"
+    lista_proveedores = []
 
+    try:
+
+        with obtener_conexion() as conexion:
+
+            with conexion.cursor() as cursor:
+
+                cursor.execute(
+                    """
+                    SELECT
+                        id,
+                        nombre,
+                        productos,
+                        contacto,
+                        ciudad,
+                        activo
+                    FROM proveedores
+                    ORDER BY id
+                    """
+                )
+
+                lista_proveedores = cursor.fetchall()
+
+    except psycopg.Error as error:
+
+        flash(
+            f"Error al consultar los proveedores: {error}",
+            "danger"
+        )
 
     activos = sum(
         1
@@ -1361,29 +1114,23 @@ def proveedores():
         if proveedor["activo"]
     )
 
-
-    inactivos = sum(
-        1
-        for proveedor in lista_proveedores
-        if not proveedor["activo"]
-    )
-
+    inactivos = len(lista_proveedores) - activos
 
     return render_template(
         "proveedores.html",
-        titulo=titulo,
+        titulo="Proveedores",
         proveedores=lista_proveedores,
         activos=activos,
         inactivos=inactivos
     )
 
 
-# ---------------------------------------------------------
-# REGISTRAR PROVEEDOR
-# ---------------------------------------------------------
+# =========================================================
+# PROVEEDORES - INSERT
+# =========================================================
 
 @app.route(
-    "/proveedores/nuevo",
+    "/proveedores/registrar",
     methods=["GET", "POST"]
 )
 @login_required
@@ -1391,174 +1138,862 @@ def registrar_proveedor():
 
     form = ProveedorForm()
 
-
     if form.validate_on_submit():
 
-        nuevo_proveedor = {
+        try:
 
-            "nombre":
-                form.nombre.data,
+            with obtener_conexion() as conexion:
 
-            "productos":
-                form.productos.data,
+                with conexion.cursor() as cursor:
 
-            "contacto":
-                form.contacto.data,
+                    cursor.execute(
+                        """
+                        INSERT INTO proveedores (
+                            nombre,
+                            productos,
+                            contacto,
+                            ciudad,
+                            activo
+                        )
+                        VALUES (%s, %s, %s, %s, %s)
+                        """,
+                        (
+                            form.nombre.data,
+                            form.productos.data,
+                            form.contacto.data,
+                            form.ciudad.data,
+                            form.activo.data
+                        )
+                    )
 
-            "ciudad":
-                form.ciudad.data,
+                conexion.commit()
 
-            "activo":
-                form.activo.data
-        }
+            flash(
+                "Proveedor registrado correctamente.",
+                "success"
+            )
+
+            return redirect(
+                url_for("proveedores")
+            )
+
+        except psycopg.Error as error:
+
+            flash(
+                f"Error al registrar el proveedor: {error}",
+                "danger"
+            )
+
+    return render_template(
+        "formulario_proveedor.html",
+        form=form,
+        modo="registrar"
+    )
 
 
-        lista_proveedores.append(
-            nuevo_proveedor
-        )
+# =========================================================
+# PROVEEDORES - UPDATE
+# =========================================================
 
+@app.route(
+    "/proveedores/editar/<int:id_proveedor>",
+    methods=["GET", "POST"]
+)
+@login_required
+def editar_proveedor(id_proveedor):
+
+    try:
+
+        with obtener_conexion() as conexion:
+
+            with conexion.cursor() as cursor:
+
+                cursor.execute(
+                    """
+                    SELECT
+                        id,
+                        nombre,
+                        productos,
+                        contacto,
+                        ciudad,
+                        activo
+                    FROM proveedores
+                    WHERE id = %s
+                    """,
+                    (id_proveedor,)
+                )
+
+                proveedor = cursor.fetchone()
+
+    except psycopg.Error as error:
 
         flash(
-            "Proveedor registrado correctamente.",
-            "success"
+            f"Error al consultar el proveedor: {error}",
+            "danger"
         )
-
 
         return redirect(
             url_for("proveedores")
         )
 
+    if proveedor is None:
+
+        flash(
+            "El proveedor seleccionado no existe.",
+            "warning"
+        )
+
+        return redirect(
+            url_for("proveedores")
+        )
+
+    form = ProveedorForm()
+
+    if form.validate_on_submit():
+
+        try:
+
+            with obtener_conexion() as conexion:
+
+                with conexion.cursor() as cursor:
+
+                    cursor.execute(
+                        """
+                        UPDATE proveedores
+                        SET
+                            nombre = %s,
+                            productos = %s,
+                            contacto = %s,
+                            ciudad = %s,
+                            activo = %s
+                        WHERE id = %s
+                        """,
+                        (
+                            form.nombre.data,
+                            form.productos.data,
+                            form.contacto.data,
+                            form.ciudad.data,
+                            form.activo.data,
+                            id_proveedor
+                        )
+                    )
+
+                conexion.commit()
+
+            flash(
+                "Proveedor modificado correctamente.",
+                "success"
+            )
+
+            return redirect(
+                url_for("proveedores")
+            )
+
+        except psycopg.Error as error:
+
+            flash(
+                f"Error al modificar el proveedor: {error}",
+                "danger"
+            )
+
+    if request.method == "GET":
+
+        form.nombre.data = proveedor["nombre"]
+        form.productos.data = proveedor["productos"]
+        form.contacto.data = proveedor["contacto"]
+        form.ciudad.data = proveedor["ciudad"]
+        form.activo.data = proveedor["activo"]
 
     return render_template(
         "formulario_proveedor.html",
-        form=form
+        form=form,
+        modo="editar"
     )
 
 
 # =========================================================
-# FACTURACIÓN
+# PROVEEDORES - DELETE
 # =========================================================
 
+@app.route(
+    "/proveedores/eliminar/<int:id_proveedor>",
+    methods=["POST"]
+)
+@login_required
+def eliminar_proveedor(id_proveedor):
+
+    try:
+
+        with obtener_conexion() as conexion:
+
+            with conexion.cursor() as cursor:
+
+                cursor.execute(
+                    """
+                    DELETE FROM proveedores
+                    WHERE id = %s
+                    """,
+                    (id_proveedor,)
+                )
+
+                eliminado = cursor.rowcount
+
+            conexion.commit()
+
+        if eliminado:
+
+            flash(
+                "Proveedor eliminado correctamente.",
+                "success"
+            )
+
+        else:
+
+            flash(
+                "El proveedor seleccionado no existe.",
+                "warning"
+            )
+
+    except psycopg.Error as error:
+
+        flash(
+            f"No se pudo eliminar el proveedor: {error}",
+            "danger"
+        )
+
+    return redirect(
+        url_for("proveedores")
+    )
+
+
+# =========================================================
+# FACTURACIÓN - SELECT
+# =========================================================
 
 @app.route("/facturacion")
 @login_required
 def facturacion():
 
-    titulo = "Gestión de Facturación"
+    lista_facturas = []
 
+    try:
 
-    subtotal = sum(
-        item["cantidad"] * item["precio"]
-        for item in factura_actual["detalle"]
-    )
+        with obtener_conexion() as conexion:
 
+            with conexion.cursor() as cursor:
 
-    iva = subtotal * 0.15
+                cursor.execute(
+                    """
+                    SELECT
+                        f.id,
+                        f.numero,
+                        f.fecha,
+                        f.forma_pago,
+                        f.pagada,
 
+                        c.nombre AS cliente_nombre,
+                        c.correo AS cliente_correo,
 
-    total = subtotal + iva
+                        p.nombre AS producto_nombre,
 
+                        d.cantidad,
+                        d.precio,
+
+                        (d.cantidad * d.precio) AS subtotal
+
+                    FROM facturas AS f
+
+                    INNER JOIN clientes AS c
+                        ON f.cliente_id = c.id
+
+                    INNER JOIN detalle_factura AS d
+                        ON d.factura_id = f.id
+
+                    INNER JOIN productos AS p
+                        ON d.producto_id = p.id
+
+                    ORDER BY f.id DESC
+                    """
+                )
+
+                lista_facturas = cursor.fetchall()
+
+    except psycopg.Error as error:
+
+        flash(
+            f"Error al consultar la facturación: {error}",
+            "danger"
+        )
 
     productos_vendidos = sum(
-        item["cantidad"]
-        for item in factura_actual["detalle"]
+        factura["cantidad"]
+        for factura in lista_facturas
     )
 
+    total_facturado = sum(
+        (
+            factura["subtotal"]
+            for factura in lista_facturas
+        ),
+        Decimal("0.00")
+    )
 
     return render_template(
         "facturacion.html",
-        titulo=titulo,
-        factura=factura_actual,
-        subtotal=subtotal,
-        iva=iva,
-        total=total,
+        titulo="Facturación",
+        facturas=lista_facturas,
         productos_vendidos=productos_vendidos,
-        facturas_registradas=contador_facturas
+        total_facturado=total_facturado
     )
 
 
-# ---------------------------------------------------------
-# REGISTRAR FACTURA
-# ---------------------------------------------------------
+# =========================================================
+# FACTURACIÓN - INSERT
+# =========================================================
 
 @app.route(
-    "/facturacion/nueva",
+    "/facturacion/registrar",
     methods=["GET", "POST"]
 )
 @login_required
 def registrar_facturacion():
 
-    global factura_actual
-    global contador_facturas
-
-
     form = FacturacionForm()
-
 
     if form.validate_on_submit():
 
-        factura_actual = {
+        try:
 
-            "numero":
-                form.numero.data,
+            with obtener_conexion() as conexion:
 
-            "fecha":
-                form.fecha.data.strftime(
-                    "%d/%m/%Y"
-                ),
+                with conexion.cursor() as cursor:
 
-            "cliente": {
+                    # BUSCAR CLIENTE
+                    cursor.execute(
+                        """
+                        SELECT id
+                        FROM clientes
+                        WHERE correo = %s
+                        """,
+                        (form.cliente_correo.data,)
+                    )
 
-                "nombre":
-                    form.cliente_nombre.data,
+                    cliente = cursor.fetchone()
 
-                "correo":
-                    form.cliente_correo.data,
+                    # CREAR CLIENTE SI NO EXISTE
+                    if cliente is None:
 
-                "telefono":
-                    form.cliente_telefono.data
-            },
+                        cursor.execute(
+                            """
+                            INSERT INTO clientes (
+                                nombre,
+                                correo,
+                                telefono,
+                                ciudad,
+                                activo
+                            )
+                            VALUES (%s, %s, %s, %s, TRUE)
+                            RETURNING id
+                            """,
+                            (
+                                form.cliente_nombre.data,
+                                form.cliente_correo.data,
+                                form.cliente_telefono.data,
+                                "Sin especificar"
+                            )
+                        )
 
-            "forma_pago":
-                form.forma_pago.data,
+                        cliente = cursor.fetchone()
 
-            "pagada":
-                form.pagada.data,
+                    # BUSCAR PRODUCTO
+                    cursor.execute(
+                        """
+                        SELECT
+                            id,
+                            stock
+                        FROM productos
+                        WHERE LOWER(nombre) = LOWER(%s)
+                        ORDER BY id
+                        LIMIT 1
+                        """,
+                        (form.producto.data,)
+                    )
 
-            "detalle": [
-                {
-                    "producto":
-                        form.producto.data,
+                    producto = cursor.fetchone()
 
-                    "cantidad":
-                        form.cantidad.data,
+                    if producto is None:
 
-                    "precio":
-                        float(
+                        conexion.rollback()
+
+                        flash(
+                            "El producto indicado no existe. "
+                            "Regístrelo primero en Productos.",
+                            "warning"
+                        )
+
+                        return render_template(
+                            "formulario_facturacion.html",
+                            form=form,
+                            modo="registrar"
+                        )
+
+                    # COMPROBAR STOCK
+                    if producto["stock"] < form.cantidad.data:
+
+                        conexion.rollback()
+
+                        flash(
+                            "No existe stock suficiente para "
+                            "registrar la factura.",
+                            "warning"
+                        )
+
+                        return render_template(
+                            "formulario_facturacion.html",
+                            form=form,
+                            modo="registrar"
+                        )
+
+                    # CREAR FACTURA
+                    cursor.execute(
+                        """
+                        INSERT INTO facturas (
+                            numero,
+                            fecha,
+                            cliente_id,
+                            forma_pago,
+                            pagada
+                        )
+                        VALUES (%s, %s, %s, %s, %s)
+                        RETURNING id
+                        """,
+                        (
+                            form.numero.data,
+                            form.fecha.data,
+                            cliente["id"],
+                            form.forma_pago.data,
+                            form.pagada.data
+                        )
+                    )
+
+                    factura = cursor.fetchone()
+
+                    # CREAR DETALLE
+                    cursor.execute(
+                        """
+                        INSERT INTO detalle_factura (
+                            factura_id,
+                            producto_id,
+                            cantidad,
+                            precio
+                        )
+                        VALUES (%s, %s, %s, %s)
+                        """,
+                        (
+                            factura["id"],
+                            producto["id"],
+                            form.cantidad.data,
                             form.precio.data
                         )
-                }
-            ]
-        }
+                    )
+
+                    # ACTUALIZAR STOCK
+                    cursor.execute(
+                        """
+                        UPDATE productos
+                        SET stock = stock - %s
+                        WHERE id = %s
+                        """,
+                        (
+                            form.cantidad.data,
+                            producto["id"]
+                        )
+                    )
+
+                conexion.commit()
+
+            flash(
+                "Factura registrada correctamente.",
+                "success"
+            )
+
+            return redirect(
+                url_for("facturacion")
+            )
+
+        except psycopg.Error as error:
+
+            flash(
+                f"Error al registrar la factura: {error}",
+                "danger"
+            )
+
+    return render_template(
+        "formulario_facturacion.html",
+        form=form,
+        modo="registrar"
+    )
 
 
-        contador_facturas += 1
+# =========================================================
+# FACTURACIÓN - UPDATE
+# =========================================================
 
+@app.route(
+    "/facturacion/editar/<int:id_factura>",
+    methods=["GET", "POST"]
+)
+@login_required
+def editar_facturacion(id_factura):
+
+    try:
+
+        with obtener_conexion() as conexion:
+
+            with conexion.cursor() as cursor:
+
+                cursor.execute(
+                    """
+                    SELECT
+                        f.id,
+                        f.numero,
+                        f.fecha,
+                        f.forma_pago,
+                        f.pagada,
+
+                        c.nombre AS cliente_nombre,
+                        c.correo AS cliente_correo,
+                        c.telefono AS cliente_telefono,
+
+                        d.id AS detalle_id,
+                        d.producto_id,
+                        d.cantidad,
+                        d.precio,
+
+                        p.nombre AS producto_nombre
+
+                    FROM facturas AS f
+
+                    INNER JOIN clientes AS c
+                        ON f.cliente_id = c.id
+
+                    INNER JOIN detalle_factura AS d
+                        ON d.factura_id = f.id
+
+                    INNER JOIN productos AS p
+                        ON d.producto_id = p.id
+
+                    WHERE f.id = %s
+                    """,
+                    (id_factura,)
+                )
+
+                factura = cursor.fetchone()
+
+    except psycopg.Error as error:
 
         flash(
-            "Factura registrada correctamente.",
-            "success"
+            f"Error al consultar la factura: {error}",
+            "danger"
         )
-
 
         return redirect(
             url_for("facturacion")
         )
 
+    if factura is None:
+
+        flash(
+            "La factura seleccionada no existe.",
+            "warning"
+        )
+
+        return redirect(
+            url_for("facturacion")
+        )
+
+    form = FacturacionForm()
+
+    if form.validate_on_submit():
+
+        try:
+
+            with obtener_conexion() as conexion:
+
+                with conexion.cursor() as cursor:
+
+                    # DEVOLVER STOCK ANTERIOR
+                    cursor.execute(
+                        """
+                        UPDATE productos
+                        SET stock = stock + %s
+                        WHERE id = %s
+                        """,
+                        (
+                            factura["cantidad"],
+                            factura["producto_id"]
+                        )
+                    )
+
+                    # BUSCAR PRODUCTO NUEVO
+                    cursor.execute(
+                        """
+                        SELECT
+                            id,
+                            stock
+                        FROM productos
+                        WHERE LOWER(nombre) = LOWER(%s)
+                        ORDER BY id
+                        LIMIT 1
+                        """,
+                        (form.producto.data,)
+                    )
+
+                    producto = cursor.fetchone()
+
+                    if producto is None:
+
+                        conexion.rollback()
+
+                        flash(
+                            "El producto indicado no existe.",
+                            "warning"
+                        )
+
+                        return render_template(
+                            "formulario_facturacion.html",
+                            form=form,
+                            modo="editar"
+                        )
+
+                    if producto["stock"] < form.cantidad.data:
+
+                        conexion.rollback()
+
+                        flash(
+                            "No existe stock suficiente.",
+                            "warning"
+                        )
+
+                        return render_template(
+                            "formulario_facturacion.html",
+                            form=form,
+                            modo="editar"
+                        )
+
+                    # ACTUALIZAR CLIENTE
+                    cursor.execute(
+                        """
+                        UPDATE clientes
+                        SET
+                            nombre = %s,
+                            correo = %s,
+                            telefono = %s
+                        WHERE id = (
+                            SELECT cliente_id
+                            FROM facturas
+                            WHERE id = %s
+                        )
+                        """,
+                        (
+                            form.cliente_nombre.data,
+                            form.cliente_correo.data,
+                            form.cliente_telefono.data,
+                            id_factura
+                        )
+                    )
+
+                    # ACTUALIZAR FACTURA
+                    cursor.execute(
+                        """
+                        UPDATE facturas
+                        SET
+                            numero = %s,
+                            fecha = %s,
+                            forma_pago = %s,
+                            pagada = %s
+                        WHERE id = %s
+                        """,
+                        (
+                            form.numero.data,
+                            form.fecha.data,
+                            form.forma_pago.data,
+                            form.pagada.data,
+                            id_factura
+                        )
+                    )
+
+                    # ACTUALIZAR DETALLE
+                    cursor.execute(
+                        """
+                        UPDATE detalle_factura
+                        SET
+                            producto_id = %s,
+                            cantidad = %s,
+                            precio = %s
+                        WHERE id = %s
+                        """,
+                        (
+                            producto["id"],
+                            form.cantidad.data,
+                            form.precio.data,
+                            factura["detalle_id"]
+                        )
+                    )
+
+                    # DESCONTAR STOCK NUEVO
+                    cursor.execute(
+                        """
+                        UPDATE productos
+                        SET stock = stock - %s
+                        WHERE id = %s
+                        """,
+                        (
+                            form.cantidad.data,
+                            producto["id"]
+                        )
+                    )
+
+                conexion.commit()
+
+            flash(
+                "Factura modificada correctamente.",
+                "success"
+            )
+
+            return redirect(
+                url_for("facturacion")
+            )
+
+        except psycopg.Error as error:
+
+            flash(
+                f"Error al modificar la factura: {error}",
+                "danger"
+            )
+
+    if request.method == "GET":
+
+        form.numero.data = factura["numero"]
+        form.fecha.data = factura["fecha"]
+
+        form.cliente_nombre.data = (
+            factura["cliente_nombre"]
+        )
+
+        form.cliente_correo.data = (
+            factura["cliente_correo"]
+        )
+
+        form.cliente_telefono.data = (
+            factura["cliente_telefono"]
+        )
+
+        form.forma_pago.data = factura["forma_pago"]
+        form.pagada.data = factura["pagada"]
+
+        form.producto.data = (
+            factura["producto_nombre"]
+        )
+
+        form.cantidad.data = factura["cantidad"]
+        form.precio.data = factura["precio"]
 
     return render_template(
         "formulario_facturacion.html",
-        form=form
+        form=form,
+        modo="editar"
+    )
+
+
+# =========================================================
+# FACTURACIÓN - DELETE
+# =========================================================
+
+@app.route(
+    "/facturacion/eliminar/<int:id_factura>",
+    methods=["POST"]
+)
+@login_required
+def eliminar_facturacion(id_factura):
+
+    try:
+
+        with obtener_conexion() as conexion:
+
+            with conexion.cursor() as cursor:
+
+                cursor.execute(
+                    """
+                    SELECT
+                        producto_id,
+                        cantidad
+                    FROM detalle_factura
+                    WHERE factura_id = %s
+                    """,
+                    (id_factura,)
+                )
+
+                detalle = cursor.fetchone()
+
+                if detalle is None:
+
+                    flash(
+                        "La factura seleccionada no existe.",
+                        "warning"
+                    )
+
+                    return redirect(
+                        url_for("facturacion")
+                    )
+
+                # RESTAURAR STOCK
+                cursor.execute(
+                    """
+                    UPDATE productos
+                    SET stock = stock + %s
+                    WHERE id = %s
+                    """,
+                    (
+                        detalle["cantidad"],
+                        detalle["producto_id"]
+                    )
+                )
+
+                # ELIMINAR DETALLE
+                cursor.execute(
+                    """
+                    DELETE FROM detalle_factura
+                    WHERE factura_id = %s
+                    """,
+                    (id_factura,)
+                )
+
+                # ELIMINAR FACTURA
+                cursor.execute(
+                    """
+                    DELETE FROM facturas
+                    WHERE id = %s
+                    """,
+                    (id_factura,)
+                )
+
+            conexion.commit()
+
+        flash(
+            "Factura eliminada correctamente.",
+            "success"
+        )
+
+    except psycopg.Error as error:
+
+        flash(
+            f"No se pudo eliminar la factura: {error}",
+            "danger"
+        )
+
+    return redirect(
+        url_for("facturacion")
     )
 
 
@@ -1568,10 +2003,7 @@ def registrar_facturacion():
 
 if __name__ == "__main__":
 
-    with app.app_context():
-
-        comprobar_conexion_mysql()
-
+    comprobar_conexion_postgresql()
 
     app.run(
         debug=True

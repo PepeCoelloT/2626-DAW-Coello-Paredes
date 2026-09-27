@@ -14,26 +14,32 @@ Proveedores - FitZone Store
     <div class="container">
 
 
-        <!-- ENCABEZADO DEL MÓDULO -->
+        <!-- ==================================================
+             ENCABEZADO
+             ================================================== -->
 
         <div class="encabezado-modulo">
+
+            <span class="seccion-etiqueta">
+                GESTIÓN DE PROVEEDORES
+            </span>
 
             <h1>
                 {{ titulo }}
             </h1>
 
             <p>
-                En este módulo se presenta información
-                de los proveedores registrados en FitZone Store.
-                Los datos se mantienen temporalmente durante
-                la ejecución de la aplicación y todavía no
-                se utiliza una base de datos.
+                Administra los proveedores registrados en FitZone Store.
+                La información se almacena de forma persistente
+                en la base de datos PostgreSQL.
             </p>
 
         </div>
 
 
-        <!-- BOTÓN PARA REGISTRAR PROVEEDOR -->
+        <!-- ==================================================
+             REGISTRAR PROVEEDOR
+             ================================================== -->
 
         <div class="d-flex justify-content-end mb-4">
 
@@ -47,14 +53,18 @@ Proveedores - FitZone Store
         </div>
 
 
-        <!-- RESUMEN DEL MÓDULO -->
+        <!-- ==================================================
+             RESUMEN
+             ================================================== -->
 
         <div class="row g-4 mb-5">
 
 
+            <!-- TOTAL -->
+
             <div class="col-md-4">
 
-                <div class="tarjeta-modulo text-center">
+                <div class="tarjeta-modulo text-center h-100">
 
                     <h3 class="text-primary">
                         {{ proveedores|length }}
@@ -69,9 +79,11 @@ Proveedores - FitZone Store
             </div>
 
 
+            <!-- ACTIVOS -->
+
             <div class="col-md-4">
 
-                <div class="tarjeta-modulo text-center">
+                <div class="tarjeta-modulo text-center h-100">
 
                     <h3 class="text-success">
                         {{ activos }}
@@ -86,9 +98,11 @@ Proveedores - FitZone Store
             </div>
 
 
+            <!-- INACTIVOS -->
+
             <div class="col-md-4">
 
-                <div class="tarjeta-modulo text-center">
+                <div class="tarjeta-modulo text-center h-100">
 
                     <h3 class="text-danger">
                         {{ inactivos }}
@@ -106,7 +120,9 @@ Proveedores - FitZone Store
         </div>
 
 
-        <!-- TABLA DE PROVEEDORES -->
+        <!-- ==================================================
+             TABLA DE PROVEEDORES
+             ================================================== -->
 
         <div class="contenedor-tabla">
 
@@ -118,12 +134,33 @@ Proveedores - FitZone Store
 
                         <tr>
 
-                            <th>#</th>
-                            <th>Proveedor</th>
-                            <th>Productos suministrados</th>
-                            <th>Contacto</th>
-                            <th>Ciudad</th>
-                            <th>Estado</th>
+                            <th>
+                                ID
+                            </th>
+
+                            <th>
+                                Proveedor
+                            </th>
+
+                            <th>
+                                Productos suministrados
+                            </th>
+
+                            <th>
+                                Contacto
+                            </th>
+
+                            <th>
+                                Ciudad
+                            </th>
+
+                            <th>
+                                Estado
+                            </th>
+
+                            <th class="text-center">
+                                Acciones
+                            </th>
 
                         </tr>
 
@@ -136,27 +173,51 @@ Proveedores - FitZone Store
 
                         <tr>
 
-                            <td>
-                                {{ loop.index }}
-                            </td>
+
+                            <!-- ID -->
 
                             <td>
+
+                                <strong>
+                                    {{ proveedor.id }}
+                                </strong>
+
+                            </td>
+
+
+                            <!-- PROVEEDOR -->
+
+                            <td>
+
                                 <strong>
                                     {{ proveedor.nombre }}
                                 </strong>
+
                             </td>
+
+
+                            <!-- PRODUCTOS -->
 
                             <td>
                                 {{ proveedor.productos }}
                             </td>
 
+
+                            <!-- CONTACTO -->
+
                             <td>
                                 {{ proveedor.contacto }}
                             </td>
 
+
+                            <!-- CIUDAD -->
+
                             <td>
                                 {{ proveedor.ciudad }}
                             </td>
+
+
+                            <!-- ESTADO -->
 
                             <td>
 
@@ -176,20 +237,92 @@ Proveedores - FitZone Store
 
                             </td>
 
+
+                            <!-- ACCIONES -->
+
+                            <td class="text-center">
+
+                                <div
+                                    class="d-flex flex-wrap
+                                           justify-content-center gap-2"
+                                >
+
+
+                                    <!-- MODIFICAR -->
+
+                                    <a
+                                        href="{{ url_for(
+                                            'editar_proveedor',
+                                            id_proveedor=proveedor.id
+                                        ) }}"
+                                        class="btn btn-warning btn-sm"
+                                    >
+                                        Modificar
+                                    </a>
+
+
+                                    <!-- ELIMINAR -->
+
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for(
+                                            'eliminar_proveedor',
+                                            id_proveedor=proveedor.id
+                                        ) }}"
+                                        class="d-inline"
+                                        onsubmit="return confirm(
+                                            '¿Está seguro de eliminar el proveedor {{ proveedor.nombre }}?'
+                                        );"
+                                    >
+
+                                        <input
+                                            type="hidden"
+                                            name="csrf_token"
+                                            value="{{ csrf_token() }}"
+                                        >
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-danger btn-sm"
+                                        >
+                                            Eliminar
+                                        </button>
+
+                                    </form>
+
+
+                                </div>
+
+                            </td>
+
+
                         </tr>
 
+
                         {% else %}
+
 
                         <tr>
 
                             <td
-                                colspan="6"
-                                class="text-center py-4"
+                                colspan="7"
+                                class="text-center py-5"
                             >
-                                No existen proveedores registrados.
+
+                                <strong>
+                                    No existen proveedores registrados.
+                                </strong>
+
+                                <p class="text-muted mb-0 mt-2">
+                                    Utilice el botón
+                                    "Registrar proveedor"
+                                    para agregar el primer registro.
+                                </p>
+
                             </td>
 
                         </tr>
+
 
                         {% endfor %}
 
@@ -202,22 +335,31 @@ Proveedores - FitZone Store
         </div>
 
 
-        <!-- INFORMACIÓN -->
+        <!-- ==================================================
+             INFORMACIÓN
+             ================================================== -->
 
         <div class="row mt-5">
 
-            <div class="col-lg-8 mx-auto">
+            <div class="col-lg-9 mx-auto">
 
                 <div class="alert alert-info text-center">
 
                     <strong>
-                        Información:
+                        Persistencia PostgreSQL:
                     </strong>
 
-                    Los proveedores se mantienen temporalmente
-                    mediante estructuras de Python.
-                    En esta semana todavía no se utiliza una
-                    base de datos.
+                    Los proveedores mostrados en esta tabla
+                    se consultan directamente desde PostgreSQL
+                    mediante una operación
+
+                    <strong>
+                        SELECT
+                    </strong>.
+
+                    Los registros permanecen almacenados
+                    después de cerrar y volver a ejecutar
+                    la aplicación Flask.
 
                 </div>
 
@@ -226,9 +368,119 @@ Proveedores - FitZone Store
         </div>
 
 
-        <!-- VOLVER AL INICIO -->
+        <!-- ==================================================
+             RELACIÓN CON PRODUCTOS
+             ================================================== -->
 
-        <div class="text-center mt-4">
+        <div class="row mt-4">
+
+            <div class="col-lg-9 mx-auto">
+
+                <div class="alert alert-secondary text-center">
+
+                    <strong>
+                        Relación de datos:
+                    </strong>
+
+                    La tabla de proveedores se relaciona con
+                    la tabla de productos mediante la clave
+                    foránea
+
+                    <strong>
+                        productos.proveedor_id
+                    </strong>.
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             OPERACIONES CRUD
+             ================================================== -->
+
+        <div class="row mt-4">
+
+            <div class="col-lg-10 mx-auto">
+
+                <div class="tarjeta-modulo">
+
+                    <h3 class="text-center mb-4">
+                        Operaciones CRUD implementadas
+                    </h3>
+
+
+                    <div class="row g-3 text-center">
+
+
+                        <div class="col-6 col-md-3">
+
+                            <strong class="text-primary">
+                                SELECT
+                            </strong>
+
+                            <p class="mb-0">
+                                Listar
+                            </p>
+
+                        </div>
+
+
+                        <div class="col-6 col-md-3">
+
+                            <strong class="text-success">
+                                INSERT
+                            </strong>
+
+                            <p class="mb-0">
+                                Agregar
+                            </p>
+
+                        </div>
+
+
+                        <div class="col-6 col-md-3">
+
+                            <strong class="text-warning">
+                                UPDATE
+                            </strong>
+
+                            <p class="mb-0">
+                                Modificar
+                            </p>
+
+                        </div>
+
+
+                        <div class="col-6 col-md-3">
+
+                            <strong class="text-danger">
+                                DELETE
+                            </strong>
+
+                            <p class="mb-0">
+                                Eliminar
+                            </p>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             VOLVER
+             ================================================== -->
+
+        <div class="text-center mt-5">
 
             <a
                 href="{{ url_for('inicio') }}"

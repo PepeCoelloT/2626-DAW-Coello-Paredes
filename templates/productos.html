@@ -15,7 +15,7 @@ Productos - FitZone Store
 
 
         <!-- ==================================================
-             ENCABEZADO DEL MÓDULO
+             ENCABEZADO
              ================================================== -->
 
         <div class="encabezado-modulo">
@@ -31,15 +31,15 @@ Productos - FitZone Store
             <p>
                 Administra los productos deportivos registrados
                 en FitZone Store. La información se obtiene
-                directamente desde la base de datos relacional
-                MySQL y permanece almacenada de forma persistente.
+                directamente desde PostgreSQL y cada producto
+                se encuentra relacionado con un proveedor.
             </p>
 
         </div>
 
 
         <!-- ==================================================
-             BOTÓN PARA REGISTRAR PRODUCTO
+             REGISTRAR
              ================================================== -->
 
         <div class="d-flex justify-content-end mb-4">
@@ -55,13 +55,10 @@ Productos - FitZone Store
 
 
         <!-- ==================================================
-             RESUMEN DEL MÓDULO
+             RESUMEN
              ================================================== -->
 
         <div class="row g-4 mb-5">
-
-
-            <!-- TOTAL -->
 
             <div class="col-md-4">
 
@@ -80,8 +77,6 @@ Productos - FitZone Store
             </div>
 
 
-            <!-- DISPONIBLES -->
-
             <div class="col-md-4">
 
                 <div class="tarjeta-modulo text-center h-100">
@@ -99,8 +94,6 @@ Productos - FitZone Store
             </div>
 
 
-            <!-- AGOTADOS -->
-
             <div class="col-md-4">
 
                 <div class="tarjeta-modulo text-center h-100">
@@ -116,7 +109,6 @@ Productos - FitZone Store
                 </div>
 
             </div>
-
 
         </div>
 
@@ -148,6 +140,10 @@ Productos - FitZone Store
                             </th>
 
                             <th>
+                                Proveedor
+                            </th>
+
+                            <th>
                                 Descripción
                             </th>
 
@@ -170,14 +166,7 @@ Productos - FitZone Store
 
                     <tbody>
 
-
-                        <!--
-                            Los registros son obtenidos desde MySQL
-                            mediante SELECT + JOIN + fetchall().
-                        -->
-
                         {% for producto in productos %}
-
 
                         <tr>
 
@@ -211,6 +200,27 @@ Productos - FitZone Store
                                 <span class="badge bg-primary">
                                     {{ producto.categoria }}
                                 </span>
+
+                            </td>
+
+
+                            <!-- PROVEEDOR -->
+
+                            <td>
+
+                                {% if producto.proveedor_nombre %}
+
+                                    <strong>
+                                        {{ producto.proveedor_nombre }}
+                                    </strong>
+
+                                {% else %}
+
+                                    <span class="text-muted">
+                                        Sin proveedor
+                                    </span>
+
+                                {% endif %}
 
                             </td>
 
@@ -259,7 +269,8 @@ Productos - FitZone Store
                             <td class="text-center">
 
                                 <div
-                                    class="d-flex flex-wrap justify-content-center gap-2"
+                                    class="d-flex flex-wrap
+                                           justify-content-center gap-2"
                                 >
 
 
@@ -290,6 +301,12 @@ Productos - FitZone Store
                                         );"
                                     >
 
+                                        <input
+                                            type="hidden"
+                                            name="csrf_token"
+                                            value="{{ csrf_token() }}"
+                                        >
+
                                         <button
                                             type="submit"
                                             class="btn btn-danger btn-sm"
@@ -311,12 +328,10 @@ Productos - FitZone Store
                         {% else %}
 
 
-                        <!-- SIN REGISTROS -->
-
                         <tr>
 
                             <td
-                                colspan="7"
+                                colspan="8"
                                 class="text-center py-5"
                             >
 
@@ -337,7 +352,6 @@ Productos - FitZone Store
 
                         {% endfor %}
 
-
                     </tbody>
 
                 </table>
@@ -348,7 +362,7 @@ Productos - FitZone Store
 
 
         <!-- ==================================================
-             INFORMACIÓN DE PERSISTENCIA
+             INFORMACIÓN DE POSTGRESQL Y JOIN
              ================================================== -->
 
         <div class="row mt-5">
@@ -358,20 +372,30 @@ Productos - FitZone Store
                 <div class="alert alert-info text-center">
 
                     <strong>
-                        Persistencia MySQL:
+                        PostgreSQL:
                     </strong>
 
-                    Los productos mostrados en esta tabla
-                    se consultan directamente desde la base de
-                    datos relacional
+                    Los productos se consultan desde la base de
+                    datos mediante una consulta
 
                     <strong>
-                        fitness_zone
+                        SELECT con JOIN
+                    </strong>
+
+                    entre las tablas
+
+                    <strong>
+                        productos
+                    </strong>
+
+                    y
+
+                    <strong>
+                        proveedores
                     </strong>.
 
-                    Los registros permanecen almacenados incluso
-                    después de cerrar y ejecutar nuevamente
-                    la aplicación Flask.
+                    De esta forma se muestra el proveedor
+                    relacionado con cada producto.
 
                 </div>
 
@@ -381,7 +405,7 @@ Productos - FitZone Store
 
 
         <!-- ==================================================
-             OPERACIONES IMPLEMENTADAS
+             OPERACIONES CRUD
              ================================================== -->
 
         <div class="row mt-4">
@@ -391,7 +415,7 @@ Productos - FitZone Store
                 <div class="tarjeta-modulo">
 
                     <h3 class="text-center mb-4">
-                        Operaciones de gestión implementadas
+                        Operaciones CRUD implementadas
                     </h3>
 
 
@@ -460,7 +484,7 @@ Productos - FitZone Store
 
 
         <!-- ==================================================
-             VOLVER AL INICIO
+             VOLVER
              ================================================== -->
 
         <div class="text-center mt-5">

@@ -1,13 +1,21 @@
 {% extends "base.html" %}
 
 
+{% set modo_actual = modo|default("registrar") %}
+
+
 {% block title %}
-Registrar Factura - FitZone Store
+
+    {% if modo_actual == "editar" %}
+        Modificar Factura - FitZone Store
+    {% else %}
+        Registrar Factura - FitZone Store
+    {% endif %}
+
 {% endblock %}
 
 
 {% block content %}
-
 
 <section class="modulo">
 
@@ -18,15 +26,35 @@ Registrar Factura - FitZone Store
 
         <div class="encabezado-modulo">
 
-            <h1>
-                Registrar factura
-            </h1>
+            <span class="seccion-etiqueta">
+                GESTIÓN DE FACTURACIÓN
+            </span>
 
-            <p>
-                Complete la información correspondiente a la factura.
-                Los datos serán procesados únicamente cuando
-                todas las reglas de validación se cumplan correctamente.
-            </p>
+            {% if modo_actual == "editar" %}
+
+                <h1>
+                    Modificar factura
+                </h1>
+
+                <p>
+                    Actualice la información de la factura seleccionada.
+                    Los cambios se almacenarán en PostgreSQL cuando
+                    todos los campos cumplan las reglas de validación.
+                </p>
+
+            {% else %}
+
+                <h1>
+                    Registrar factura
+                </h1>
+
+                <p>
+                    Complete la información correspondiente a la factura.
+                    El registro se almacenará en PostgreSQL utilizando
+                    las relaciones con clientes y productos.
+                </p>
+
+            {% endif %}
 
         </div>
 
@@ -34,7 +62,6 @@ Registrar Factura - FitZone Store
         <div class="row justify-content-center">
 
             <div class="col-lg-9">
-
 
                 <div class="tarjeta-modulo">
 
@@ -46,13 +73,14 @@ Registrar Factura - FitZone Store
                         novalidate
                     >
 
-
                         <!-- TOKEN DE PROTECCIÓN CSRF -->
 
                         {{ form.hidden_tag() }}
 
 
-                        <!-- DATOS DE LA FACTURA -->
+                        <!-- ==========================================
+                             DATOS DE LA FACTURA
+                             ========================================== -->
 
                         <h4 class="mb-4 text-primary">
                             Datos de la factura
@@ -144,31 +172,30 @@ Registrar Factura - FitZone Store
                         <hr class="my-4">
 
 
-                        <!-- DATOS DEL CLIENTE -->
+                        <!-- ==========================================
+                             CLIENTE RELACIONADO
+                             ========================================== -->
 
                         <h4 class="mb-4 text-primary">
-                            Datos del cliente
+                            Cliente
                         </h4>
 
 
-                        <!-- NOMBRE DEL CLIENTE -->
-
                         <div class="mb-4">
 
-                            {{ form.cliente_nombre.label(
+                            {{ form.cliente_id.label(
                                 class="form-label fw-semibold"
                             ) }}
 
-                            {% if form.cliente_nombre.errors %}
+                            {% if form.cliente_id.errors %}
 
-                                {{ form.cliente_nombre(
-                                    class="form-control is-invalid",
-                                    placeholder="Ej. María López"
+                                {{ form.cliente_id(
+                                    class="form-select is-invalid"
                                 ) }}
 
                                 <div class="invalid-feedback">
 
-                                    {% for error in form.cliente_nombre.errors %}
+                                    {% for error in form.cliente_id.errors %}
 
                                         <div>
                                             {{ error }}
@@ -180,96 +207,16 @@ Registrar Factura - FitZone Store
 
                             {% else %}
 
-                                {{ form.cliente_nombre(
-                                    class="form-control",
-                                    placeholder="Ej. María López"
+                                {{ form.cliente_id(
+                                    class="form-select"
                                 ) }}
 
                             {% endif %}
 
-                        </div>
-
-
-                        <div class="row">
-
-
-                            <!-- CORREO -->
-
-                            <div class="col-md-6 mb-4">
-
-                                {{ form.cliente_correo.label(
-                                    class="form-label fw-semibold"
-                                ) }}
-
-                                {% if form.cliente_correo.errors %}
-
-                                    {{ form.cliente_correo(
-                                        class="form-control is-invalid",
-                                        placeholder="Ej. maria@email.com"
-                                    ) }}
-
-                                    <div class="invalid-feedback">
-
-                                        {% for error in form.cliente_correo.errors %}
-
-                                            <div>
-                                                {{ error }}
-                                            </div>
-
-                                        {% endfor %}
-
-                                    </div>
-
-                                {% else %}
-
-                                    {{ form.cliente_correo(
-                                        class="form-control",
-                                        placeholder="Ej. maria@email.com"
-                                    ) }}
-
-                                {% endif %}
-
+                            <div class="form-text">
+                                Seleccione un cliente registrado
+                                previamente en el sistema.
                             </div>
-
-
-                            <!-- TELÉFONO -->
-
-                            <div class="col-md-6 mb-4">
-
-                                {{ form.cliente_telefono.label(
-                                    class="form-label fw-semibold"
-                                ) }}
-
-                                {% if form.cliente_telefono.errors %}
-
-                                    {{ form.cliente_telefono(
-                                        class="form-control is-invalid",
-                                        placeholder="Ej. 098 456 7821"
-                                    ) }}
-
-                                    <div class="invalid-feedback">
-
-                                        {% for error in form.cliente_telefono.errors %}
-
-                                            <div>
-                                                {{ error }}
-                                            </div>
-
-                                        {% endfor %}
-
-                                    </div>
-
-                                {% else %}
-
-                                    {{ form.cliente_telefono(
-                                        class="form-control",
-                                        placeholder="Ej. 098 456 7821"
-                                    ) }}
-
-                                {% endif %}
-
-                            </div>
-
 
                         </div>
 
@@ -277,7 +224,9 @@ Registrar Factura - FitZone Store
                         <hr class="my-4">
 
 
-                        <!-- INFORMACIÓN DE PAGO -->
+                        <!-- ==========================================
+                             INFORMACIÓN DE PAGO
+                             ========================================== -->
 
                         <h4 class="mb-4 text-primary">
                             Información de pago
@@ -338,7 +287,8 @@ Registrar Factura - FitZone Store
                             </div>
 
                             <div class="form-text">
-                                Mantenga esta opción seleccionada si la factura ya fue pagada.
+                                Mantenga esta opción seleccionada
+                                si la factura ya fue pagada.
                             </div>
 
                         </div>
@@ -347,7 +297,9 @@ Registrar Factura - FitZone Store
                         <hr class="my-4">
 
 
-                        <!-- DETALLE DEL PRODUCTO -->
+                        <!-- ==========================================
+                             DETALLE DEL PRODUCTO
+                             ========================================== -->
 
                         <h4 class="mb-4 text-primary">
                             Detalle del producto
@@ -358,20 +310,19 @@ Registrar Factura - FitZone Store
 
                         <div class="mb-4">
 
-                            {{ form.producto.label(
+                            {{ form.producto_id.label(
                                 class="form-label fw-semibold"
                             ) }}
 
-                            {% if form.producto.errors %}
+                            {% if form.producto_id.errors %}
 
-                                {{ form.producto(
-                                    class="form-control is-invalid",
-                                    placeholder="Ej. Mancuernas"
+                                {{ form.producto_id(
+                                    class="form-select is-invalid"
                                 ) }}
 
                                 <div class="invalid-feedback">
 
-                                    {% for error in form.producto.errors %}
+                                    {% for error in form.producto_id.errors %}
 
                                         <div>
                                             {{ error }}
@@ -383,12 +334,16 @@ Registrar Factura - FitZone Store
 
                             {% else %}
 
-                                {{ form.producto(
-                                    class="form-control",
-                                    placeholder="Ej. Mancuernas"
+                                {{ form.producto_id(
+                                    class="form-select"
                                 ) }}
 
                             {% endif %}
+
+                            <div class="form-text">
+                                Seleccione un producto registrado
+                                previamente en PostgreSQL.
+                            </div>
 
                         </div>
 
@@ -491,22 +446,60 @@ Registrar Factura - FitZone Store
                         </div>
 
 
-                        <!-- INFORMACIÓN -->
+                        <!-- ==========================================
+                             INFORMACIÓN DE LA OPERACIÓN
+                             ========================================== -->
 
                         <div class="alert alert-info mt-3">
 
-                            El subtotal, IVA y total de la factura serán
-                            calculados automáticamente por la aplicación.
+                            {% if modo_actual == "editar" %}
+
+                                <strong>
+                                    Operación:
+                                </strong>
+
+                                La factura y su detalle serán actualizados
+                                mediante consultas SQL parametrizadas
+                                en PostgreSQL.
+
+                            {% else %}
+
+                                <strong>
+                                    Operación:
+                                </strong>
+
+                                La factura se relacionará con el cliente
+                                seleccionado y su detalle con el producto
+                                seleccionado mediante claves foráneas
+                                en PostgreSQL.
+
+                            {% endif %}
+
                         </div>
 
 
-                        <!-- BOTONES -->
+                        <!-- ==========================================
+                             BOTONES
+                             ========================================== -->
 
                         <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center mt-5">
 
-                            {{ form.submit(
-                                class="btn btn-primary px-4"
-                            ) }}
+                            {% if modo_actual == "editar" %}
+
+                                {{ form.submit(
+                                    class="btn btn-warning px-4",
+                                    value="Guardar cambios"
+                                ) }}
+
+                            {% else %}
+
+                                {{ form.submit(
+                                    class="btn btn-primary px-4",
+                                    value="Registrar factura"
+                                ) }}
+
+                            {% endif %}
+
 
                             <a
                                 href="{{ url_for('facturacion') }}"
@@ -528,9 +521,22 @@ Registrar Factura - FitZone Store
         </div>
 
 
+        <!-- VOLVER -->
+
+        <div class="text-center mt-4">
+
+            <a
+                href="{{ url_for('facturacion') }}"
+                class="text-decoration-none"
+            >
+                ← Volver al listado de facturación
+            </a>
+
+        </div>
+
+
     </div>
 
 </section>
-
 
 {% endblock %}

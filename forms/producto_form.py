@@ -32,7 +32,6 @@ class ProductoForm(FlaskForm):
         ]
     )
 
-
     categoria = SelectField(
         "Categoría",
         choices=[
@@ -50,7 +49,6 @@ class ProductoForm(FlaskForm):
         ]
     )
 
-
     descripcion = TextAreaField(
         "Descripción",
         validators=[
@@ -64,7 +62,6 @@ class ProductoForm(FlaskForm):
             )
         ]
     )
-
 
     stock = IntegerField(
         "Stock",
@@ -80,6 +77,16 @@ class ProductoForm(FlaskForm):
         ]
     )
 
+    proveedor_id = SelectField(
+        "Proveedor",
+        choices=[],
+        coerce=int,
+        validators=[
+            DataRequired(
+                message="Debe seleccionar un proveedor."
+            )
+        ]
+    )
 
     submit = SubmitField(
         "Guardar producto"
