@@ -1460,6 +1460,64 @@ def registrar_facturacion():
 
     form = FacturacionForm()
 
+    try:
+
+        with obtener_conexion() as conexion:
+
+            with conexion.cursor() as cursor:
+
+                # CARGAR CLIENTES
+                cursor.execute(
+                    """
+                    SELECT
+                        id,
+                        nombre,
+                        correo
+                    FROM clientes
+                    WHERE activo = TRUE
+                    ORDER BY nombre
+                    """
+                )
+
+                clientes = cursor.fetchall()
+
+                form.cliente_id.choices = [
+                    (
+                        cliente["id"],
+                        f'{cliente["nombre"]} - {cliente["correo"]}'
+                    )
+                    for cliente in clientes
+                ]
+
+                # CARGAR PRODUCTOS
+                cursor.execute(
+                    """
+                    SELECT
+                        id,
+                        nombre,
+                        stock
+                    FROM productos
+                    ORDER BY nombre
+                    """
+                )
+
+                productos = cursor.fetchall()
+
+                form.producto_id.choices = [
+                    (
+                        producto["id"],
+                        f'{producto["nombre"]} - Stock: {producto["stock"]}'
+                    )
+                    for producto in productos
+                ]
+
+    except psycopg.Error as error:
+
+        flash(
+            f"Error al cargar clientes o productos: {error}",
+            "danger"
+        )
+
     if form.validate_on_submit():
 
         try:
@@ -1468,66 +1526,26 @@ def registrar_facturacion():
 
                 with conexion.cursor() as cursor:
 
-                    # BUSCAR CLIENTE
-                    cursor.execute(
-                        """
-                        SELECT id
-                        FROM clientes
-                        WHERE correo = %s
-                        """,
-                        (form.cliente_correo.data,)
-                    )
-
-                    cliente = cursor.fetchone()
-
-                    # CREAR CLIENTE SI NO EXISTE
-                    if cliente is None:
-
-                        cursor.execute(
-                            """
-                            INSERT INTO clientes (
-                                nombre,
-                                correo,
-                                telefono,
-                                ciudad,
-                                activo
-                            )
-                            VALUES (%s, %s, %s, %s, TRUE)
-                            RETURNING id
-                            """,
-                            (
-                                form.cliente_nombre.data,
-                                form.cliente_correo.data,
-                                form.cliente_telefono.data,
-                                "Sin especificar"
-                            )
-                        )
-
-                        cliente = cursor.fetchone()
-
-                    # BUSCAR PRODUCTO
+                    # COMPROBAR PRODUCTO Y STOCK
                     cursor.execute(
                         """
                         SELECT
                             id,
                             stock
                         FROM productos
-                        WHERE LOWER(nombre) = LOWER(%s)
-                        ORDER BY id
-                        LIMIT 1
+                        WHERE id = %s
                         """,
-                        (form.producto.data,)
+                        (
+                            form.producto_id.data,
+                        )
                     )
 
                     producto = cursor.fetchone()
 
                     if producto is None:
 
-                        conexion.rollback()
-
                         flash(
-                            "El producto indicado no existe. "
-                            "Regístrelo primero en Productos.",
+                            "El producto seleccionado no existe.",
                             "warning"
                         )
 
@@ -1537,14 +1555,10 @@ def registrar_facturacion():
                             modo="registrar"
                         )
 
-                    # COMPROBAR STOCK
                     if producto["stock"] < form.cantidad.data:
 
-                        conexion.rollback()
-
                         flash(
-                            "No existe stock suficiente para "
-                            "registrar la factura.",
+                            "No existe stock suficiente para registrar la factura.",
                             "warning"
                         )
 
@@ -1570,7 +1584,7 @@ def registrar_facturacion():
                         (
                             form.numero.data,
                             form.fecha.data,
-                            cliente["id"],
+                            form.cliente_id.data,
                             form.forma_pago.data,
                             form.pagada.data
                         )
@@ -1591,7 +1605,7 @@ def registrar_facturacion():
                         """,
                         (
                             factura["id"],
-                            producto["id"],
+                            form.producto_id.data,
                             form.cantidad.data,
                             form.precio.data
                         )
@@ -1606,7 +1620,7 @@ def registrar_facturacion():
                         """,
                         (
                             form.cantidad.data,
-                            producto["id"]
+                            form.producto_id.data
                         )
                     )
 
@@ -1634,7 +1648,6 @@ def registrar_facturacion():
         modo="registrar"
     )
 
-
 # =========================================================
 # FACTURACIÓN - UPDATE
 # =========================================================
@@ -1652,43 +1665,64 @@ def editar_facturacion(id_factura):
 
             with conexion.cursor() as cursor:
 
+                # BUSCAR FACTURA ACTUAL
                 cursor.execute(
                     """
                     SELECT
                         f.id,
                         f.numero,
                         f.fecha,
+                        f.cliente_id,
                         f.forma_pago,
                         f.pagada,
-
-                        c.nombre AS cliente_nombre,
-                        c.correo AS cliente_correo,
-                        c.telefono AS cliente_telefono,
 
                         d.id AS detalle_id,
                         d.producto_id,
                         d.cantidad,
-                        d.precio,
-
-                        p.nombre AS producto_nombre
+                        d.precio
 
                     FROM facturas AS f
-
-                    INNER JOIN clientes AS c
-                        ON f.cliente_id = c.id
 
                     INNER JOIN detalle_factura AS d
                         ON d.factura_id = f.id
 
-                    INNER JOIN productos AS p
-                        ON d.producto_id = p.id
-
                     WHERE f.id = %s
                     """,
-                    (id_factura,)
+                    (
+                        id_factura,
+                    )
                 )
 
                 factura = cursor.fetchone()
+
+                # CARGAR CLIENTES
+                cursor.execute(
+                    """
+                    SELECT
+                        id,
+                        nombre,
+                        correo
+                    FROM clientes
+                    WHERE activo = TRUE
+                    ORDER BY nombre
+                    """
+                )
+
+                clientes = cursor.fetchall()
+
+                # CARGAR PRODUCTOS
+                cursor.execute(
+                    """
+                    SELECT
+                        id,
+                        nombre,
+                        stock
+                    FROM productos
+                    ORDER BY nombre
+                    """
+                )
+
+                productos = cursor.fetchall()
 
     except psycopg.Error as error:
 
@@ -1714,6 +1748,22 @@ def editar_facturacion(id_factura):
 
     form = FacturacionForm()
 
+    form.cliente_id.choices = [
+        (
+            cliente["id"],
+            f'{cliente["nombre"]} - {cliente["correo"]}'
+        )
+        for cliente in clientes
+    ]
+
+    form.producto_id.choices = [
+        (
+            producto["id"],
+            f'{producto["nombre"]} - Stock: {producto["stock"]}'
+        )
+        for producto in productos
+    ]
+
     if form.validate_on_submit():
 
         try:
@@ -1735,18 +1785,18 @@ def editar_facturacion(id_factura):
                         )
                     )
 
-                    # BUSCAR PRODUCTO NUEVO
+                    # BUSCAR PRODUCTO SELECCIONADO
                     cursor.execute(
                         """
                         SELECT
                             id,
                             stock
                         FROM productos
-                        WHERE LOWER(nombre) = LOWER(%s)
-                        ORDER BY id
-                        LIMIT 1
+                        WHERE id = %s
                         """,
-                        (form.producto.data,)
+                        (
+                            form.producto_id.data,
+                        )
                     )
 
                     producto = cursor.fetchone()
@@ -1756,7 +1806,7 @@ def editar_facturacion(id_factura):
                         conexion.rollback()
 
                         flash(
-                            "El producto indicado no existe.",
+                            "El producto seleccionado no existe.",
                             "warning"
                         )
 
@@ -1766,6 +1816,7 @@ def editar_facturacion(id_factura):
                             modo="editar"
                         )
 
+                    # COMPROBAR STOCK
                     if producto["stock"] < form.cantidad.data:
 
                         conexion.rollback()
@@ -1781,28 +1832,6 @@ def editar_facturacion(id_factura):
                             modo="editar"
                         )
 
-                    # ACTUALIZAR CLIENTE
-                    cursor.execute(
-                        """
-                        UPDATE clientes
-                        SET
-                            nombre = %s,
-                            correo = %s,
-                            telefono = %s
-                        WHERE id = (
-                            SELECT cliente_id
-                            FROM facturas
-                            WHERE id = %s
-                        )
-                        """,
-                        (
-                            form.cliente_nombre.data,
-                            form.cliente_correo.data,
-                            form.cliente_telefono.data,
-                            id_factura
-                        )
-                    )
-
                     # ACTUALIZAR FACTURA
                     cursor.execute(
                         """
@@ -1810,6 +1839,7 @@ def editar_facturacion(id_factura):
                         SET
                             numero = %s,
                             fecha = %s,
+                            cliente_id = %s,
                             forma_pago = %s,
                             pagada = %s
                         WHERE id = %s
@@ -1817,6 +1847,7 @@ def editar_facturacion(id_factura):
                         (
                             form.numero.data,
                             form.fecha.data,
+                            form.cliente_id.data,
                             form.forma_pago.data,
                             form.pagada.data,
                             id_factura
@@ -1834,7 +1865,7 @@ def editar_facturacion(id_factura):
                         WHERE id = %s
                         """,
                         (
-                            producto["id"],
+                            form.producto_id.data,
                             form.cantidad.data,
                             form.precio.data,
                             factura["detalle_id"]
@@ -1850,7 +1881,7 @@ def editar_facturacion(id_factura):
                         """,
                         (
                             form.cantidad.data,
-                            producto["id"]
+                            form.producto_id.data
                         )
                     )
 
@@ -1876,26 +1907,10 @@ def editar_facturacion(id_factura):
 
         form.numero.data = factura["numero"]
         form.fecha.data = factura["fecha"]
-
-        form.cliente_nombre.data = (
-            factura["cliente_nombre"]
-        )
-
-        form.cliente_correo.data = (
-            factura["cliente_correo"]
-        )
-
-        form.cliente_telefono.data = (
-            factura["cliente_telefono"]
-        )
-
+        form.cliente_id.data = factura["cliente_id"]
         form.forma_pago.data = factura["forma_pago"]
         form.pagada.data = factura["pagada"]
-
-        form.producto.data = (
-            factura["producto_nombre"]
-        )
-
+        form.producto_id.data = factura["producto_id"]
         form.cantidad.data = factura["cantidad"]
         form.precio.data = factura["precio"]
 
@@ -1904,7 +1919,6 @@ def editar_facturacion(id_factura):
         form=form,
         modo="editar"
     )
-
 
 # =========================================================
 # FACTURACIÓN - DELETE
